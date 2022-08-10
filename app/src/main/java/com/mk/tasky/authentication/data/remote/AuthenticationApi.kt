@@ -1,11 +1,11 @@
-package com.mk.tasky.authentication.login.data.remote
+package com.mk.tasky.authentication.data.remote
 
-import com.mk.tasky.authentication.login.data.remote.dto.LoginBodyDto
-import com.mk.tasky.authentication.login.data.remote.dto.LoginResponseDto
+import com.mk.tasky.authentication.data.remote.dto.LoginBodyDto
+import com.mk.tasky.authentication.data.remote.dto.LoginResponseDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 
-interface LoginApi {
+interface AuthenticationApi {
     companion object {
         const val BASE_URL = "https://tasky.pl-coding.com/"
     }

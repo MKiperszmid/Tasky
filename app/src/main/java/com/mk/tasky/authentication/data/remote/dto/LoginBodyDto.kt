@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.data.remote.dto
+package com.mk.tasky.authentication.data.remote.dto
 
 
 import com.squareup.moshi.Json

@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.data.remote.interceptors
+package com.mk.tasky.authentication.data.remote.interceptors
 
 import com.mk.tasky.BuildConfig
 import okhttp3.Interceptor

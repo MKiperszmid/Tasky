@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.domain.models
+package com.mk.tasky.authentication.domain.models
 
 data class LoggedUser(
     val token: String,
