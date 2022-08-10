@@ -2,6 +2,7 @@ package com.mk.tasky.authentication.login.di
 
 import com.mk.tasky.authentication.login.data.LoginRepositoryImpl
 import com.mk.tasky.authentication.login.data.remote.LoginApi
+import com.mk.tasky.authentication.login.data.remote.interceptors.ApiKeyInterceptor
 import com.mk.tasky.authentication.login.domain.LoginRepository
 import dagger.Module
 import dagger.Provides
@@ -24,7 +25,7 @@ object LoginModule {
             HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             }
-        ).build()
+        ).addInterceptor(ApiKeyInterceptor()).build()
     }
 
     @Provides

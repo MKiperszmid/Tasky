@@ -1,10 +1,8 @@
 package com.mk.tasky.authentication.login.data.remote
 
-import com.mk.tasky.BuildConfig
 import com.mk.tasky.authentication.login.data.remote.dto.LoginBodyDto
 import com.mk.tasky.authentication.login.data.remote.dto.LoginResponseDto
 import retrofit2.http.Body
-import retrofit2.http.Header
 import retrofit2.http.POST
 
 interface LoginApi {
@@ -14,7 +12,6 @@ interface LoginApi {
 
     @POST("/login")
     suspend fun login(
-        @Body body: LoginBodyDto,
-        @Header("x-api-key") apiKey: String = BuildConfig.API_KEY
+        @Body body: LoginBodyDto
     ): LoginResponseDto
 }
