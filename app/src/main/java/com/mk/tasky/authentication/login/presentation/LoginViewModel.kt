@@ -14,7 +14,7 @@ class LoginViewModel @Inject constructor(
     init {
         viewModelScope.launch {
             try {
-                repository.login("mail@pl-coding.comx", "Test12345").onSuccess {
+                repository.login("mail@pl-coding.coxm", "Test12345").onSuccess {
                     println(it)
                 }.onFailure {
                     println(it)

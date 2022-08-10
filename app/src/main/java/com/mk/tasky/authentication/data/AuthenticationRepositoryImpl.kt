@@ -15,10 +15,9 @@ class AuthenticationRepositoryImpl(
         return try {
             val response = api.login(body)
             Result.success(response.toDomain())
+        } catch (e: CancellationException) {
+            throw e
         } catch (e: Exception) {
-            if (e is CancellationException) {
-                throw e
-            }
             return Result.failure(e)
         }
     }
