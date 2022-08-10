@@ -1,7 +1,8 @@
 package com.mk.tasky.authentication.login.di
 
-import com.mk.tasky.authentication.login.data.LoginRepository
+import com.mk.tasky.authentication.login.data.LoginRepositoryImpl
 import com.mk.tasky.authentication.login.data.remote.LoginApi
+import com.mk.tasky.authentication.login.domain.LoginRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -38,6 +39,6 @@ object LoginModule {
     @Provides
     @Singleton
     fun provideRepository(api: LoginApi): LoginRepository {
-        return LoginRepository(api)
+        return LoginRepositoryImpl(api)
     }
 }
