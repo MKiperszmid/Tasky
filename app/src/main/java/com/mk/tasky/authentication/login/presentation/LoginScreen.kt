@@ -3,8 +3,10 @@ package com.mk.tasky.authentication.login.presentation
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mk.tasky.R
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyEmailTextField
 import com.mk.tasky.core.presentation.TaskyPasswordTextField
@@ -21,7 +23,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                 viewModel.onEvent(LoginEvent.OnEmailChange(it))
             },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Email address",
+            placeholder = stringResource(id = R.string.email_address),
             showError = state.emailError
         )
         Spacer(modifier = Modifier.height(16.dp))
@@ -34,13 +36,13 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
                 viewModel.onEvent(LoginEvent.ChangePasswordVisibility)
             },
             modifier = Modifier.fillMaxWidth(),
-            placeholder = "Password",
+            placeholder = stringResource(id = R.string.password),
             isTextHidden = state.isPasswordHidden,
             showError = state.passwordError
         )
         Spacer(modifier = Modifier.height(25.dp))
         TaskyButton(
-            text = "LOG IN",
+            text = stringResource(id = R.string.log_in),
             onClick = { viewModel.onEvent(LoginEvent.Submit) },
             modifier = Modifier.fillMaxWidth()
         )
