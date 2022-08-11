@@ -52,16 +52,16 @@ class LoginViewModel @Inject constructor(
                 }
                 if (!state.emailError && !state.passwordError) {
                     Log.d("TRACK", "Email: ${state.email} Password: ${state.password}")
-                    // submit()
+                    submit(state.email, state.password)
                 }
             }
         }
     }
 
-    private fun submit() {
+    private fun submit(email: String, password: String) {
         viewModelScope.launch {
             try {
-                repository.login(state.email, state.password).onSuccess {
+                repository.login(email, password).onSuccess {
                     println(it)
                 }.onFailure {
                     println(it)
