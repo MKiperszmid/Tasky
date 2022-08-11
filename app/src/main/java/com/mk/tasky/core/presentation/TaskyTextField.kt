@@ -7,7 +7,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -32,12 +32,10 @@ fun TaskyTextField(
     trailingIconColor: Color? = null,
     onIconClick: () -> Unit = {},
     isPassword: Boolean = false,
+    isTextHidden: Boolean = false,
     isValid: Boolean = false,
     modifier: Modifier = Modifier
 ) {
-    var isPasswordHidden by remember {
-        mutableStateOf(true)
-    }
     OutlinedTextField(
         modifier = modifier,
         value = value,
@@ -71,14 +69,11 @@ fun TaskyTextField(
                 trailingIcon = trailingIcon,
                 onIconClick = onIconClick,
                 isValid = isValid,
-                onPasswordClick = {
-                    isPasswordHidden = !isPasswordHidden
-                },
-                isPasswordHidden = isPasswordHidden
+                isTextHidden = isTextHidden
             )
         },
         shape = RoundedCornerShape(10.dp),
-        visualTransformation = if (isPassword && isPasswordHidden) PasswordVisualTransformation() else VisualTransformation.None
+        visualTransformation = if (isTextHidden) PasswordVisualTransformation() else VisualTransformation.None
     )
 }
 
@@ -109,6 +104,8 @@ fun TaskyPasswordTextField(
     placeholder: String = "",
     showError: Boolean = false,
     isValid: Boolean = false,
+    isTextHidden: Boolean = true,
+    onIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TaskyTextField(
@@ -119,6 +116,8 @@ fun TaskyPasswordTextField(
         modifier = modifier,
         keyboardType = KeyboardType.Password,
         isPassword = true,
+        onIconClick = onIconClick,
+        isTextHidden = isTextHidden,
         isValid = isValid
     )
 }
@@ -126,10 +125,9 @@ fun TaskyPasswordTextField(
 @Composable
 private fun TrailingIcon(
     isPassword: Boolean = false,
-    isPasswordHidden: Boolean,
+    isTextHidden: Boolean,
     trailingIcon: ImageVector? = null,
     isValid: Boolean = false,
-    onPasswordClick: () -> Unit,
     onIconClick: () -> Unit = {}
 ) {
     if (trailingIcon != null) {
@@ -137,9 +135,9 @@ private fun TrailingIcon(
             Icon(imageVector = trailingIcon, contentDescription = "icon")
         }
     } else if (isPassword) {
-        IconButton(onClick = onPasswordClick) {
+        IconButton(onClick = onIconClick) {
             val icon =
-                if (isPasswordHidden) Icons.Default.VisibilityOff else Icons.Default.Visibility
+                if (isTextHidden) Icons.Default.VisibilityOff else Icons.Default.Visibility
             Icon(imageVector = icon, contentDescription = "icon")
         }
     } else if (isValid) {
