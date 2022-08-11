@@ -101,11 +101,11 @@ fun TaskyEmailTextField(
 fun TaskyPasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    onPasswordIconClick: () -> Unit,
     placeholder: String = "",
     showError: Boolean = false,
     isValid: Boolean = false,
     isTextHidden: Boolean = true,
-    onIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TaskyTextField(
@@ -116,7 +116,7 @@ fun TaskyPasswordTextField(
         modifier = modifier,
         keyboardType = KeyboardType.Password,
         isPassword = true,
-        onIconClick = onIconClick,
+        onIconClick = onPasswordIconClick,
         isTextHidden = isTextHidden,
         isValid = isValid
     )
