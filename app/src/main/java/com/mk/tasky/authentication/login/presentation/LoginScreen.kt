@@ -14,7 +14,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
     val state = viewModel.state
 
     Column(modifier = Modifier.fillMaxSize()) {
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(50.dp))
         TaskyEmailTextField(
             value = state.email,
             onValueChange = {
@@ -38,7 +38,7 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             isTextHidden = state.isPasswordHidden,
             showError = state.passwordError
         )
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(25.dp))
         TaskyButton(
             text = "LOG IN",
             onClick = { viewModel.onEvent(LoginEvent.Submit) },
