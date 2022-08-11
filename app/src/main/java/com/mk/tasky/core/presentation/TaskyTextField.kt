@@ -125,7 +125,7 @@ fun TaskyPasswordTextField(
 @Composable
 private fun TrailingIcon(
     isPassword: Boolean = false,
-    isTextHidden: Boolean,
+    isTextHidden: Boolean = false,
     trailingIcon: ImageVector? = null,
     isValid: Boolean = false,
     onIconClick: () -> Unit = {}
@@ -138,10 +138,10 @@ private fun TrailingIcon(
         IconButton(onClick = onIconClick) {
             val icon =
                 if (isTextHidden) Icons.Default.VisibilityOff else Icons.Default.Visibility
-            Icon(imageVector = icon, contentDescription = "icon")
+            Icon(imageVector = icon, contentDescription = "toggle password visibility")
         }
     } else if (isValid) {
-        Icon(imageVector = Icons.Default.Check, contentDescription = "icon")
+        Icon(imageVector = Icons.Default.Check, contentDescription = "valid input")
     }
 }
 
