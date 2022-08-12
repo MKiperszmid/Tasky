@@ -70,7 +70,7 @@ fun LoginScreen(
                                 fontSize = 14.sp
                             )
                         ) {
-                            append("DON'T HAVE AN ACCOUNT?")
+                            append(stringResource(R.string.dont_have_account))
                             append(" ")
                         }
                         withStyle(
@@ -79,7 +79,7 @@ fun LoginScreen(
                                 fontSize = 14.sp
                             )
                         ) {
-                            append("SIGN UP")
+                            append(stringResource(R.string.sign_up))
                         }
                     }
                 )
