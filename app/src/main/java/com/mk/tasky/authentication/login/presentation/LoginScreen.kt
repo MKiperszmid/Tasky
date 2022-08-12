@@ -24,7 +24,8 @@ fun LoginScreen(viewModel: LoginViewModel = hiltViewModel()) {
             },
             modifier = Modifier.fillMaxWidth(),
             placeholder = stringResource(id = R.string.email_address),
-            showError = state.emailError
+            showError = state.emailError,
+            isValid = state.validEmail
         )
         Spacer(modifier = Modifier.height(16.dp))
         TaskyPasswordTextField(

@@ -25,7 +25,8 @@ class LoginViewModel @Inject constructor(
             is LoginEvent.OnEmailChange -> {
                 state = state.copy(
                     email = event.email,
-                    emailError = false
+                    emailError = false,
+                    validEmail = loginUseCase.validEmail(event.email)
                 )
             }
             is LoginEvent.OnPasswordChange -> {
