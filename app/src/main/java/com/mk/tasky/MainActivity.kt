@@ -41,7 +41,7 @@ class MainActivity : ComponentActivity() {
                             }
                         }
                         composable(Route.REGISTRATION) {
-                            TaskyBackground(title = R.string.welcome_back) {
+                            TaskyBackground(title = R.string.create_your_account) {
                                 RegistrationScreen()
                             }
                         }
