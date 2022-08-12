@@ -11,12 +11,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.mk.tasky.R
 import com.mk.tasky.ui.theme.*
 
 @Composable
@@ -101,11 +103,11 @@ fun TaskyEmailTextField(
 fun TaskyPasswordTextField(
     value: String,
     onValueChange: (String) -> Unit,
+    onPasswordIconClick: () -> Unit,
     placeholder: String = "",
     showError: Boolean = false,
     isValid: Boolean = false,
     isTextHidden: Boolean = true,
-    onIconClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     TaskyTextField(
@@ -116,7 +118,7 @@ fun TaskyPasswordTextField(
         modifier = modifier,
         keyboardType = KeyboardType.Password,
         isPassword = true,
-        onIconClick = onIconClick,
+        onIconClick = onPasswordIconClick,
         isTextHidden = isTextHidden,
         isValid = isValid
     )
@@ -132,16 +134,25 @@ private fun TrailingIcon(
 ) {
     if (trailingIcon != null) {
         IconButton(onClick = onIconClick) {
-            Icon(imageVector = trailingIcon, contentDescription = "icon")
+            Icon(
+                imageVector = trailingIcon,
+                contentDescription = stringResource(id = R.string.icon)
+            )
         }
     } else if (isPassword) {
         IconButton(onClick = onIconClick) {
             val icon =
                 if (isTextHidden) Icons.Default.VisibilityOff else Icons.Default.Visibility
-            Icon(imageVector = icon, contentDescription = "toggle password visibility")
+            Icon(
+                imageVector = icon,
+                contentDescription = stringResource(id = R.string.toggle_password_visibility)
+            )
         }
     } else if (isValid) {
-        Icon(imageVector = Icons.Default.Check, contentDescription = "valid input")
+        Icon(
+            imageVector = Icons.Default.Check,
+            contentDescription = stringResource(id = R.string.valid_input)
+        )
     }
 }
 

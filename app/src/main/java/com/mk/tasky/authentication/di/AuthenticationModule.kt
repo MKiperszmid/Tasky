@@ -3,7 +3,9 @@ package com.mk.tasky.authentication.di
 import com.mk.tasky.authentication.data.AuthenticationRepositoryImpl
 import com.mk.tasky.authentication.data.remote.AuthenticationApi
 import com.mk.tasky.authentication.data.remote.interceptors.ApiKeyInterceptor
+import com.mk.tasky.authentication.data.utils.EmailMatcherImpl
 import com.mk.tasky.authentication.domain.AuthenticationRepository
+import com.mk.tasky.authentication.domain.utils.EmailMatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -41,5 +43,11 @@ object AuthenticationModule {
     @Singleton
     fun provideRepository(api: AuthenticationApi): AuthenticationRepository {
         return AuthenticationRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmailMatcher(): EmailMatcher {
+        return EmailMatcherImpl()
     }
 }

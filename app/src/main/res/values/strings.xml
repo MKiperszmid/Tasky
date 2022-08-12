@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Tasky</string>
+    <string name="welcome_back">Welcome Back!</string>
+    <string name="email_address">Email address</string>
+    <string name="password">Password</string>
+    <string name="log_in">LOG IN</string>
+    <string name="icon">Icon</string>
+    <string name="toggle_password_visibility">Toggle Password Visibility</string>
+    <string name="valid_input">Valid Input</string>
 </resources>
