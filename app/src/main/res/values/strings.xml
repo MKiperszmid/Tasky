@@ -7,4 +7,6 @@
     <string name="icon">Icon</string>
     <string name="toggle_password_visibility">Toggle Password Visibility</string>
     <string name="valid_input">Valid Input</string>
+    <string name="dont_have_account">DON\'T HAVE AN ACCOUNT?</string>
+    <string name="sign_up">SIGN UP</string>
 </resources>

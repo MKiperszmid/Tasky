@@ -6,6 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.authentication.domain.AuthenticationRepository
 import com.mk.tasky.authentication.login.domain.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -65,7 +66,11 @@ class LoginViewModel @Inject constructor(
                 repository.login(email, password).onSuccess {
                     println(it)
                 }.onFailure {
-                    println(it)
+                    if (it is LoginException && it.message?.isBlank() == false) {
+                        println(it.message)
+                    } else {
+                        println(it)
+                    }
                 }
             } catch (e: Exception) {
                 println()
