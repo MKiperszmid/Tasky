@@ -28,21 +28,21 @@ internal class ValidateFullNameUseCaseTest {
     }
 
     @Test
-    fun `Min length name, return invalid`() {
+    fun `Min length name, return valid`() {
         val name = "aa"
         val result = validateFullNameUseCase(name)
         assertThat(result).isTrue()
     }
 
     @Test
-    fun `Max length name, return invalid`() {
+    fun `Max length name, return valid`() {
         val name = "a".repeat(50)
         val result = validateFullNameUseCase(name)
         assertThat(result).isTrue()
     }
 
     @Test
-    fun `Medium length name, return invalid`() {
+    fun `Medium length name, return valid`() {
         val name = "a".repeat(25)
         val result = validateFullNameUseCase(name)
         assertThat(result).isTrue()
