@@ -13,14 +13,10 @@ class RegistrationViewModel @Inject constructor(
 ) : ViewModel() {
     init {
         viewModelScope.launch {
-            try {
-                repository.register("Testing", "testing@mk.com", "teasASDF1").onSuccess {
-                    println(it)
-                }.onFailure {
-                    println(it)
-                }
-            } catch (e: Exception) {
-                println(e)
+            repository.register("Testing", "testing@mk.com", "teasASDF1").onSuccess {
+                println(it)
+            }.onFailure {
+                println(it)
             }
         }
     }

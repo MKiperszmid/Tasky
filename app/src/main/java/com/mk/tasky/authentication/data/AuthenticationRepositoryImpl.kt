@@ -33,11 +33,11 @@ class AuthenticationRepositoryImpl(
         name: String,
         email: String,
         password: String
-    ): Result<Boolean> {
+    ): Result<Unit> {
         val body = RegistrationBodyDto(fullName = name, email = email, password = password)
         return try {
             api.register(body)
-            Result.success(true)
+            Result.success(Unit)
         } catch (e: CancellationException) {
             throw e
         } catch (e: HttpException) {
