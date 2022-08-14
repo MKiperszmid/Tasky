@@ -29,7 +29,7 @@ internal class ValidateFullNameUseCaseTest {
 
     @Test
     fun `Min length name, return valid`() {
-        val name = "aa"
+        val name = "aaaa"
         val result = validateFullNameUseCase(name)
         assertThat(result).isTrue()
     }

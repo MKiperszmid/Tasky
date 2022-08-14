@@ -1,6 +1,5 @@
 package com.mk.tasky.authentication.login.presentation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -53,7 +52,6 @@ class LoginViewModel @Inject constructor(
                     )
                 }
                 if (!state.emailError && !state.passwordError) {
-                    Log.d("TRACK", "Email: ${state.email} Password: ${state.password}")
                     submit(state.email, state.password)
                 }
             }
