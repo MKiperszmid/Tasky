@@ -1,13 +1,12 @@
 package com.mk.tasky.authentication.registration.presentation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.authentication.domain.AuthenticationRepository
-import com.mk.tasky.authentication.registration.domain.RegistrationUseCase
+import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +14,7 @@ import javax.inject.Inject
 @HiltViewModel
 class RegistrationViewModel @Inject constructor(
     private val repository: AuthenticationRepository,
-    private val registrationUseCase: RegistrationUseCase
+    private val formValidator: FormValidatorUseCase
 ) : ViewModel() {
     var state by mutableStateOf(RegistrationState())
         private set
@@ -26,7 +25,7 @@ class RegistrationViewModel @Inject constructor(
                 state = state.copy(
                     name = event.name,
                     nameError = false,
-                    validName = registrationUseCase.validFullname(event.name)
+                    validName = formValidator.validFullname(event.name)
                 )
             }
 
@@ -34,7 +33,7 @@ class RegistrationViewModel @Inject constructor(
                 state = state.copy(
                     email = event.email,
                     emailError = false,
-                    validEmail = registrationUseCase.validEmail(event.email)
+                    validEmail = formValidator.validEmail(event.email)
                 )
             }
             is RegistrationEvent.OnPasswordChange -> {
@@ -49,17 +48,17 @@ class RegistrationViewModel @Inject constructor(
                 )
             }
             is RegistrationEvent.Submit -> {
-                if (!registrationUseCase.validFullname(state.name)) {
+                if (!formValidator.validFullname(state.name)) {
                     state = state.copy(
                         nameError = true
                     )
                 }
-                if (!registrationUseCase.validEmail(state.email)) {
+                if (!formValidator.validEmail(state.email)) {
                     state = state.copy(
                         emailError = true
                     )
                 }
-                if (!registrationUseCase.validPassword(state.password)) {
+                if (!formValidator.validPassword(state.password)) {
                     state = state.copy(
                         passwordError = true
                     )
