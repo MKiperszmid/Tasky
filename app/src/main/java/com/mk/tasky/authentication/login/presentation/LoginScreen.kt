@@ -45,7 +45,7 @@ fun LoginScreen(
                     viewModel.onEvent(LoginEvent.OnPasswordChange(it))
                 },
                 onPasswordIconClick = {
-                    viewModel.onEvent(LoginEvent.ChangePasswordVisibility)
+                    viewModel.onEvent(LoginEvent.TogglePasswordVisibility)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = stringResource(id = R.string.password),

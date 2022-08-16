@@ -49,7 +49,7 @@ fun RegistrationScreen(
                     viewModel.onEvent(RegistrationEvent.OnPasswordChange(it))
                 },
                 onPasswordIconClick = {
-                    viewModel.onEvent(RegistrationEvent.ChangePasswordVisibility)
+                    viewModel.onEvent(RegistrationEvent.TogglePasswordVisibility)
                 },
                 modifier = Modifier.fillMaxWidth(),
                 placeholder = stringResource(id = R.string.password),

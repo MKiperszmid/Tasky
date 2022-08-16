@@ -42,7 +42,7 @@ class RegistrationViewModel @Inject constructor(
                     passwordError = false
                 )
             }
-            is RegistrationEvent.ChangePasswordVisibility -> {
+            is RegistrationEvent.TogglePasswordVisibility -> {
                 state = state.copy(
                     isPasswordHidden = !state.isPasswordHidden
                 )

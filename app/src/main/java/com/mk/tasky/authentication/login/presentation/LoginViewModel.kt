@@ -35,7 +35,7 @@ class LoginViewModel @Inject constructor(
                     passwordError = false
                 )
             }
-            is LoginEvent.ChangePasswordVisibility -> {
+            is LoginEvent.TogglePasswordVisibility -> {
                 state = state.copy(
                     isPasswordHidden = !state.isPasswordHidden
                 )
