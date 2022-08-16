@@ -5,6 +5,10 @@ import com.mk.tasky.authentication.data.remote.AuthenticationApi
 import com.mk.tasky.authentication.data.remote.interceptors.ApiKeyInterceptor
 import com.mk.tasky.authentication.data.utils.EmailMatcherImpl
 import com.mk.tasky.authentication.domain.AuthenticationRepository
+import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
+import com.mk.tasky.authentication.domain.usecase.ValidateEmailUseCase
+import com.mk.tasky.authentication.domain.usecase.ValidateFullNameUseCase
+import com.mk.tasky.authentication.domain.usecase.ValidatePasswordUseCase
 import com.mk.tasky.authentication.domain.utils.EmailMatcher
 import dagger.Module
 import dagger.Provides
@@ -49,5 +53,15 @@ object AuthenticationModule {
     @Singleton
     fun provideEmailMatcher(): EmailMatcher {
         return EmailMatcherImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideFormValidator(emailMatcher: EmailMatcher): FormValidatorUseCase {
+        return FormValidatorUseCase(
+            ValidateEmailUseCase(emailMatcher),
+            ValidatePasswordUseCase(),
+            ValidateFullNameUseCase()
+        )
     }
 }

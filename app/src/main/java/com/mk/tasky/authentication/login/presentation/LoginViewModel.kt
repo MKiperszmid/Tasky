@@ -1,6 +1,5 @@
 package com.mk.tasky.authentication.login.presentation
 
-import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -8,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.authentication.domain.AuthenticationRepository
-import com.mk.tasky.authentication.login.domain.LoginUseCase
+import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -16,7 +15,7 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: AuthenticationRepository,
-    private val loginUseCase: LoginUseCase
+    private val formValidator: FormValidatorUseCase
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
@@ -27,7 +26,7 @@ class LoginViewModel @Inject constructor(
                 state = state.copy(
                     email = event.email,
                     emailError = false,
-                    validEmail = loginUseCase.validEmail(event.email)
+                    validEmail = formValidator.validEmail(event.email)
                 )
             }
             is LoginEvent.OnPasswordChange -> {
@@ -36,24 +35,23 @@ class LoginViewModel @Inject constructor(
                     passwordError = false
                 )
             }
-            is LoginEvent.ChangePasswordVisibility -> {
+            is LoginEvent.TogglePasswordVisibility -> {
                 state = state.copy(
                     isPasswordHidden = !state.isPasswordHidden
                 )
             }
             is LoginEvent.Submit -> {
-                if (!loginUseCase.validEmail(state.email)) {
+                if (!formValidator.validEmail(state.email)) {
                     state = state.copy(
                         emailError = true
                     )
                 }
-                if (!loginUseCase.validPassword(state.password)) {
+                if (!formValidator.validPassword(state.password)) {
                     state = state.copy(
                         passwordError = true
                     )
                 }
                 if (!state.emailError && !state.passwordError) {
-                    Log.d("TRACK", "Email: ${state.email} Password: ${state.password}")
                     submit(state.email, state.password)
                 }
             }
