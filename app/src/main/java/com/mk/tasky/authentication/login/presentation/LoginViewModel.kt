@@ -8,17 +8,25 @@ import androidx.lifecycle.viewModelScope
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.authentication.domain.AuthenticationRepository
 import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
+import com.mk.tasky.core.domain.preferences.Preferences
+import com.mk.tasky.core.util.UIEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: AuthenticationRepository,
-    private val formValidator: FormValidatorUseCase
+    private val formValidator: FormValidatorUseCase,
+    private val preferences: Preferences
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
+
+    private val _uiEvent = Channel<UIEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onEvent(event: LoginEvent) {
         when (event) {
@@ -62,7 +70,10 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 repository.login(email, password).onSuccess {
-                    println(it)
+                    preferences.saveToken(it.token)
+                    preferences.saveFullName(it.fullName)
+                    preferences.saveUserId(it.userId)
+                    _uiEvent.send(UIEvent.Navigate)
                 }.onFailure {
                     if (it is LoginException && it.message?.isBlank() == false) {
                         println(it.message)

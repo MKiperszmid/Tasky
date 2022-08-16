@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -16,15 +17,25 @@ import com.mk.tasky.R
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyEmailTextField
 import com.mk.tasky.core.presentation.TaskyPasswordTextField
+import com.mk.tasky.core.util.UIEvent
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Link
 
 @Composable
 fun LoginScreen(
     signupClick: () -> Unit,
+    onLogin: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect {
+            if (it is UIEvent.Navigate) {
+                onLogin()
+            }
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceAround) {
         Column {
