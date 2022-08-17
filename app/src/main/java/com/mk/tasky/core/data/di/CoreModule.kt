@@ -1,8 +1,9 @@
-package com.mk.tasky.core.di
+package com.mk.tasky.core.data.di
 
 import android.app.Application
-import android.content.Context
 import android.content.SharedPreferences
+import androidx.security.crypto.EncryptedSharedPreferences
+import androidx.security.crypto.MasterKeys
 import com.mk.tasky.core.data.preferences.DefaultPreferences
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.Module
@@ -22,7 +23,14 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(app: Application): SharedPreferences {
-        return app.getSharedPreferences("shared_prefs", Context.MODE_PRIVATE)
+    fun provideEncryptedSharedPreferences(app: Application): SharedPreferences {
+        val masterKey = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        return EncryptedSharedPreferences.create(
+            "encrypted_shared_prefs",
+            masterKey,
+            app.applicationContext,
+            EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
+            EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
+        )
     }
 }
