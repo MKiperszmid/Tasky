@@ -68,21 +68,17 @@ class LoginViewModel @Inject constructor(
 
     private fun submit(email: String, password: String) {
         viewModelScope.launch {
-            try {
-                repository.login(email, password).onSuccess {
-                    preferences.saveToken(it.token)
-                    preferences.saveFullName(it.fullName)
-                    preferences.saveUserId(it.userId)
-                    _uiEvent.send(UIEvent.Navigate)
-                }.onFailure {
-                    if (it is LoginException && it.message?.isBlank() == false) {
-                        println(it.message)
-                    } else {
-                        println(it)
-                    }
+            repository.login(email, password).onSuccess {
+                preferences.saveToken(it.token)
+                preferences.saveFullName(it.fullName)
+                preferences.saveUserId(it.userId)
+                _uiEvent.send(UIEvent.Navigate)
+            }.onFailure {
+                if (it is LoginException && it.message?.isBlank() == false) {
+                    println(it.message)
+                } else {
+                    println(it)
                 }
-            } catch (e: Exception) {
-                println()
             }
         }
     }
