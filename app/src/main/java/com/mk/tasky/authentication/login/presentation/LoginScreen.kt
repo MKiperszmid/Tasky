@@ -17,7 +17,6 @@ import com.mk.tasky.R
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyEmailTextField
 import com.mk.tasky.core.presentation.TaskyPasswordTextField
-import com.mk.tasky.core.util.UIEvent
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Link
 
@@ -29,11 +28,10 @@ fun LoginScreen(
 ) {
     val state = viewModel.state
 
-    LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collect {
-            if (it is UIEvent.Navigate) {
-                onLogin()
-            }
+    val isLoggedIn = state.isLoggedIn
+    LaunchedEffect(key1 = isLoggedIn) {
+        if (isLoggedIn) {
+            onLogin()
         }
     }
 

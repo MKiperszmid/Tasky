@@ -39,6 +39,7 @@ class MainActivity : ComponentActivity() {
                                         navController.navigate(Route.REGISTRATION)
                                     },
                                     onLogin = {
+                                        navController.popBackStack()
                                         navController.navigate(Route.HOME)
                                     }
                                 )
