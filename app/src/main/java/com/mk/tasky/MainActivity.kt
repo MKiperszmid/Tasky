@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.mk.tasky.agenda.home.presentation.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
 import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
 import com.mk.tasky.core.presentation.TaskyBackground
@@ -36,6 +37,10 @@ class MainActivity : ComponentActivity() {
                                 LoginScreen(
                                     signupClick = {
                                         navController.navigate(Route.REGISTRATION)
+                                    },
+                                    onLogin = {
+                                        navController.popBackStack()
+                                        navController.navigate(Route.HOME)
                                     }
                                 )
                             }
@@ -45,6 +50,11 @@ class MainActivity : ComponentActivity() {
                                 RegistrationScreen(onBackPress = {
                                     navController.navigateUp()
                                 })
+                            }
+                        }
+                        composable(Route.HOME) {
+                            TaskyBackground(title = R.string.create_your_account) {
+                                HomeScreen()
                             }
                         }
                     }

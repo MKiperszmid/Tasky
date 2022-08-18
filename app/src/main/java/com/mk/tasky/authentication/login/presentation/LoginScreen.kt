@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
 import androidx.compose.material.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
@@ -22,9 +23,17 @@ import com.mk.tasky.ui.theme.Link
 @Composable
 fun LoginScreen(
     signupClick: () -> Unit,
+    onLogin: () -> Unit,
     viewModel: LoginViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+
+    val isLoggedIn = state.isLoggedIn
+    LaunchedEffect(key1 = isLoggedIn) {
+        if (isLoggedIn) {
+            onLogin()
+        }
+    }
 
     Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceAround) {
         Column {

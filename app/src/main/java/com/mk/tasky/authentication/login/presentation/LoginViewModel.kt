@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.authentication.domain.AuthenticationRepository
 import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
+import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -15,7 +16,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val repository: AuthenticationRepository,
-    private val formValidator: FormValidatorUseCase
+    private val formValidator: FormValidatorUseCase,
+    private val preferences: Preferences
 ) : ViewModel() {
     var state by mutableStateOf(LoginState())
         private set
@@ -60,18 +62,19 @@ class LoginViewModel @Inject constructor(
 
     private fun submit(email: String, password: String) {
         viewModelScope.launch {
-            try {
-                repository.login(email, password).onSuccess {
+            repository.login(email, password).onSuccess {
+                preferences.saveToken(it.token)
+                preferences.saveFullName(it.fullName)
+                preferences.saveUserId(it.userId)
+                state = state.copy(
+                    isLoggedIn = true
+                )
+            }.onFailure {
+                if (it is LoginException && it.message?.isBlank() == false) {
+                    println(it.message)
+                } else {
                     println(it)
-                }.onFailure {
-                    if (it is LoginException && it.message?.isBlank() == false) {
-                        println(it.message)
-                    } else {
-                        println(it)
-                    }
                 }
-            } catch (e: Exception) {
-                println()
             }
         }
     }
