@@ -18,31 +18,46 @@ import com.mk.tasky.ui.theme.White
 
 @Composable
 fun TaskyBackground(
-    @StringRes title: Int,
+    @StringRes title: Int? = null,
+    header: (@Composable BoxScope.() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
+    val headerWeight = if (header == null) {
+        1.5f
+    } else {
+        0.8f
+    }
+    val maxWeight = 10
+    val contentWeight = maxWeight - headerWeight
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Black
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .weight(1.5f),
-                contentAlignment = Alignment.Center
-            ) {
-                Text(
-                    text = stringResource(id = title),
-                    fontWeight = FontWeight.Bold,
-                    color = White,
-                    fontSize = 28.sp
-                )
+            val headerModifier = Modifier
+                .fillMaxSize()
+                .weight(headerWeight)
+            if (title != null) {
+                Box(
+                    modifier = headerModifier,
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = stringResource(id = title),
+                        fontWeight = FontWeight.Bold,
+                        color = White,
+                        fontSize = 28.sp
+                    )
+                }
+            } else if (header != null) {
+                Box(modifier = headerModifier) {
+                    header()
+                }
             }
             Surface(
                 modifier = Modifier
                     .fillMaxSize()
-                    .weight(8.5f)
+                    .weight(contentWeight)
                     .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp)),
                 color = White
             ) {

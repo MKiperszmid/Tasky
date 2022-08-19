@@ -74,9 +74,7 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
             }
         }
         composable(Route.HOME) {
-            TaskyBackground(title = R.string.create_your_account) {
-                HomeScreen()
-            }
+            HomeScreen()
         }
     }
 }
