@@ -1,20 +1,20 @@
-package com.mk.tasky.authentication.data
+package com.mk.tasky.core.data
 
 import com.mk.tasky.authentication.data.mapper.toDomain
-import com.mk.tasky.authentication.data.remote.AuthenticationApi
 import com.mk.tasky.authentication.data.remote.dto.ErrorResponseDto
 import com.mk.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.mk.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
-import com.mk.tasky.authentication.domain.AuthenticationRepository
-import com.mk.tasky.authentication.domain.models.LoggedUser
+import com.mk.tasky.core.data.remote.TaskyApi
+import com.mk.tasky.core.domain.model.LoggedUser
+import com.mk.tasky.core.domain.repository.TaskyRepository
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import java.util.concurrent.CancellationException
 
-class AuthenticationRepositoryImpl(
-    private val api: AuthenticationApi
-) : AuthenticationRepository {
+class TaskyRepositoryImpl(
+    private val api: TaskyApi
+) : TaskyRepository {
     override suspend fun login(email: String, password: String): Result<LoggedUser> {
         val body = LoginBodyDto(email = email, password = password)
         return try {
@@ -37,6 +37,19 @@ class AuthenticationRepositoryImpl(
         val body = RegistrationBodyDto(fullName = name, email = email, password = password)
         return try {
             api.register(body)
+            Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            return parseError(e)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun authenticate(): Result<Unit> {
+        return try {
+            api.authenticate()
             Result.success(Unit)
         } catch (e: CancellationException) {
             throw e

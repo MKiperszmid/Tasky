@@ -7,15 +7,15 @@ import com.mk.tasky.core.domain.preferences.Preferences
 class DefaultPreferences(
     private val sharedPreferences: SharedPreferences
 ) : Preferences {
-    override fun saveToken(token: String) {
+    override fun saveToken(token: String?) {
         sharedPreferences.edit().putString(Preferences.KEY_TOKEN, token).apply()
     }
 
-    override fun saveFullName(name: String) {
+    override fun saveFullName(name: String?) {
         sharedPreferences.edit().putString(Preferences.KEY_NAME, name).apply()
     }
 
-    override fun saveUserId(userId: String) {
+    override fun saveUserId(userId: String?) {
         sharedPreferences.edit().putString(Preferences.KEY_USERID, userId).apply()
     }
 

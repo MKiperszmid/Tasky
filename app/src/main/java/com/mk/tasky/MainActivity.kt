@@ -3,10 +3,14 @@ package com.mk.tasky
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -20,45 +24,58 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+    private val mainViewModel by viewModels<MainViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContent {
-            TaskyTheme {
-                val navController = rememberNavController()
-                val scaffoldState = rememberScaffoldState()
+        installSplashScreen().setKeepOnScreenCondition {
+            mainViewModel.state.isLoading
+        }
 
-                Scaffold(modifier = Modifier.fillMaxSize(), scaffoldState = scaffoldState) {
-                    NavHost(
-                        navController = navController,
-                        startDestination = Route.LOGIN // TODO: Check if user logged in
-                    ) {
-                        composable(Route.LOGIN) {
-                            TaskyBackground(title = R.string.welcome_back) {
-                                LoginScreen(
-                                    signupClick = {
-                                        navController.navigate(Route.REGISTRATION)
-                                    },
-                                    onLogin = {
-                                        navController.popBackStack()
-                                        navController.navigate(Route.HOME)
-                                    }
-                                )
-                            }
-                        }
-                        composable(Route.REGISTRATION) {
-                            TaskyBackground(title = R.string.create_your_account) {
-                                RegistrationScreen(onBackPress = {
-                                    navController.navigateUp()
-                                })
-                            }
-                        }
-                        composable(Route.HOME) {
-                            TaskyBackground(title = R.string.create_your_account) {
-                                HomeScreen()
-                            }
-                        }
+        setContent {
+            val startDestination = if (mainViewModel.state.isLoggedIn) Route.HOME else Route.LOGIN
+            if (!mainViewModel.state.isLoading) {
+                TaskyTheme {
+                    val navController = rememberNavController()
+                    val scaffoldState = rememberScaffoldState()
+                    Scaffold(modifier = Modifier.fillMaxSize(), scaffoldState = scaffoldState) {
+                        MainScreen(startDestination, navController)
                     }
                 }
+            }
+        }
+    }
+}
+
+@Composable
+fun MainScreen(startDestination: String, navController: NavHostController) {
+    NavHost(
+        navController = navController,
+        startDestination = startDestination
+    ) {
+        composable(Route.LOGIN) {
+            TaskyBackground(title = R.string.welcome_back) {
+                LoginScreen(
+                    signupClick = {
+                        navController.navigate(Route.REGISTRATION)
+                    },
+                    onLogin = {
+                        navController.popBackStack()
+                        navController.navigate(Route.HOME)
+                    }
+                )
+            }
+        }
+        composable(Route.REGISTRATION) {
+            TaskyBackground(title = R.string.create_your_account) {
+                RegistrationScreen(onBackPress = {
+                    navController.navigateUp()
+                })
+            }
+        }
+        composable(Route.HOME) {
+            TaskyBackground(title = R.string.create_your_account) {
+                HomeScreen()
             }
         }
     }

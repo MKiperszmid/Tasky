@@ -1,7 +1,7 @@
 package com.mk.tasky.authentication.data.mapper
 
 import com.mk.tasky.authentication.data.remote.dto.LoginResponseDto
-import com.mk.tasky.authentication.domain.models.LoggedUser
+import com.mk.tasky.core.domain.model.LoggedUser
 
 fun LoginResponseDto.toDomain(): LoggedUser {
     return LoggedUser(

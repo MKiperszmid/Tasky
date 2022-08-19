@@ -3,9 +3,9 @@ package com.mk.tasky.core.domain.preferences
 import com.mk.tasky.core.domain.model.LoggedUser
 
 interface Preferences {
-    fun saveToken(token: String)
-    fun saveFullName(name: String)
-    fun saveUserId(userId: String)
+    fun saveToken(token: String?)
+    fun saveFullName(name: String?)
+    fun saveUserId(userId: String?)
     fun loadLoggedUser(): LoggedUser
 
     companion object {
