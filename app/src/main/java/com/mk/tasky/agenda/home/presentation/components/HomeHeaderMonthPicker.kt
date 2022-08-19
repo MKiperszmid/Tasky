@@ -1,7 +1,9 @@
 package com.mk.tasky.agenda.home.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
@@ -18,12 +20,19 @@ import java.time.LocalDateTime
 
 @Composable
 fun HomeHeaderMonthPicker(
-    localDateTime: LocalDateTime,
+    date: LocalDateTime,
+    onMonthClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier
+            .clickable {
+                onMonthClick()
+            }
+            .padding(4.dp)
+    ) {
         Text(
-            text = localDateTime.month.name,
+            text = date.month.name,
             fontWeight = FontWeight.Bold,
             fontSize = 16.sp,
             color = White
@@ -40,5 +49,5 @@ fun HomeHeaderMonthPicker(
 @Preview
 @Composable
 fun HomeHeaderMonthPickerPreview() {
-    HomeHeaderMonthPicker(LocalDateTime.now())
+    HomeHeaderMonthPicker(LocalDateTime.now(), {})
 }

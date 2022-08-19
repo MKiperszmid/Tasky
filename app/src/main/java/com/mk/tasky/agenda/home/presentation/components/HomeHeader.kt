@@ -15,6 +15,8 @@ import java.time.LocalDateTime
 fun HomeHeader(
     date: LocalDateTime,
     name: String,
+    onMonthClick: () -> Unit,
+    onProfileClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Row(
@@ -24,13 +26,16 @@ fun HomeHeader(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        HomeHeaderMonthPicker(date)
-        HomeHeaderProfileName(name = name)
+        HomeHeaderMonthPicker(
+            date = date,
+            onMonthClick = onMonthClick
+        )
+        HomeHeaderProfileName(name = name, onProfileClick = onProfileClick)
     }
 }
 
 @Preview
 @Composable
 fun HomeHeaderPreview() {
-    HomeHeader(date = LocalDateTime.now(), name = "MK")
+    HomeHeader(date = LocalDateTime.now(), name = "MK", {}, {})
 }
