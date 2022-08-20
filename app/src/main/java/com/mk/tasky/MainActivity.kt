@@ -54,7 +54,7 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
         startDestination = startDestination
     ) {
         composable(Route.LOGIN) {
-            TaskyBackground(title = R.string.welcome_back) {
+            TaskyBackground(titleResId = R.string.welcome_back) {
                 LoginScreen(
                     signupClick = {
                         navController.navigate(Route.REGISTRATION)
@@ -67,16 +67,14 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
             }
         }
         composable(Route.REGISTRATION) {
-            TaskyBackground(title = R.string.create_your_account) {
+            TaskyBackground(titleResId = R.string.create_your_account) {
                 RegistrationScreen(onBackPress = {
                     navController.navigateUp()
                 })
             }
         }
         composable(Route.HOME) {
-            TaskyBackground(title = R.string.create_your_account) {
-                HomeScreen()
-            }
+            HomeScreen()
         }
     }
 }
