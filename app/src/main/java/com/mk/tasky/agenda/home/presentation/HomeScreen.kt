@@ -1,10 +1,12 @@
 package com.mk.tasky.agenda.home.presentation
 
 import android.widget.Toast
+import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mk.tasky.agenda.home.presentation.components.HomeDayPicker
 import com.mk.tasky.agenda.home.presentation.components.HomeHeader
 import com.mk.tasky.core.presentation.TaskyBackground
 
@@ -23,6 +25,10 @@ fun HomeScreen(
                 })
         }
     ) {
-        Text(text = "Home Screen!")
+        Column() {
+            HomeDayPicker(date = state.currentDate, selectedDay = state.selectedDay, onDayClick = {
+                viewModel.onEvent(HomeEvent.OnDayClick(it))
+            })
+        }
     }
 }

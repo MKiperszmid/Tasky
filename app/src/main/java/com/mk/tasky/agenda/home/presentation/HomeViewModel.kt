@@ -22,6 +22,15 @@ class HomeViewModel @Inject constructor(
         state = state.copy(
             profileName = formatNameUseCase(user.fullName)
         )
-        println()
+    }
+
+    fun onEvent(event: HomeEvent) {
+        when (event) {
+            is HomeEvent.OnDayClick -> {
+                state = state.copy(
+                    selectedDay = event.day
+                )
+            }
+        }
     }
 }
