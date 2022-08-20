@@ -4,13 +4,13 @@ import android.app.Application
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
-import com.mk.tasky.core.data.TaskyRepositoryImpl
+import com.mk.tasky.core.data.AuthenticationRepositoryImpl
 import com.mk.tasky.core.data.preferences.DefaultPreferences
 import com.mk.tasky.core.data.remote.TaskyApi
 import com.mk.tasky.core.data.remote.interceptors.ApiKeyInterceptor
 import com.mk.tasky.core.data.remote.interceptors.JwtInterceptor
 import com.mk.tasky.core.domain.preferences.Preferences
-import com.mk.tasky.core.domain.repository.TaskyRepository
+import com.mk.tasky.core.domain.repository.AuthenticationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -65,7 +65,7 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: TaskyApi): TaskyRepository {
-        return TaskyRepositoryImpl(api)
+    fun provideRepository(api: TaskyApi): AuthenticationRepository {
+        return AuthenticationRepositoryImpl(api)
     }
 }

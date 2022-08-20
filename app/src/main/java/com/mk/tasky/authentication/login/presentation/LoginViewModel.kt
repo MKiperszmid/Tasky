@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
-import com.mk.tasky.core.domain.repository.TaskyRepository
+import com.mk.tasky.core.domain.repository.AuthenticationRepository
 import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val repository: TaskyRepository,
+    private val repository: AuthenticationRepository,
     private val formValidator: FormValidatorUseCase,
     private val preferences: Preferences
 ) : ViewModel() {

@@ -5,14 +5,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.core.domain.repository.TaskyRepository
+import com.mk.tasky.core.domain.repository.AuthenticationRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
-    private val repository: TaskyRepository
+    private val repository: AuthenticationRepository
 ) : ViewModel() {
     var state by mutableStateOf(MainState())
         private set

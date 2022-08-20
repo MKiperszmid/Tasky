@@ -7,14 +7,14 @@ import com.mk.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.core.data.remote.TaskyApi
 import com.mk.tasky.core.domain.model.LoggedUser
-import com.mk.tasky.core.domain.repository.TaskyRepository
+import com.mk.tasky.core.domain.repository.AuthenticationRepository
 import com.squareup.moshi.Moshi
 import retrofit2.HttpException
 import java.util.concurrent.CancellationException
 
-class TaskyRepositoryImpl(
+class AuthenticationRepositoryImpl(
     private val api: TaskyApi
-) : TaskyRepository {
+) : AuthenticationRepository {
     override suspend fun login(email: String, password: String): Result<LoggedUser> {
         val body = LoginBodyDto(email = email, password = password)
         return try {

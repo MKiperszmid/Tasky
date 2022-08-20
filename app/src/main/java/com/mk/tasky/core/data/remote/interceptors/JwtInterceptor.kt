@@ -9,16 +9,11 @@ class JwtInterceptor(
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-        val token = preferences.loadLoggedUser().token
+        val token = preferences.loadLoggedUser()?.token
         val request = chain.request().newBuilder()
         token?.let {
-            request.addHeader(
-                "Authorization",
-                "Bearer " +
-                    preferences.loadLoggedUser().token
-            )
+            request.addHeader("Authorization", "Bearer $it")
         }
-
         return chain.proceed(request.build())
     }
 }
