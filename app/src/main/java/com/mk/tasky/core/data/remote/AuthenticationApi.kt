@@ -1,9 +1,10 @@
-package com.mk.tasky.authentication.data.remote
+package com.mk.tasky.core.data.remote
 
 import com.mk.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.mk.tasky.authentication.data.remote.dto.LoginResponseDto
 import com.mk.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface AuthenticationApi {
@@ -20,4 +21,7 @@ interface AuthenticationApi {
     suspend fun register(
         @Body body: RegistrationBodyDto
     )
+
+    @GET("/authenticate")
+    suspend fun authenticate()
 }

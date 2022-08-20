@@ -4,4 +4,10 @@
     <style name="Theme.Tasky" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:statusBarColor">@color/statusbar</item>
     </style>
+
+    <style name="Theme.Tasky.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenAnimatedIcon">@drawable/tasky_logo</item>
+        <item name="windowSplashScreenBackground">#279F70</item>
+        <item name="postSplashScreenTheme">@style/Theme.Tasky</item>
+    </style>
 </resources>

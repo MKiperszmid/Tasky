@@ -19,11 +19,17 @@ class DefaultPreferences(
         sharedPreferences.edit().putString(Preferences.KEY_USERID, userId).apply()
     }
 
-    override fun loadLoggedUser(): LoggedUser {
+    override fun loadLoggedUser(): LoggedUser? {
+        val token = sharedPreferences.getString(Preferences.KEY_TOKEN, "") ?: ""
+        val userid = sharedPreferences.getString(Preferences.KEY_USERID, "") ?: ""
+        val fullName = sharedPreferences.getString(Preferences.KEY_NAME, "") ?: ""
+        if (token.isBlank() || userid.isBlank() || fullName.isBlank()) {
+            return null
+        }
         return LoggedUser(
-            token = sharedPreferences.getString(Preferences.KEY_TOKEN, null),
-            userId = sharedPreferences.getString(Preferences.KEY_USERID, null),
-            fullName = sharedPreferences.getString(Preferences.KEY_NAME, null)
+            token = token,
+            userId = userid,
+            fullName = fullName
         )
     }
 }
