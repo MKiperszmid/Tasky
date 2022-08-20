@@ -18,11 +18,9 @@ class HomeViewModel @Inject constructor(
         private set
 
     init {
+        val user = preferences.loadLoggedUser()!! // Can't be null if we get to the Home Screen
         state = state.copy(
-            profileName = formatNameUseCase(
-                preferences.loadLoggedUser().fullName
-                    ?: "AA"
-            ) // TODO: Investigate how to remove null from SharedPrefs
+            profileName = formatNameUseCase(user.fullName)
         )
         println()
     }
