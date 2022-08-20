@@ -29,9 +29,9 @@ fun HomeDayPickerItem(
 ) {
     Column(
         modifier = modifier.clip(RoundedCornerShape(100))
-            .background(if (isSelected) Orange else Color.Transparent).padding(8.dp).clickable {
+            .background(if (isSelected) Orange else Color.Transparent).clickable {
                 onDayClick()
-            },
+            }.padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Text(

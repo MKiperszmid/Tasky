@@ -18,7 +18,7 @@ import com.mk.tasky.ui.theme.White
 
 @Composable
 fun TaskyBackground(
-    @StringRes title: Int? = null,
+    @StringRes titleResId: Int? = null,
     header: (@Composable BoxScope.() -> Unit)? = null,
     content: @Composable BoxScope.() -> Unit
 ) {
@@ -37,13 +37,13 @@ fun TaskyBackground(
             val headerModifier = Modifier
                 .fillMaxSize()
                 .weight(headerWeight)
-            if (title != null) {
+            if (titleResId != null) {
                 Box(
                     modifier = headerModifier,
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(id = title),
+                        text = stringResource(id = titleResId),
                         fontWeight = FontWeight.Bold,
                         color = White,
                         fontSize = 28.sp
