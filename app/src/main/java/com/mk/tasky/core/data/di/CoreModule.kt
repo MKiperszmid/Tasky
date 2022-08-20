@@ -6,7 +6,7 @@ import androidx.security.crypto.EncryptedSharedPreferences
 import androidx.security.crypto.MasterKeys
 import com.mk.tasky.core.data.AuthenticationRepositoryImpl
 import com.mk.tasky.core.data.preferences.DefaultPreferences
-import com.mk.tasky.core.data.remote.TaskyApi
+import com.mk.tasky.core.data.remote.AuthenticationApi
 import com.mk.tasky.core.data.remote.interceptors.ApiKeyInterceptor
 import com.mk.tasky.core.data.remote.interceptors.JwtInterceptor
 import com.mk.tasky.core.domain.preferences.Preferences
@@ -56,8 +56,8 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideApi(okHttpClient: OkHttpClient): TaskyApi {
-        return Retrofit.Builder().baseUrl(TaskyApi.BASE_URL)
+    fun provideApi(okHttpClient: OkHttpClient): AuthenticationApi {
+        return Retrofit.Builder().baseUrl(AuthenticationApi.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .client(okHttpClient)
             .build().create()
@@ -65,7 +65,7 @@ object CoreModule {
 
     @Provides
     @Singleton
-    fun provideRepository(api: TaskyApi): AuthenticationRepository {
+    fun provideRepository(api: AuthenticationApi): AuthenticationRepository {
         return AuthenticationRepositoryImpl(api)
     }
 }

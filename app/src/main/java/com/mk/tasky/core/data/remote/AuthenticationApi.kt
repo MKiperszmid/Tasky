@@ -7,7 +7,7 @@ import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 
-interface TaskyApi {
+interface AuthenticationApi {
     companion object {
         const val BASE_URL = "https://tasky.pl-coding.com/"
     }
