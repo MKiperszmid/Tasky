@@ -28,6 +28,7 @@ fun HomeScreen(
     LaunchedEffect(key1 = state.shouldRedirect) {
         if (state.selectedAgendaType == null || !state.shouldRedirect) return@LaunchedEffect
         redirect(state.selectedAgendaType)
+        viewModel.onEvent(HomeEvent.OnRedirect)
     }
 
     TaskyBackground(

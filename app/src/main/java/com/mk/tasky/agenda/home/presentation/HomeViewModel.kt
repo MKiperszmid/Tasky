@@ -73,6 +73,12 @@ class HomeViewModel @Inject constructor(
                     showReminderOptions = false
                 )
             }
+            HomeEvent.OnRedirect -> {
+                state = state.copy(
+                    shouldRedirect = false,
+                    selectedAgendaType = null
+                )
+            }
         }
     }
 }

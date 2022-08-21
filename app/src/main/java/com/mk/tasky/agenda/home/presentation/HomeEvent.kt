@@ -7,4 +7,5 @@ sealed class HomeEvent {
     object OnAddAgendaClick : HomeEvent()
     object OnReminderItemDismiss : HomeEvent()
     data class OnReminderItemSelected(val item: HomeReminderType) : HomeEvent()
+    object OnRedirect : HomeEvent()
 }
