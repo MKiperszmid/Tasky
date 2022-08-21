@@ -11,16 +11,7 @@ data class HomeState(
     val agendaTypes: List<HomeAgendaType> = listOf(
         HomeAgendaType.Event,
         HomeAgendaType.Task,
-        HomeAgendaType.Reminder()
+        HomeAgendaType.Reminder
     ),
-    val selectedAgendaType: HomeAgendaType? = null,
-    val shouldRedirect: Boolean = false,
-    val showReminderOptions: Boolean = false,
-    val reminderOptions: List<HomeReminderType> = listOf(
-        HomeReminderType.TenMinutes,
-        HomeReminderType.ThirtyMinutes,
-        HomeReminderType.OneHour,
-        HomeReminderType.SixHours,
-        HomeReminderType.OneDay
-    )
+    val selectedAgendaType: HomeAgendaType? = null
 )

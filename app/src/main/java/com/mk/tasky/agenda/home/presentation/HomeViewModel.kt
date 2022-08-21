@@ -31,27 +31,6 @@ class HomeViewModel @Inject constructor(
                     selectedDay = event.day
                 )
             }
-            is HomeEvent.OnAgendaItemSelected -> {
-                when (event.item) {
-                    HomeAgendaType.Event -> {
-                        state = state.copy(
-                            selectedAgendaType = event.item,
-                            shouldRedirect = true
-                        )
-                    }
-                    is HomeAgendaType.Reminder -> {
-                        state = state.copy(
-                            showReminderOptions = true
-                        )
-                    }
-                    HomeAgendaType.Task -> {
-                        state = state.copy(
-                            selectedAgendaType = event.item,
-                            shouldRedirect = true
-                        )
-                    }
-                }
-            }
             is HomeEvent.OnAgendaItemDismiss -> {
                 state = state.copy(
                     showAgendaOptions = false
@@ -60,23 +39,6 @@ class HomeViewModel @Inject constructor(
             is HomeEvent.OnAddAgendaClick -> {
                 state = state.copy(
                     showAgendaOptions = true
-                )
-            }
-            is HomeEvent.OnReminderItemSelected -> {
-                state = state.copy(
-                    selectedAgendaType = HomeAgendaType.Reminder(event.item),
-                    shouldRedirect = true
-                )
-            }
-            HomeEvent.OnReminderItemDismiss -> {
-                state = state.copy(
-                    showReminderOptions = false
-                )
-            }
-            HomeEvent.OnRedirect -> {
-                state = state.copy(
-                    shouldRedirect = false,
-                    selectedAgendaType = null
                 )
             }
         }

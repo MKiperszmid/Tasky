@@ -17,7 +17,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mk.tasky.agenda.detail.presentation.DetailScreen
-import com.mk.tasky.agenda.home.presentation.HomeAgendaType
 import com.mk.tasky.agenda.home.presentation.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
 import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
@@ -79,11 +78,7 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
         }
         composable(Route.HOME) {
             HomeScreen(redirect = {
-                var name = it.name
-                if (it is HomeAgendaType.Reminder) {
-                    name += " - ${it.homeReminderType!!.type}"
-                }
-                navController.navigate(Route.DETAIL + "/${name}")
+                navController.navigate(Route.DETAIL + "/${it.name}")
             })
         }
         composable(

@@ -6,7 +6,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
 fun DetailScreen(
-    viewModel: DetailViewModel = hiltViewModel()
+    viewModel: AgendaDetailViewModel = hiltViewModel()
 ) {
     Text(text = "Detail Screen of: ${viewModel.state}")
 }

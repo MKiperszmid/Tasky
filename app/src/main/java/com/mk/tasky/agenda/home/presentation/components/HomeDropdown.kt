@@ -37,7 +37,7 @@ fun HomeDropdown(
 @Composable
 fun HomeDropdownPreview() {
     HomeDropdown(
-        listOf(HomeAgendaType.Event.name, HomeAgendaType.Task.name, HomeAgendaType.Reminder().name),
+        listOf(HomeAgendaType.Event.name, HomeAgendaType.Task.name, HomeAgendaType.Reminder.name),
         {},
         true,
         {}

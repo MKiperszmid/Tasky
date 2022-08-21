@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -24,12 +23,6 @@ fun HomeScreen(
 ) {
     val state = viewModel.state
     val context = LocalContext.current
-
-    LaunchedEffect(key1 = state.shouldRedirect) {
-        if (state.selectedAgendaType == null || !state.shouldRedirect) return@LaunchedEffect
-        redirect(state.selectedAgendaType)
-        viewModel.onEvent(HomeEvent.OnRedirect)
-    }
 
     TaskyBackground(
         header = {
@@ -52,18 +45,10 @@ fun HomeScreen(
             HomeDropdown(
                 items = state.agendaTypes.map { it.name },
                 onItemSelected = {
-                    viewModel.onEvent(HomeEvent.OnAgendaItemSelected(state.agendaTypes[it]))
+                    redirect(state.agendaTypes[it])
                 },
                 onDismiss = { viewModel.onEvent(HomeEvent.OnAgendaItemDismiss) },
                 showDropdown = state.showAgendaOptions
-            )
-            HomeDropdown(
-                items = state.reminderOptions.map { it.type },
-                onItemSelected = {
-                    viewModel.onEvent(HomeEvent.OnReminderItemSelected(state.reminderOptions[it]))
-                },
-                onDismiss = { viewModel.onEvent(HomeEvent.OnReminderItemDismiss) },
-                showDropdown = state.showReminderOptions
             )
         }
     }
