@@ -11,7 +11,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.agenda.home.presentation.components.HomeDayPicker
-import com.mk.tasky.agenda.home.presentation.components.HomeDropdown
+import com.mk.tasky.core.presentation.TaskyDropdown
 import com.mk.tasky.agenda.home.presentation.components.HomeHeader
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.core.presentation.TaskyButton
@@ -43,7 +43,7 @@ fun HomeScreen(
             TaskyButton(text = "+", onClick = {
                 viewModel.onEvent(HomeEvent.OnAddAgendaClick)
             }, fontSize = 20.sp)
-            HomeDropdown(
+            TaskyDropdown(
                 items = state.agendaTypes.map { it.name },
                 onItemSelected = {
                     redirect(state.agendaTypes[it], state.currentDate.plusDays(state.selectedDay.toLong()))

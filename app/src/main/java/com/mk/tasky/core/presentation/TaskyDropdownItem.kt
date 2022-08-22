@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.home.presentation.components
+package com.mk.tasky.core.presentation
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -12,7 +12,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun HomeDropdownItem(
+fun TaskyDropdownItem(
     text: String,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -28,6 +28,6 @@ fun HomeDropdownItem(
 
 @Preview
 @Composable
-fun HomeDropdownItemPreview() {
-    HomeDropdownItem(text = "Event", {})
+fun TaskyDropdownItemPreview() {
+    TaskyDropdownItem(text = "Event", {})
 }

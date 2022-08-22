@@ -36,6 +36,24 @@ class DetailReminderViewModel @Inject constructor(
                     isEditing = false
                 )
             }
+            is DetailReminderEvent.OnNotificationReminderSelect -> {
+                state = state.copy(
+                    selectedReminder = event.reminderType
+                )
+            }
+            DetailReminderEvent.OnNotificationReminderDismiss -> {
+                state = state.copy(
+                    showDropdown = false
+                )
+            }
+            DetailReminderEvent.OnNotificationReminderClick -> {
+                state = state.copy(
+                    showDropdown = true
+                )
+            }
+            DetailReminderEvent.OnReminderDelete -> {
+                println("Delete Reminder")
+            }
         }
     }
 }
