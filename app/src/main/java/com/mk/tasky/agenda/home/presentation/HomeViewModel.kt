@@ -31,6 +31,16 @@ class HomeViewModel @Inject constructor(
                     selectedDay = event.day
                 )
             }
+            is HomeEvent.OnAgendaItemDismiss -> {
+                state = state.copy(
+                    showAgendaOptions = false
+                )
+            }
+            is HomeEvent.OnAddAgendaClick -> {
+                state = state.copy(
+                    showAgendaOptions = true
+                )
+            }
         }
     }
 }

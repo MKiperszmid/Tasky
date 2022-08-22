@@ -11,9 +11,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.mk.tasky.agenda.detail.presentation.DetailScreen
 import com.mk.tasky.agenda.home.presentation.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
 import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
@@ -74,7 +77,19 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
             }
         }
         composable(Route.HOME) {
-            HomeScreen()
+            HomeScreen(redirect = {
+                navController.navigate(Route.DETAIL + "/${it.name}")
+            })
+        }
+        composable(
+            route = Route.DETAIL + "/{type}",
+            arguments = listOf(
+                navArgument("type") { // TODO: Replace with HomeAgendaType NavType
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            DetailScreen()
         }
     }
 }
