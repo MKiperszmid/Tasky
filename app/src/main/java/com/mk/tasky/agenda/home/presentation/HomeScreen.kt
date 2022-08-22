@@ -15,10 +15,11 @@ import com.mk.tasky.agenda.home.presentation.components.HomeDropdown
 import com.mk.tasky.agenda.home.presentation.components.HomeHeader
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.core.presentation.TaskyButton
+import java.time.LocalDateTime
 
 @Composable
 fun HomeScreen(
-    redirect: (HomeAgendaType) -> Unit,
+    redirect: (HomeAgendaType, LocalDateTime) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -45,7 +46,7 @@ fun HomeScreen(
             HomeDropdown(
                 items = state.agendaTypes.map { it.name },
                 onItemSelected = {
-                    redirect(state.agendaTypes[it])
+                    redirect(state.agendaTypes[it], state.currentDate.plusDays(state.selectedDay.toLong()))
                 },
                 onDismiss = { viewModel.onEvent(HomeEvent.OnAgendaItemDismiss) },
                 showDropdown = state.showAgendaOptions

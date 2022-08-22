@@ -9,6 +9,7 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
@@ -39,7 +40,7 @@ fun HomeHeaderMonthPicker(
         )
         Spacer(modifier = Modifier.width(5.dp))
         Icon(
-            imageVector = Icons.Default.ArrowDownward,
+            imageVector = Icons.Default.ArrowDropDown,
             tint = White,
             contentDescription = "change month"
         )

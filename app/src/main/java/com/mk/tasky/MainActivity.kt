@@ -16,7 +16,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.mk.tasky.agenda.detail.presentation.DetailScreen
+import com.mk.tasky.agenda.detail.reminder.presentation.DetailReminderScreen
+import com.mk.tasky.agenda.home.presentation.HomeAgendaType
 import com.mk.tasky.agenda.home.presentation.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
 import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
@@ -77,19 +78,26 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
             }
         }
         composable(Route.HOME) {
-            HomeScreen(redirect = {
-                navController.navigate(Route.DETAIL + "/${it.name}")
+            HomeScreen(redirect = { type, date ->
+                val route = when (type) {
+                    HomeAgendaType.Event -> Route.EVENT
+                    HomeAgendaType.Reminder -> Route.REMINDER
+                    HomeAgendaType.Task -> Route.TASK
+                }
+                navController.navigate("$route/$date") // TODO: Redirect to Route.DETAIL, and detail checks the type, and depending the type it shows ReminderScreen, EventScreen or TaskScreen
             })
         }
         composable(
-            route = Route.DETAIL + "/{type}",
+            route = Route.REMINDER + "/{date}",
             arguments = listOf(
-                navArgument("type") { // TODO: Replace with HomeAgendaType NavType
+                navArgument("date") {
                     type = NavType.StringType
                 }
             )
         ) {
-            DetailScreen()
+            DetailReminderScreen(onClose = {
+                navController.navigateUp()
+            })
         }
     }
 }
