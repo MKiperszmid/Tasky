@@ -11,9 +11,11 @@ import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.mk.tasky.R
 import com.mk.tasky.ui.theme.Black
 
 @Composable
@@ -32,7 +34,7 @@ fun DetailTitle(
             Text(text = title, fontWeight = FontWeight.Bold, fontSize = 26.sp, color = Black)
         }
         if (isEditing) {
-            Icon(imageVector = Icons.Default.NavigateNext, contentDescription = "edit title")
+            Icon(imageVector = Icons.Default.NavigateNext, contentDescription = stringResource(R.string.edit_title))
         }
     }
 }

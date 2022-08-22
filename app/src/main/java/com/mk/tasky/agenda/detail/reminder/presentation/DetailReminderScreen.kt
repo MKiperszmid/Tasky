@@ -25,7 +25,7 @@ fun DetailReminderScreen(
     val state = viewModel.state
     TaskyBackground(header = {
         DetailHeader(
-            editingText = "Edit Reminder",
+            editingText = stringResource(R.string.edit_reminder),
             date = state.date,
             onClose = onClose,
             onEdit = { viewModel.onEvent(DetailReminderEvent.OnEdit) },

@@ -9,9 +9,11 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import com.mk.tasky.R
 import com.mk.tasky.core.presentation.TaskyHeader
 import java.time.LocalDateTime
 
@@ -29,7 +31,7 @@ fun DetailHeader(
         modifier = modifier
     ) {
         IconButton(onClick = onClose) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = "close")
+            Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.close))
         }
         val headerText =
             if (isEditing) editingText.uppercase() else "${date.dayOfMonth} ${date.month.name} ${date.year}"
@@ -43,7 +45,7 @@ fun DetailHeader(
             )
         } else {
             IconButton(onClick = onEdit) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = "edit")
+                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
             }
         }
     }
