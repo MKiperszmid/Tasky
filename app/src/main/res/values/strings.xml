@@ -12,4 +12,10 @@
     <string name="create_your_account">Create your account</string>
     <string name="name">Name</string>
     <string name="get_started">GET STARTED</string>
+    <string name="reminder">Reminder</string>
+    <string name="close">close</string>
+    <string name="edit">edit</string>
+    <string name="edit_title">edit title</string>
+    <string name="edit_reminder">Edit Reminder</string>
+    <string name="change_month">change month</string>
 </resources>

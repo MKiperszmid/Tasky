@@ -9,12 +9,15 @@ import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.mk.tasky.R
 import com.mk.tasky.ui.theme.White
 import java.time.LocalDateTime
 
@@ -39,9 +42,9 @@ fun HomeHeaderMonthPicker(
         )
         Spacer(modifier = Modifier.width(5.dp))
         Icon(
-            imageVector = Icons.Default.ArrowDownward,
+            imageVector = Icons.Default.ArrowDropDown,
             tint = White,
-            contentDescription = "change month"
+            contentDescription = stringResource(R.string.change_month)
         )
     }
 }
