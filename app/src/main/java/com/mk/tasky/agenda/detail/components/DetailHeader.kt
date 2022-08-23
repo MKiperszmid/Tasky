@@ -38,7 +38,11 @@ fun DetailHeader(
         }
         val headerText =
             if (isEditing) editingText.uppercase() else "${date.dayOfMonth} ${date.month.name} ${date.year}"
-        Text(text = headerText, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = headerText,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold
+        )
         if (isEditing) {
             Text(
                 text = "Save",

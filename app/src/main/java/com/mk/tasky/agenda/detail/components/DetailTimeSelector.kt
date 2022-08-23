@@ -47,8 +47,10 @@ fun DetailTimeSelector(
                 }.padding(start = 10.dp, end = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
+                val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
+                val timeFormatted = date.format(timeFormatter)
                 Text(
-                    text = "${date.hour}:${date.minute}",
+                    text = timeFormatted,
                     fontSize = 16.sp,
                     color = Black
                 )

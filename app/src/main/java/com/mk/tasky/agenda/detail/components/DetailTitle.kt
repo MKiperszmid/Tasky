@@ -35,9 +35,17 @@ fun DetailTitle(
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.weight(9f)) {
-            Icon(imageVector = Icons.Outlined.Circle, contentDescription = "title")
+            Icon(
+                imageVector = Icons.Outlined.Circle,
+                contentDescription = "title"
+            )
             Spacer(modifier = Modifier.width(8.dp))
-            Text(text = title, fontWeight = FontWeight.Bold, fontSize = 26.sp, color = Black)
+            Text(
+                text = title,
+                fontWeight = FontWeight.Bold,
+                fontSize = 26.sp,
+                color = Black
+            )
         }
         if (isEditable) {
             Icon(

@@ -21,10 +21,18 @@ fun DetailColor(
     color: Color,
     modifier: Modifier = Modifier
 ) {
-    Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+    Row(
+        modifier = modifier.fillMaxWidth(),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Box(modifier = Modifier.size(20.dp).background(color, shape = RoundedCornerShape(1.dp)))
         Spacer(modifier = Modifier.width(10.dp))
-        Text(text = text, fontWeight = FontWeight.SemiBold, color = DarkGray, fontSize = 16.sp)
+        Text(
+            text = text,
+            fontWeight = FontWeight.SemiBold,
+            color = DarkGray,
+            fontSize = 16.sp
+        )
     }
 }
 

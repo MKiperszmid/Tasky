@@ -55,7 +55,11 @@ fun DetailNotificationReminder(
                 )
             }
             Spacer(modifier = Modifier.width(13.dp))
-            Text(text = selectedValue.type, fontSize = 16.sp, color = Black)
+            Text(
+                text = selectedValue.type,
+                fontSize = 16.sp,
+                color = Black
+            )
         }
         if (isEditable) {
             Icon(
@@ -64,9 +68,15 @@ fun DetailNotificationReminder(
             )
         }
     }
-    TaskyDropdown(items = reminderTypes.map { it.type }, onItemSelected = {
-        onItemSelected(reminderTypes[it])
-    }, onDismiss = onDismiss, modifier = modifier, showDropdown = showDropdown)
+    TaskyDropdown(
+        items = reminderTypes.map { it.type },
+        onItemSelected = {
+            onItemSelected(reminderTypes[it])
+        },
+        onDismiss = onDismiss,
+        modifier = modifier,
+        showDropdown = showDropdown
+    )
 }
 
 @Preview

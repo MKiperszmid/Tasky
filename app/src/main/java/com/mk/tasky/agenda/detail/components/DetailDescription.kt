@@ -35,7 +35,12 @@ fun DetailDescription(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(text = description, color = Black, fontSize = 16.sp, modifier = Modifier.weight(9f))
+        Text(
+            text = description,
+            color = Black,
+            fontSize = 16.sp,
+            modifier = Modifier.weight(9f)
+        )
         if (isEditable) {
             Icon(
                 imageVector = Icons.Default.NavigateNext,
