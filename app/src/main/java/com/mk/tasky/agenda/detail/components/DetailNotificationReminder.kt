@@ -84,14 +84,14 @@ fun DetailNotificationReminder(
 fun DetailNotificationReminderPreview() {
     DetailNotificationReminder(
         reminderTypes = listOf(
-            ReminderTypes.OneDay,
-            ReminderTypes.OneHour
+            ReminderTypes.ONE_DAY,
+            ReminderTypes.ONE_HOUR
         ),
         onClick = {},
         onDismiss = {},
         showDropdown = true,
         onItemSelected = {},
-        selectedValue = ReminderTypes.ThirtyMinutes,
+        selectedValue = ReminderTypes.TEN_MINUTES,
         isEditable = false
     )
 }

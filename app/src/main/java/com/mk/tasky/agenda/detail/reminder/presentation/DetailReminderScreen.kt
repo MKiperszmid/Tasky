@@ -14,6 +14,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.R
 import com.mk.tasky.agenda.detail.components.*
+import com.mk.tasky.agenda.detail.components.model.ReminderTypes
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Light
@@ -66,7 +67,7 @@ fun DetailReminderScreen(
                 )
                 Divider(color = Light)
                 DetailNotificationReminder(
-                    reminderTypes = state.reminderTypes,
+                    reminderTypes = ReminderTypes.values().toList(),
                     onClick = {
                         viewModel.onEvent(DetailReminderEvent.OnNotificationReminderClick)
                     },

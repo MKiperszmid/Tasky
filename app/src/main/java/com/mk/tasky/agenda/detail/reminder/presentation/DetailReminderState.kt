@@ -8,13 +8,6 @@ data class DetailReminderState(
     val date: LocalDateTime = LocalDateTime.now(),
     val title: String = "New reminder",
     val description: String = "Description",
-    val reminderTypes: List<ReminderTypes> = listOf(
-        ReminderTypes.TenMinutes,
-        ReminderTypes.ThirtyMinutes,
-        ReminderTypes.OneHour,
-        ReminderTypes.SixHours,
-        ReminderTypes.OneDay
-    ),
     val showDropdown: Boolean = false,
-    val selectedReminder: ReminderTypes = ReminderTypes.ThirtyMinutes
+    val selectedReminder: ReminderTypes = ReminderTypes.THIRTY_MINUTES
 )
