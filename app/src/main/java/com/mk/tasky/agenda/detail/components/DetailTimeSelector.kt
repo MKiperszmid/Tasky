@@ -40,11 +40,13 @@ fun DetailTimeSelector(
         ) {
             Text(text = text, fontSize = 16.sp, color = Black)
             Row(
-                modifier = Modifier.clickable {
+                modifier = Modifier.then(
                     if (isEditable) {
-                        onTimeClick()
-                    }
-                }.padding(start = 10.dp, end = 10.dp),
+                        Modifier.clickable {
+                            onTimeClick()
+                        }
+                    } else Modifier
+                ).padding(start = 10.dp, end = 10.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
@@ -67,11 +69,13 @@ fun DetailTimeSelector(
                 text = formatted,
                 fontSize = 16.sp,
                 color = Black,
-                modifier = Modifier.clickable {
+                modifier = Modifier.then(
                     if (isEditable) {
-                        onDateClick()
-                    }
-                }.padding(start = 10.dp, end = 10.dp)
+                        Modifier.clickable {
+                            onDateClick()
+                        }
+                    } else Modifier
+                ).padding(start = 10.dp, end = 10.dp)
             )
         }
         Box(modifier = Modifier.weight(1f)) {

@@ -26,11 +26,13 @@ fun DetailTitle(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = modifier.fillMaxWidth().clickable {
+        modifier = modifier.fillMaxWidth().then(
             if (isEditable) {
-                onClick()
-            }
-        }.padding(top = 20.dp, bottom = 20.dp),
+                Modifier.clickable {
+                    onClick()
+                }
+            } else Modifier
+        ).padding(top = 20.dp, bottom = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
