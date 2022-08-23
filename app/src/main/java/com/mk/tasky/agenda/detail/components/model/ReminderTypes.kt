@@ -1,9 +1,12 @@
 package com.mk.tasky.agenda.detail.components.model
 
-enum class ReminderTypes(val type: String) {
-    TEN_MINUTES("10 minutes before"),
-    THIRTY_MINUTES("30 minutes before"),
-    ONE_HOUR("1 hour before"),
-    SIX_HOURS("6 hours before"),
-    ONE_DAY("1 day before")
+import com.mk.tasky.R
+import com.mk.tasky.core.util.UIText
+
+enum class ReminderTypes(val type: UIText) {
+    TEN_MINUTES(UIText.StringResource(R.string.ten_minutes_before)),
+    THIRTY_MINUTES(UIText.StringResource(R.string.thirty_minutes_before)),
+    ONE_HOUR(UIText.StringResource(R.string.one_hour_before)),
+    SIX_HOURS(UIText.StringResource(R.string.six_hours_before)),
+    ONE_DAY(UIText.StringResource(R.string.one_day_before))
 }

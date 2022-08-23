@@ -12,6 +12,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,6 +35,7 @@ fun DetailNotificationReminder(
     isEditable: Boolean,
     modifier: Modifier = Modifier
 ) {
+    val context = LocalContext.current
     Row(
         modifier = modifier.fillMaxWidth().clickable {
             if (isEditable) {
@@ -56,7 +58,7 @@ fun DetailNotificationReminder(
             }
             Spacer(modifier = Modifier.width(13.dp))
             Text(
-                text = selectedValue.type,
+                text = selectedValue.type.asString(context),
                 fontSize = 16.sp,
                 color = Black
             )
@@ -69,7 +71,7 @@ fun DetailNotificationReminder(
         }
     }
     TaskyDropdown(
-        items = reminderTypes.map { it.type },
+        items = reminderTypes.map { it.type.asString(context) },
         onItemSelected = {
             onItemSelected(reminderTypes[it])
         },
