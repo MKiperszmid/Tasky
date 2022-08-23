@@ -18,4 +18,5 @@
     <string name="edit_title">edit title</string>
     <string name="edit_reminder">Edit Reminder</string>
     <string name="change_month">change month</string>
+    <string name="edit_time">edit time</string>
 </resources>

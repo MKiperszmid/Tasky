@@ -42,13 +42,26 @@ fun DetailReminderScreen(
                     modifier = Modifier.padding(top = 14.dp)
                 )
                 DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
-                    println()
+                    println("Clicked title")
                 })
                 Divider(color = Light)
                 DetailDescription(
                     description = state.description,
                     isEditable = state.isEditing,
                     onClick = {
+                        println("Clicked description")
+                    }
+                )
+                Divider(color = Light)
+                DetailTimeSelector(
+                    text = "From",
+                    date = state.date,
+                    isEditable = state.isEditing,
+                    onTimeClick = {
+                        println("Clicked time")
+                    },
+                    onDateClick = {
+                        println("Clicked date")
                     }
                 )
                 Divider(color = Light)

@@ -31,7 +31,10 @@ fun DetailHeader(
         modifier = modifier
     ) {
         IconButton(onClick = onClose) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.close))
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(R.string.close)
+            )
         }
         val headerText =
             if (isEditing) editingText.uppercase() else "${date.dayOfMonth} ${date.month.name} ${date.year}"
@@ -45,7 +48,10 @@ fun DetailHeader(
             )
         } else {
             IconButton(onClick = onEdit) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit)
+                )
             }
         }
     }

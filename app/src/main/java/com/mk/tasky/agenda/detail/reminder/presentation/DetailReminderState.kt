@@ -4,9 +4,9 @@ import com.mk.tasky.agenda.detail.components.model.ReminderTypes
 import java.time.LocalDateTime
 
 data class DetailReminderState(
-    val isEditing: Boolean = false,
+    val isEditing: Boolean = true,
     val date: LocalDateTime = LocalDateTime.now(),
-    val title: String = "Title",
+    val title: String = "New reminder",
     val description: String = "Description",
     val reminderTypes: List<ReminderTypes> = listOf(
         ReminderTypes.TenMinutes,
