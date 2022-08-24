@@ -19,7 +19,8 @@ class DetailReminderViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>("date")?.let {
             state = state.copy(
-                date = LocalDateTime.parse(it)
+                information = state.information.copy(date = LocalDateTime.parse(it)),
+                editableInformation = state.editableInformation.copy(date = LocalDateTime.parse(it))
             )
         }
     }
@@ -33,12 +34,13 @@ class DetailReminderViewModel @Inject constructor(
             }
             DetailReminderEvent.OnSave -> {
                 state = state.copy(
-                    isEditing = false
+                    isEditing = false,
+                    information = state.editableInformation.copy()
                 )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
                 state = state.copy(
-                    selectedReminder = event.reminderType
+                    editableInformation = state.editableInformation.copy(reminder = event.reminderType)
                 )
             }
             DetailReminderEvent.OnNotificationReminderDismiss -> {
@@ -53,6 +55,12 @@ class DetailReminderViewModel @Inject constructor(
             }
             DetailReminderEvent.OnReminderDelete -> {
                 println("Delete Reminder")
+            }
+            DetailReminderEvent.OnCancelEdit -> {
+                state = state.copy(
+                    editableInformation = state.information.copy(),
+                    isEditing = false
+                )
             }
         }
     }

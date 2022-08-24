@@ -25,11 +25,13 @@ fun DetailReminderScreen(
     viewModel: DetailReminderViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    val information = state.editableInformation
     TaskyBackground(header = {
         DetailHeader(
             editingText = stringResource(R.string.edit_reminder),
-            date = state.date,
+            date = information.date,
             onClose = onClose,
+            onCancelEdit = { viewModel.onEvent(DetailReminderEvent.OnCancelEdit) },
             onEdit = { viewModel.onEvent(DetailReminderEvent.OnEdit) },
             onSave = { viewModel.onEvent(DetailReminderEvent.OnSave) },
             isEditing = state.isEditing
@@ -42,12 +44,12 @@ fun DetailReminderScreen(
                     color = Gray,
                     modifier = Modifier.padding(top = 14.dp)
                 )
-                DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
+                DetailTitle(title = information.title, isEditable = state.isEditing, onClick = {
                     println("Clicked title")
                 })
                 Divider(color = Light)
                 DetailDescription(
-                    description = state.description,
+                    description = information.description,
                     isEditable = state.isEditing,
                     onClick = {
                         println("Clicked description")
@@ -55,8 +57,8 @@ fun DetailReminderScreen(
                 )
                 Divider(color = Light)
                 DetailTimeSelector(
-                    text = "From",
-                    date = state.date,
+                    text = "At",
+                    date = information.date,
                     isEditable = state.isEditing,
                     onTimeClick = {
                         println("Clicked time")
@@ -71,7 +73,7 @@ fun DetailReminderScreen(
                     onClick = {
                         viewModel.onEvent(DetailReminderEvent.OnNotificationReminderClick)
                     },
-                    selectedValue = state.selectedReminder,
+                    selectedValue = information.reminder,
                     onItemSelected = {
                         viewModel.onEvent(DetailReminderEvent.OnNotificationReminderSelect(it))
                     },
@@ -83,7 +85,9 @@ fun DetailReminderScreen(
             Box {
                 Divider(color = Light)
                 Box(
-                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp, bottom = 48.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp, bottom = 48.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Text(

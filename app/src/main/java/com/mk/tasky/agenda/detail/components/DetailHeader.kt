@@ -22,6 +22,7 @@ fun DetailHeader(
     editingText: String,
     date: LocalDateTime,
     onClose: () -> Unit,
+    onCancelEdit: () -> Unit,
     onEdit: () -> Unit,
     onSave: () -> Unit,
     isEditing: Boolean = false,
@@ -30,7 +31,13 @@ fun DetailHeader(
     TaskyHeader(
         modifier = modifier
     ) {
-        IconButton(onClick = onClose) {
+        IconButton(onClick = {
+            if (isEditing) {
+                onCancelEdit()
+            } else {
+                onClose()
+            }
+        }) {
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = stringResource(R.string.close)
@@ -68,6 +75,7 @@ fun DetailHeaderPreview() {
         editingText = "Edit Reminder",
         date = LocalDateTime.now(),
         onClose = {},
+        onCancelEdit = {},
         onEdit = {},
         onSave = {},
         isEditing = true
