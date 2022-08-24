@@ -63,12 +63,12 @@ class DetailReminderViewModel @Inject constructor(
                 )
             }
             is DetailReminderEvent.OnUpdatedInformation -> {
-                if (event.title != "") {
+                if (event.title.isNotBlank()) {
                     state = state.copy(
                         editableInformation = state.editableInformation.copy(title = event.title)
                     )
                 }
-                if (event.description != "") {
+                if (event.description.isNotBlank()) {
                     state = state.copy(
                         editableInformation = state.editableInformation.copy(description = event.description)
                     )

@@ -76,7 +76,7 @@ fun DetailReminderScreen(
                 )
                 Divider(color = Light)
                 DetailTimeSelector(
-                    text = "At",
+                    text = stringResource(R.string.at),
                     date = information.date,
                     isEditable = state.isEditing,
                     onTimeClick = {
