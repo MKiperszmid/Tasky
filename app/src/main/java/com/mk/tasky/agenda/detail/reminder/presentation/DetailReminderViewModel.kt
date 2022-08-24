@@ -19,8 +19,7 @@ class DetailReminderViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>("date")?.let {
             state = state.copy(
-                information = state.information.copy(date = LocalDateTime.parse(it)),
-                editableInformation = state.editableInformation.copy(date = LocalDateTime.parse(it))
+                date = LocalDateTime.parse(it)
             )
         }
     }
@@ -34,14 +33,11 @@ class DetailReminderViewModel @Inject constructor(
             }
             DetailReminderEvent.OnSave -> {
                 state = state.copy(
-                    isEditing = false,
-                    information = state.editableInformation.copy()
+                    isEditing = false
                 )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
-                state = state.copy(
-                    editableInformation = state.editableInformation.copy(reminder = event.reminderType)
-                )
+                state = state.copy(reminder = event.reminderType)
             }
             DetailReminderEvent.OnNotificationReminderDismiss -> {
                 state = state.copy(
@@ -56,21 +52,15 @@ class DetailReminderViewModel @Inject constructor(
             DetailReminderEvent.OnReminderDelete -> {
                 println("Delete Reminder")
             }
-            DetailReminderEvent.OnCancelEdit -> {
-                state = state.copy(
-                    editableInformation = state.information.copy(),
-                    isEditing = false
-                )
-            }
             is DetailReminderEvent.OnUpdatedInformation -> {
                 if (event.title.isNotBlank()) {
                     state = state.copy(
-                        editableInformation = state.editableInformation.copy(title = event.title)
+                        title = event.title
                     )
                 }
                 if (event.description.isNotBlank()) {
                     state = state.copy(
-                        editableInformation = state.editableInformation.copy(description = event.description)
+                        description = event.description
                     )
                 }
             }
