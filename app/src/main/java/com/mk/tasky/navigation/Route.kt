@@ -7,4 +7,5 @@ object Route {
     const val TASK = "task"
     const val REMINDER = "reminder"
     const val EVENT = "event"
+    const val EDITOR = "editor"
 }

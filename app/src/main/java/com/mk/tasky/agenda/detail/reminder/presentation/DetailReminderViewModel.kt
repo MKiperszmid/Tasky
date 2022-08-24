@@ -37,9 +37,7 @@ class DetailReminderViewModel @Inject constructor(
                 )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
-                state = state.copy(
-                    selectedReminder = event.reminderType
-                )
+                state = state.copy(reminder = event.reminderType)
             }
             DetailReminderEvent.OnNotificationReminderDismiss -> {
                 state = state.copy(
@@ -53,6 +51,18 @@ class DetailReminderViewModel @Inject constructor(
             }
             DetailReminderEvent.OnReminderDelete -> {
                 println("Delete Reminder")
+            }
+            is DetailReminderEvent.OnUpdatedInformation -> {
+                if (event.title.isNotBlank()) {
+                    state = state.copy(
+                        title = event.title
+                    )
+                }
+                if (event.description.isNotBlank()) {
+                    state = state.copy(
+                        description = event.description
+                    )
+                }
             }
         }
     }

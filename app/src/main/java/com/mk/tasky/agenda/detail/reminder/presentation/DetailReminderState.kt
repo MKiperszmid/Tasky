@@ -5,9 +5,9 @@ import java.time.LocalDateTime
 
 data class DetailReminderState(
     val isEditing: Boolean = true,
-    val date: LocalDateTime = LocalDateTime.now(),
-    val title: String = "New reminder",
+    val title: String = "New Reminder",
     val description: String = "Description",
-    val showDropdown: Boolean = false,
-    val selectedReminder: ReminderTypes = ReminderTypes.THIRTY_MINUTES
+    val date: LocalDateTime = LocalDateTime.now(),
+    val reminder: ReminderTypes = ReminderTypes.THIRTY_MINUTES,
+    val showDropdown: Boolean = false
 )
