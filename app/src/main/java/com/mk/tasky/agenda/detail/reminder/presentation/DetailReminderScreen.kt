@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -21,11 +22,24 @@ import com.mk.tasky.ui.theme.Light
 
 @Composable
 fun DetailReminderScreen(
+    reminderTitle: String,
+    reminderDescription: String,
     onClose: () -> Unit,
+    openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
     viewModel: DetailReminderViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val information = state.editableInformation
+
+    LaunchedEffect(reminderTitle, reminderDescription) {
+        viewModel.onEvent(
+            DetailReminderEvent.OnUpdatedInformation(
+                reminderTitle,
+                reminderDescription
+            )
+        )
+    }
+
     TaskyBackground(header = {
         DetailHeader(
             editingText = stringResource(R.string.edit_reminder),
@@ -45,14 +59,19 @@ fun DetailReminderScreen(
                     modifier = Modifier.padding(top = 14.dp)
                 )
                 DetailTitle(title = information.title, isEditable = state.isEditing, onClick = {
-                    println("Clicked title")
+                    openEditor("reminder_title", "Edit Title", information.title, 26)
                 })
                 Divider(color = Light)
                 DetailDescription(
                     description = information.description,
                     isEditable = state.isEditing,
                     onClick = {
-                        println("Clicked description")
+                        openEditor(
+                            "reminder_description",
+                            "Edit Description",
+                            information.description,
+                            16
+                        )
                     }
                 )
                 Divider(color = Light)

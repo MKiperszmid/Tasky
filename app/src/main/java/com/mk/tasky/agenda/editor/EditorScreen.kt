@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.detail.components
+package com.mk.tasky.agenda.editor
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.BasicTextField
@@ -10,25 +10,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.ui.theme.Black
 import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light2
 
 @Composable
-fun DetailEditable(
+fun EditorScreen(
     title: String,
     onBack: () -> Unit,
     onSave: (String) -> Unit,
-    value: String,
-    onTextChange: (String) -> Unit,
     textSize: TextUnit = 26.sp,
-    modifier: Modifier = Modifier
+    viewModel: EditableViewModel = hiltViewModel()
 ) {
-    Column(modifier = modifier.fillMaxSize()) {
+    val body = viewModel.body
+    Column(modifier = Modifier.fillMaxSize()) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -47,7 +46,7 @@ fun DetailEditable(
             )
             TextButton(
                 onClick = {
-                    onSave(value)
+                    onSave(body)
                 },
                 colors = ButtonDefaults.textButtonColors(contentColor = Green)
             ) {
@@ -57,25 +56,13 @@ fun DetailEditable(
         Divider(color = Light2, modifier = Modifier.padding(start = 16.dp, end = 16.dp))
         Spacer(modifier = Modifier.height(30.dp))
         BasicTextField(
-            value = value,
+            value = body,
             modifier = Modifier.padding(start = 16.dp, end = 16.dp),
-            onValueChange = { onTextChange(it) },
+            onValueChange = { viewModel.onTextChange(it) },
             textStyle = TextStyle(
                 color = Black,
                 fontSize = textSize
             )
         )
     }
-}
-
-@Preview
-@Composable
-fun DetailEditablePreview() {
-    DetailEditable(
-        title = "Edit Title",
-        onBack = {},
-        onSave = {},
-        value = "Project X",
-        onTextChange = {}
-    )
 }

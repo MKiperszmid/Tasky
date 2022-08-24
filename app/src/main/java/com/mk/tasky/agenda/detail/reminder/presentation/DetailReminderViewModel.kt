@@ -62,6 +62,18 @@ class DetailReminderViewModel @Inject constructor(
                     isEditing = false
                 )
             }
+            is DetailReminderEvent.OnUpdatedInformation -> {
+                if (event.title != "") {
+                    state = state.copy(
+                        editableInformation = state.editableInformation.copy(title = event.title)
+                    )
+                }
+                if (event.description != "") {
+                    state = state.copy(
+                        editableInformation = state.editableInformation.copy(description = event.description)
+                    )
+                }
+            }
         }
     }
 }

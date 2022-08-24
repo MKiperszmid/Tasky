@@ -9,6 +9,7 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.sp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -17,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mk.tasky.agenda.detail.reminder.presentation.DetailReminderScreen
+import com.mk.tasky.agenda.editor.EditorScreen
 import com.mk.tasky.agenda.home.presentation.HomeAgendaType
 import com.mk.tasky.agenda.home.presentation.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
@@ -95,9 +97,50 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
                 }
             )
         ) {
-            DetailReminderScreen(onClose = {
-                navController.navigateUp()
-            })
+            val reminderTitle = it.savedStateHandle.get<String>("reminder_title") ?: ""
+            val reminderDescription = it.savedStateHandle.get<String>("reminder_description") ?: ""
+            DetailReminderScreen(
+                reminderTitle = reminderTitle,
+                reminderDescription = reminderDescription,
+                onClose = {
+                    navController.navigateUp()
+                },
+                openEditor = { id, title, body, size ->
+                    navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
+                }
+            )
+        }
+
+        composable(
+            route = Route.EDITOR + "/{text_id}/{title}/{body}/{size}",
+            arguments = listOf(
+                navArgument("body") {
+                    type = NavType.StringType
+                },
+                navArgument("title") {
+                    type = NavType.StringType
+                },
+                navArgument("size") {
+                    type = NavType.IntType
+                },
+                navArgument("text_id") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val id = it.arguments?.getString("text_id") ?: ""
+            EditorScreen(
+                title = it.arguments?.getString("title") ?: "Edit Text",
+                onBack = {
+                    navController.previousBackStackEntry?.savedStateHandle?.set(id, null)
+                    navController.popBackStack()
+                },
+                onSave = { body ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(id, body)
+                    navController.popBackStack()
+                },
+                textSize = (it.arguments?.getInt("size") ?: 26).sp
+            )
         }
     }
 }

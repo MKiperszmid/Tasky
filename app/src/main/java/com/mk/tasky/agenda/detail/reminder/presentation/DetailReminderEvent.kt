@@ -10,4 +10,5 @@ sealed class DetailReminderEvent {
     object OnNotificationReminderDismiss : DetailReminderEvent()
     data class OnNotificationReminderSelect(val reminderType: ReminderTypes) : DetailReminderEvent()
     object OnReminderDelete : DetailReminderEvent()
+    data class OnUpdatedInformation(val title: String, val description: String) : DetailReminderEvent()
 }
