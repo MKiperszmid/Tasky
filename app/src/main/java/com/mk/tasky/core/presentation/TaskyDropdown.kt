@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.home.presentation.components
+package com.mk.tasky.core.presentation
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.material.Divider
@@ -9,10 +9,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.mk.tasky.agenda.home.presentation.HomeAgendaType
 
 @Composable
-fun HomeDropdown(
+fun TaskyDropdown(
     items: List<String>,
     onItemSelected: (Int) -> Unit,
-    showDropdown: Boolean = false,
+    showDropdown: Boolean,
     onDismiss: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -21,7 +21,7 @@ fun HomeDropdown(
             onDismiss()
         }) {
             items.forEachIndexed { index, item ->
-                HomeDropdownItem(text = item, onClick = {
+                TaskyDropdownItem(text = item, onClick = {
                     onItemSelected(index)
                     onDismiss()
                 })
@@ -35,8 +35,8 @@ fun HomeDropdown(
 
 @Preview
 @Composable
-fun HomeDropdownPreview() {
-    HomeDropdown(
+fun TaskyDropdownPreview() {
+    TaskyDropdown(
         listOf(HomeAgendaType.Event.name, HomeAgendaType.Task.name, HomeAgendaType.Reminder.name),
         {},
         true,

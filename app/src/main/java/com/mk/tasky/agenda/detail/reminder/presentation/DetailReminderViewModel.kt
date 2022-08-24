@@ -36,6 +36,34 @@ class DetailReminderViewModel @Inject constructor(
                     isEditing = false
                 )
             }
+            is DetailReminderEvent.OnNotificationReminderSelect -> {
+                state = state.copy(reminder = event.reminderType)
+            }
+            DetailReminderEvent.OnNotificationReminderDismiss -> {
+                state = state.copy(
+                    showDropdown = false
+                )
+            }
+            DetailReminderEvent.OnNotificationReminderClick -> {
+                state = state.copy(
+                    showDropdown = true
+                )
+            }
+            DetailReminderEvent.OnReminderDelete -> {
+                println("Delete Reminder")
+            }
+            is DetailReminderEvent.OnUpdatedInformation -> {
+                if (event.title.isNotBlank()) {
+                    state = state.copy(
+                        title = event.title
+                    )
+                }
+                if (event.description.isNotBlank()) {
+                    state = state.copy(
+                        description = event.description
+                    )
+                }
+            }
         }
     }
 }

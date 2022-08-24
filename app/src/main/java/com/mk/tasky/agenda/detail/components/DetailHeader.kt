@@ -30,22 +30,34 @@ fun DetailHeader(
     TaskyHeader(
         modifier = modifier
     ) {
-        IconButton(onClick = onClose) {
-            Icon(imageVector = Icons.Default.Close, contentDescription = stringResource(R.string.close))
+        IconButton(onClick = {
+            onClose()
+        }) {
+            Icon(
+                imageVector = Icons.Default.Close,
+                contentDescription = stringResource(R.string.close)
+            )
         }
         val headerText =
             if (isEditing) editingText.uppercase() else "${date.dayOfMonth} ${date.month.name} ${date.year}"
-        Text(text = headerText, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+        Text(
+            text = headerText,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.SemiBold
+        )
         if (isEditing) {
             Text(
-                text = "Save",
+                text = stringResource(id = R.string.save),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.clickable { onSave() }
             )
         } else {
             IconButton(onClick = onEdit) {
-                Icon(imageVector = Icons.Default.Edit, contentDescription = stringResource(R.string.edit))
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = stringResource(R.string.edit)
+                )
             }
         }
     }
