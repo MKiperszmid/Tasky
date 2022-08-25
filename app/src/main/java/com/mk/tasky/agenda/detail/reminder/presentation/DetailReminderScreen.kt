@@ -19,6 +19,10 @@ import com.mk.tasky.agenda.detail.components.model.ReminderTypes
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Light
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
 fun DetailReminderScreen(
@@ -29,6 +33,8 @@ fun DetailReminderScreen(
     viewModel: DetailReminderViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    val datepickerState = rememberMaterialDialogState()
+    val timepickerState = rememberMaterialDialogState()
 
     LaunchedEffect(reminderTitle, reminderDescription) {
         viewModel.onEvent(
@@ -37,6 +43,30 @@ fun DetailReminderScreen(
                 reminderDescription
             )
         )
+    }
+
+    MaterialDialog(
+        dialogState = timepickerState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        timepicker { time ->
+            viewModel.onEvent(DetailReminderEvent.OnTimeSelected(time))
+        }
+    }
+
+    MaterialDialog(
+        dialogState = datepickerState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        datepicker { date ->
+            viewModel.onEvent(DetailReminderEvent.OnDateSelected(date))
+        }
     }
 
     TaskyBackground(header = {
@@ -78,10 +108,10 @@ fun DetailReminderScreen(
                     date = state.date,
                     isEditable = state.isEditing,
                     onTimeClick = {
-                        println("Clicked time")
+                        timepickerState.show()
                     },
                     onDateClick = {
-                        println("Clicked date")
+                        datepickerState.show()
                     }
                 )
                 Divider(color = Light)
