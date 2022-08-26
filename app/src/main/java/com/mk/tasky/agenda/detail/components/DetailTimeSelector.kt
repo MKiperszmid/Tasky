@@ -15,13 +15,15 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.R
 import com.mk.tasky.ui.theme.Black
-import java.time.LocalDateTime
+import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
 fun DetailTimeSelector(
     text: String,
-    date: LocalDateTime,
+    date: LocalDate,
+    time: LocalTime,
     isEditable: Boolean,
     onTimeClick: () -> Unit,
     onDateClick: () -> Unit,
@@ -50,7 +52,7 @@ fun DetailTimeSelector(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 val timeFormatter = DateTimeFormatter.ofPattern("HH:mm")
-                val timeFormatted = date.format(timeFormatter)
+                val timeFormatted = time.format(timeFormatter)
                 Text(
                     text = timeFormatted,
                     fontSize = 16.sp,
@@ -94,7 +96,8 @@ fun DetailTimeSelector(
 fun DetailTimeSelectorPreview() {
     DetailTimeSelector(
         text = "From",
-        date = LocalDateTime.now(),
+        date = LocalDate.now(),
+        time = LocalTime.now(),
         isEditable = true,
         onTimeClick = {},
         onDateClick = {}

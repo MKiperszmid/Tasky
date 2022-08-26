@@ -15,12 +15,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.R
 import com.mk.tasky.core.presentation.TaskyHeader
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
 fun DetailHeader(
     editingText: String,
-    date: LocalDateTime,
+    date: LocalDate,
     onClose: () -> Unit,
     onEdit: () -> Unit,
     onSave: () -> Unit,
@@ -68,7 +68,7 @@ fun DetailHeader(
 fun DetailHeaderPreview() {
     DetailHeader(
         editingText = "Edit Reminder",
-        date = LocalDateTime.now(),
+        date = LocalDate.now(),
         onClose = {},
         onEdit = {},
         onSave = {},

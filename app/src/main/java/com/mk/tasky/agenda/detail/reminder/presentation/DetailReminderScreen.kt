@@ -106,6 +106,7 @@ fun DetailReminderScreen(
                 DetailTimeSelector(
                     text = stringResource(R.string.at),
                     date = state.date,
+                    time = state.time,
                     isEditable = state.isEditing,
                     onTimeClick = {
                         timepickerState.show()
