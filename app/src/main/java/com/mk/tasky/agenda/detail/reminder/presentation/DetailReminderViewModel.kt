@@ -19,7 +19,8 @@ class DetailReminderViewModel @Inject constructor(
     init {
         savedStateHandle.get<String>("date")?.let {
             state = state.copy(
-                date = LocalDateTime.parse(it)
+                date = LocalDateTime.parse(it).toLocalDate(),
+                time = LocalDateTime.parse(it).toLocalTime()
             )
         }
     }
@@ -63,6 +64,16 @@ class DetailReminderViewModel @Inject constructor(
                         description = event.description
                     )
                 }
+            }
+            is DetailReminderEvent.OnDateSelected -> {
+                state = state.copy(
+                    date = event.date
+                )
+            }
+            is DetailReminderEvent.OnTimeSelected -> {
+                state = state.copy(
+                    time = event.time
+                )
             }
         }
     }
