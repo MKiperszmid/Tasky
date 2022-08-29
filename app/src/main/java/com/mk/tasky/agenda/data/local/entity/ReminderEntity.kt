@@ -10,6 +10,10 @@ data class ReminderEntity(
     val id: String = UUID.randomUUID().toString(),
     val title: String,
     val description: String,
-    val remindAt: String,
-    val time: String
+    val remindAt: Long,
+    val day: Int,
+    val month: Int,
+    val year: Int,
+    val hour: Int,
+    val minute: Int
 )
