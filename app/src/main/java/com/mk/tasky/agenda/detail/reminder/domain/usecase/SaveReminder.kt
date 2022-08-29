@@ -21,11 +21,11 @@ class SaveReminder(
         val remindAtTime = when (
             reminder
         ) {
-            ReminderTypes.TEN_MINUTES -> reminderTime.plusMinutes(10)
-            ReminderTypes.THIRTY_MINUTES -> reminderTime.plusMinutes(30)
-            ReminderTypes.ONE_HOUR -> reminderTime.plusHours(1)
-            ReminderTypes.SIX_HOURS -> reminderTime.plusHours(6)
-            ReminderTypes.ONE_DAY -> reminderTime.plusDays(1)
+            ReminderTypes.TEN_MINUTES -> reminderTime.minusMinutes(10)
+            ReminderTypes.THIRTY_MINUTES -> reminderTime.minusMinutes(30)
+            ReminderTypes.ONE_HOUR -> reminderTime.minusHours(1)
+            ReminderTypes.SIX_HOURS -> reminderTime.minusHours(6)
+            ReminderTypes.ONE_DAY -> reminderTime.minusDays(1)
         }
         val reminder = Reminder(
             title = title,
