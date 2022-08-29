@@ -11,6 +11,7 @@ class SaveReminder(
     private val repository: AgendaRepository
 ) {
     suspend operator fun invoke(
+        id: String?,
         title: String,
         description: String,
         date: LocalDate,
@@ -28,6 +29,7 @@ class SaveReminder(
             ReminderTypes.ONE_DAY -> reminderTime.minusDays(1)
         }
         val reminder = Reminder(
+            id = id,
             title = title,
             description = description,
             time = reminderTime,

@@ -45,6 +45,12 @@ fun DetailReminderScreen(
         )
     }
 
+    LaunchedEffect(key1 = state.shouldExit) {
+        if (state.shouldExit) {
+            onClose()
+        }
+    }
+
     MaterialDialog(
         dialogState = timepickerState,
         buttons = {

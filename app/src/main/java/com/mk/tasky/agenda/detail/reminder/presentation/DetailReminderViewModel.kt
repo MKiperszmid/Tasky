@@ -42,6 +42,7 @@ class DetailReminderViewModel @Inject constructor(
                 )
                 viewModelScope.launch {
                     saveReminder(
+                        id = state.id,
                         title = state.title,
                         description = state.description,
                         time = state.time,
@@ -49,6 +50,9 @@ class DetailReminderViewModel @Inject constructor(
                         reminder = state.reminder
                     )
                 }
+                state = state.copy(
+                    shouldExit = true
+                )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
                 state = state.copy(reminder = event.reminderType)
