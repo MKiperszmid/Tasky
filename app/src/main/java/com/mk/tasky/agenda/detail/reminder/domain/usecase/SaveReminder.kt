@@ -32,7 +32,7 @@ class SaveReminder(
             id = id,
             title = title,
             description = description,
-            time = reminderTime,
+            dateTime = reminderTime,
             remindAt = remindAtTime
         )
 

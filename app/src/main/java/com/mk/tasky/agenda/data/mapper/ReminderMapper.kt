@@ -13,11 +13,7 @@ fun Reminder.toEntity(): ReminderEntity {
         title = this.title,
         description = this.description,
         remindAt = this.remindAt.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli(),
-        day = this.time.dayOfMonth,
-        month = this.time.monthValue,
-        year = this.time.year,
-        hour = this.time.hour,
-        minute = this.time.minute
+        dateTime = this.dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
     )
 }
 
@@ -30,6 +26,9 @@ fun ReminderEntity.toDomain(): Reminder {
             Instant.ofEpochMilli(this.remindAt),
             ZoneId.systemDefault()
         ),
-        time = LocalDateTime.of(year, month, day, hour, minute)
+        dateTime = LocalDateTime.ofInstant(
+            Instant.ofEpochMilli(this.dateTime),
+            ZoneId.systemDefault()
+        )
     )
 }

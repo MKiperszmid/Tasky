@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.home.presentation
 
+import com.mk.tasky.agenda.domain.model.Reminder
 import java.time.LocalDateTime
 
 data class HomeState(
@@ -13,5 +14,6 @@ data class HomeState(
         HomeAgendaType.Task,
         HomeAgendaType.Reminder
     ),
-    val selectedAgendaType: HomeAgendaType? = null
+    val selectedAgendaType: HomeAgendaType? = null,
+    val reminders: List<Reminder> = emptyList()
 )

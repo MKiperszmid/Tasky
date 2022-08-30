@@ -6,5 +6,5 @@ import java.time.LocalDate
 
 interface AgendaRepository {
     suspend fun insertReminder(reminder: Reminder)
-    fun getRemindersForDate(date: LocalDate): Flow<List<Reminder>>
+    suspend fun getRemindersForDate(date: LocalDate): List<Reminder>
 }

@@ -7,5 +7,5 @@ data class Reminder(
     val title: String,
     val description: String,
     val remindAt: LocalDateTime,
-    val time: LocalDateTime
+    val dateTime: LocalDateTime
 )

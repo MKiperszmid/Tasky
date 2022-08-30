@@ -11,9 +11,5 @@ data class ReminderEntity(
     val title: String,
     val description: String,
     val remindAt: Long,
-    val day: Int,
-    val month: Int,
-    val year: Int,
-    val hour: Int,
-    val minute: Int
+    val dateTime: Long
 )

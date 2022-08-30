@@ -5,9 +5,8 @@ import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
 import java.time.LocalDate
+import java.time.ZoneId
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao
@@ -16,11 +15,16 @@ class AgendaRepositoryImpl(
         dao.insertReminder(reminder.toEntity())
     }
 
-    override fun getRemindersForDate(date: LocalDate): Flow<List<Reminder>> {
-        return dao.getRemindersForDate(
-            day = date.dayOfMonth,
-            month = date.monthValue,
-            year = date.year
-        ).map { reminders -> reminders.map { it.toDomain() } }
+    override suspend fun getRemindersForDate(date: LocalDate): List<Reminder> {
+        val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
+
+        return dao.getRemindersBetweenTimestamps(
+            dayOne = dayOne,
+            dayTwo = dayTwo
+        ).map {
+            it.toDomain()
+        }
     }
 }
