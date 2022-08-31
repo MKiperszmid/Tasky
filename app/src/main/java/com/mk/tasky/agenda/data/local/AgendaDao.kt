@@ -15,7 +15,7 @@ interface AgendaDao {
     @Query(
         """
             SELECT * FROM ReminderEntity
-            WHERE dateTime > :dayOne
+            WHERE dateTime >= :dayOne
             AND dateTime < :dayTwo
         """
     )

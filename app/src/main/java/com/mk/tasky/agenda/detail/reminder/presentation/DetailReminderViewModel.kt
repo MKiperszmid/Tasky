@@ -8,7 +8,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.agenda.detail.reminder.domain.usecase.SaveReminder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -41,14 +43,16 @@ class DetailReminderViewModel @Inject constructor(
                     isEditing = false
                 )
                 viewModelScope.launch {
-                    saveReminder(
-                        id = state.id,
-                        title = state.title,
-                        description = state.description,
-                        time = state.time,
-                        date = state.date,
-                        reminder = state.reminder
-                    )
+                    withContext(NonCancellable) {
+                        saveReminder(
+                            id = state.id,
+                            title = state.title,
+                            description = state.description,
+                            time = state.time,
+                            date = state.date,
+                            reminder = state.reminder
+                        )
+                    }
                 }
                 state = state.copy(
                     shouldExit = true
