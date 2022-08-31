@@ -5,13 +5,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.detail.reminder.domain.usecase.SaveReminder
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.NonCancellable
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class DetailReminderViewModel @Inject constructor(
-    savedStateHandle: SavedStateHandle
+    savedStateHandle: SavedStateHandle,
+    private val saveReminder: SaveReminder
 ) : ViewModel() {
     var state by mutableStateOf(DetailReminderState())
         private set
@@ -35,6 +41,21 @@ class DetailReminderViewModel @Inject constructor(
             DetailReminderEvent.OnSave -> {
                 state = state.copy(
                     isEditing = false
+                )
+                viewModelScope.launch {
+                    withContext(NonCancellable) {
+                        saveReminder(
+                            id = state.id,
+                            title = state.title,
+                            description = state.description,
+                            time = state.time,
+                            date = state.date,
+                            reminder = state.reminder
+                        )
+                    }
+                }
+                state = state.copy(
+                    shouldExit = true
                 )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
