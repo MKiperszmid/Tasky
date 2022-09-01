@@ -36,7 +36,7 @@ class HomeViewModel @Inject constructor(
                     .plusDays(state.selectedDay.toLong())
             )
             state = state.copy(
-                reminders = reminders
+                reminders = reminders.sortedBy { it.dateTime }
             )
         }
     }
