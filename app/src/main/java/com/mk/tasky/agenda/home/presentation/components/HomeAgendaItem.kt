@@ -10,6 +10,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.outlined.Circle
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,6 +36,15 @@ fun HomeAgendaItem(
     finishDateTime: LocalDateTime? = null,
     modifier: Modifier = Modifier
 ) {
+    val itemDate by remember {
+        derivedStateOf {
+            val dateFormatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm")
+            val date = startDatetime.format(dateFormatter)
+            if (finishDateTime != null) {
+                date + " - ${finishDateTime.format(dateFormatter)}"
+            } else date
+        }
+    }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -65,12 +77,8 @@ fun HomeAgendaItem(
                 Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "options")
             }
         }
-        Text(text = description, fontSize = 14.sp, color = DarkGray)
-        val dateFormatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm")
-        var itemDate = startDatetime.format(dateFormatter)
-        if (finishDateTime != null) {
-            itemDate += " - ${finishDateTime.format(dateFormatter)}"
-        }
+        Text(text = description, fontSize = 14.sp, color = DarkGray, modifier = Modifier.padding(start = 36.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = itemDate,
             fontSize = 14.sp,
