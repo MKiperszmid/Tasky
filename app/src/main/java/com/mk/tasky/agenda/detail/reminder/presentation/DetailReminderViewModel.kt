@@ -134,7 +134,14 @@ class DetailReminderViewModel @Inject constructor(
                 )
             }
             DetailReminderEvent.OnReminderDelete -> {
-                println("Delete Reminder")
+                state.id?.let {
+                    viewModelScope.launch(NonCancellable) {
+                        reminderUseCases.deleteReminder(it)
+                    }
+                }
+                state = state.copy(
+                    shouldExit = true
+                )
             }
             is DetailReminderEvent.OnUpdatedInformation -> {
                 if (event.title.isNotBlank()) {
