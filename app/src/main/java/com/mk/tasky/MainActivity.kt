@@ -80,20 +80,38 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
             }
         }
         composable(Route.HOME) {
-            HomeScreen(redirect = { type, date ->
-                val route = when (type) {
-                    HomeAgendaType.Event -> Route.EVENT
-                    HomeAgendaType.Reminder -> Route.REMINDER
-                    HomeAgendaType.Task -> Route.TASK
+            HomeScreen(
+                redirect = { type, date ->
+                    val route = when (type) {
+                        HomeAgendaType.Event -> Route.EVENT
+                        HomeAgendaType.Reminder -> Route.REMINDER
+                        HomeAgendaType.Task -> Route.TASK
+                    }
+                    navController.navigate("$route?action=create&date=$date") // TODO: Redirect to Route.DETAIL, and detail checks the type, and depending the type it shows ReminderScreen, EventScreen or TaskScreen
+                },
+                options = { itemOptions, itemId ->
+                    val type = Route.REMINDER // TODO: Make it so it detects based on itemId
+                    navController.navigate("$type?action=${itemOptions.name}&id=$itemId")
                 }
-                navController.navigate("$route/$date") // TODO: Redirect to Route.DETAIL, and detail checks the type, and depending the type it shows ReminderScreen, EventScreen or TaskScreen
-            })
+            )
         }
         composable(
-            route = Route.REMINDER + "/{date}",
+            route = Route.REMINDER + "?date={date}&action={action}&id={id}",
             arguments = listOf(
                 navArgument("date") {
                     type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("action") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("id") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
                 }
             )
         ) {

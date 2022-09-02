@@ -59,6 +59,17 @@ class HomeViewModel @Inject constructor(
                     showAgendaOptions = true
                 )
             }
+            is HomeEvent.OnItemOptionsClick -> {
+                state = state.copy(
+                    selectedItemOptionId = event.itemId,
+                    showItemOptions = true
+                )
+            }
+            HomeEvent.OnItemOptionsDismiss -> {
+                state = state.copy(
+                    showItemOptions = false
+                )
+            }
         }
     }
 }

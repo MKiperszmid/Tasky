@@ -27,6 +27,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeScreen(
     redirect: (HomeAgendaType, LocalDateTime) -> Unit,
+    options: (HomeItemOptions, String) -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -66,13 +67,33 @@ fun HomeScreen(
                         title = it.title,
                         description = it.description,
                         color = Light,
-                        onOptionsClick = { /*TODO*/ },
+                        onOptionsClick = {
+                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it.id!!))
+                        },
                         startDatetime = it.dateTime
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterEnd
+        ) { // TODO: Make it so alignment changes based on position in screen
+            val itemOptions = HomeItemOptions.values()
+            TaskyDropdown(
+                items = itemOptions.map { it.type.asString(context) },
+                onItemSelected = {
+                    options(
+                        itemOptions[it],
+                        state.selectedItemOptionId!!
+                    )
+                },
+                onDismiss = { viewModel.onEvent(HomeEvent.OnItemOptionsDismiss) },
+                showDropdown = state.showItemOptions
+            )
+        }
+
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             TaskyButton(text = "+", onClick = {
                 viewModel.onEvent(HomeEvent.OnAddAgendaClick)

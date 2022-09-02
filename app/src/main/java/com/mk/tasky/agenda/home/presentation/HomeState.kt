@@ -15,5 +15,7 @@ data class HomeState(
         HomeAgendaType.Reminder
     ),
     val selectedAgendaType: HomeAgendaType? = null,
-    val reminders: List<Reminder> = emptyList()
+    val reminders: List<Reminder> = emptyList(),
+    val showItemOptions: Boolean = false,
+    val selectedItemOptionId: String? = null
 )
