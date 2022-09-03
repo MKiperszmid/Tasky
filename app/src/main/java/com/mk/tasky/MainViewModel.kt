@@ -19,7 +19,7 @@ class MainViewModel @Inject constructor(
     private val repository: AuthenticationRepository,
     private val preferences: Preferences,
     private val database: AgendaDatabase,
-    private val defaultDispatcher: CoroutineDispatcher
+    private val dispatcher: CoroutineDispatcher
 ) : ViewModel() {
     var state by mutableStateOf(MainState())
         private set
@@ -43,7 +43,7 @@ class MainViewModel @Inject constructor(
     fun onLogout() {
         viewModelScope.launch {
             preferences.deleteUser()
-            withContext(defaultDispatcher) {
+            withContext(dispatcher) {
                 database.clearAllTables()
             }
         }
