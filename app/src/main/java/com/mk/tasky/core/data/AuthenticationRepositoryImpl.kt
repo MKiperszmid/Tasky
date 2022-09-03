@@ -1,14 +1,12 @@
 package com.mk.tasky.core.data
 
 import com.mk.tasky.authentication.data.mapper.toDomain
-import com.mk.tasky.authentication.data.remote.dto.ErrorResponseDto
 import com.mk.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.mk.tasky.authentication.data.remote.dto.RegistrationBodyDto
-import com.mk.tasky.authentication.data.remote.exceptions.LoginException
 import com.mk.tasky.core.data.remote.AuthenticationApi
 import com.mk.tasky.core.domain.model.LoggedUser
 import com.mk.tasky.core.domain.repository.AuthenticationRepository
-import com.squareup.moshi.Moshi
+import com.mk.tasky.core.util.ErrorParser.parseError
 import retrofit2.HttpException
 import java.util.concurrent.CancellationException
 
@@ -58,19 +56,5 @@ class AuthenticationRepositoryImpl(
         } catch (e: Exception) {
             return Result.failure(e)
         }
-    }
-
-    private fun <T> parseError(e: HttpException): Result<T> {
-        e.response()?.errorBody()?.source()?.let {
-            val moshiAdapter = Moshi.Builder().build().adapter(ErrorResponseDto::class.java)
-            try {
-                val body = moshiAdapter.fromJson(it)
-                body?.message?.let { errorMessage ->
-                    return Result.failure(LoginException(errorMessage))
-                }
-            } catch (e: Exception) {
-            }
-        }
-        return Result.failure(e)
     }
 }
