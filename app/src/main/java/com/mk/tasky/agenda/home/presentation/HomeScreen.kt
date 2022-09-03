@@ -6,6 +6,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -76,13 +79,16 @@ fun HomeScreen(
                 }
             }
         }
+        val itemOptions = HomeItemOptions.values()
+        val itemOptionNames = remember {
+            itemOptions.map { it.type.asString(context) }
+        }
         Box(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.CenterEnd
         ) { // TODO: Make it so alignment changes based on position in screen
-            val itemOptions = HomeItemOptions.values()
             TaskyDropdown(
-                items = itemOptions.map { it.type.asString(context) },
+                items = itemOptionNames,
                 onItemSelected = {
                     options(
                         itemOptions[it],
@@ -94,12 +100,16 @@ fun HomeScreen(
             )
         }
 
+        val agendaTypeNames = remember {
+            state.agendaTypes.map { it.name }
+        }
+
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             TaskyButton(text = "+", onClick = {
                 viewModel.onEvent(HomeEvent.OnAddAgendaClick)
             }, fontSize = 20.sp)
             TaskyDropdown(
-                items = state.agendaTypes.map { it.name },
+                items = agendaTypeNames,
                 onItemSelected = {
                     redirect(
                         state.agendaTypes[it],

@@ -61,7 +61,7 @@ class DetailReminderViewModel @Inject constructor(
                         )
                     }
                     HomeItemOptions.DELETE -> {
-                        viewModelScope.launch(NonCancellable) {
+                        viewModelScope.launch {
                             reminderUseCases.deleteReminder(itemId)
                             state = state.copy(
                                 shouldExit = true
