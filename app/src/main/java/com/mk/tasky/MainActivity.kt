@@ -45,7 +45,9 @@ class MainActivity : ComponentActivity() {
                     val navController = rememberNavController()
                     val scaffoldState = rememberScaffoldState()
                     Scaffold(modifier = Modifier.fillMaxSize(), scaffoldState = scaffoldState) {
-                        MainScreen(startDestination, navController)
+                        MainScreen(startDestination, navController) {
+                            mainViewModel.onLogout()
+                        }
                     }
                 }
             }
@@ -54,7 +56,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun MainScreen(startDestination: String, navController: NavHostController) {
+fun MainScreen(
+    startDestination: String,
+    navController: NavHostController,
+    onLogout: () -> Unit
+) {
     NavHost(
         navController = navController,
         startDestination = startDestination
@@ -92,6 +98,11 @@ fun MainScreen(startDestination: String, navController: NavHostController) {
                 options = { itemOptions, itemId ->
                     val type = Route.REMINDER // TODO: Make it so it detects based on itemId
                     navController.navigate("$type?action=${itemOptions.name}&id=$itemId")
+                },
+                onLogout = {
+                    onLogout()
+                    navController.popBackStack()
+                    navController.navigate(Route.LOGIN)
                 }
             )
         }

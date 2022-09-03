@@ -10,6 +10,7 @@ import com.mk.tasky.agenda.home.domain.usecase.FormatNameUseCase
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import okhttp3.internal.wait
 import javax.inject.Inject
 
 @HiltViewModel
@@ -69,6 +70,25 @@ class HomeViewModel @Inject constructor(
                 state = state.copy(
                     showItemOptions = false
                 )
+            }
+            HomeEvent.OnLogoutClick -> {
+                state = state.copy(
+                    showLogout = true
+                )
+            }
+            HomeEvent.OnLogoutDismiss -> {
+                state = state.copy(
+                    showLogout = false
+                )
+            }
+            HomeEvent.OnRefreshAgenda -> {
+                getRemindersForSelectedDate()
+            }
+            is HomeEvent.OnDeleteItem -> {
+                viewModelScope.launch {
+                    repository.deleteReminderById(event.itemId)
+                    getRemindersForSelectedDate()
+                }
             }
         }
     }
