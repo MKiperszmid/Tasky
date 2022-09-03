@@ -7,6 +7,7 @@ interface Preferences {
     fun saveFullName(name: String)
     fun saveUserId(userId: String)
     fun loadLoggedUser(): LoggedUser?
+    fun deleteUser()
 
     companion object {
         const val KEY_TOKEN = "token"

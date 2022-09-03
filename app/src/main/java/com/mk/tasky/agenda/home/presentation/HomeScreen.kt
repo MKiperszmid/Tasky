@@ -6,6 +6,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -27,18 +29,41 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeScreen(
     redirect: (HomeAgendaType, LocalDateTime) -> Unit,
+    options: (HomeItemOptions, String) -> Unit,
+    onLogout: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val context = LocalContext.current
+
+    LaunchedEffect(true) {
+        viewModel.onEvent(HomeEvent.OnRefreshAgenda)
+    }
+
+    val isLoggedOut = state.isLoggedOut
+    LaunchedEffect(key1 = isLoggedOut) {
+        if (isLoggedOut) {
+            onLogout()
+        }
+    }
 
     TaskyBackground(
         header = {
             HomeHeader(date = state.currentDate, name = state.profileName, onMonthClick = {
                 Toast.makeText(context, "Clicked Month!", Toast.LENGTH_SHORT).show()
             }, onProfileClick = {
-                    Toast.makeText(context, "Clicked Profile!", Toast.LENGTH_SHORT).show()
+                    viewModel.onEvent(HomeEvent.OnLogoutClick)
                 })
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
+                TaskyDropdown(
+                    items = listOf("Logout"),
+                    onItemSelected = {
+                        onLogout()
+                    },
+                    showDropdown = state.showLogout,
+                    onDismiss = { viewModel.onEvent(HomeEvent.OnLogoutDismiss) }
+                )
+            }
         }
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
@@ -66,19 +91,50 @@ fun HomeScreen(
                         title = it.title,
                         description = it.description,
                         color = Light,
-                        onOptionsClick = { /*TODO*/ },
+                        onOptionsClick = {
+                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it.id!!))
+                        },
                         startDatetime = it.dateTime
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
+        val itemOptions = HomeItemOptions.values()
+        val itemOptionNames = remember {
+            itemOptions.map { it.type.asString(context) }
+        }
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.CenterEnd
+        ) { // TODO: Make it so alignment changes based on position in screen
+            TaskyDropdown(
+                items = itemOptionNames,
+                onItemSelected = {
+                    val selectedOption = itemOptions[it]
+                    state.selectedItemOptionId?.let { itemid ->
+                        if (selectedOption == HomeItemOptions.DELETE) {
+                            viewModel.onEvent(HomeEvent.OnDeleteItem(itemid))
+                        } else {
+                            options(selectedOption, itemid)
+                        }
+                    }
+                },
+                onDismiss = { viewModel.onEvent(HomeEvent.OnItemOptionsDismiss) },
+                showDropdown = state.showItemOptions
+            )
+        }
+
+        val agendaTypeNames = remember {
+            state.agendaTypes.map { it.name }
+        }
+
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.BottomEnd) {
             TaskyButton(text = "+", onClick = {
                 viewModel.onEvent(HomeEvent.OnAddAgendaClick)
             }, fontSize = 20.sp)
             TaskyDropdown(
-                items = state.agendaTypes.map { it.name },
+                items = agendaTypeNames,
                 onItemSelected = {
                     redirect(
                         state.agendaTypes[it],

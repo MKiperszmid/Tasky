@@ -32,4 +32,9 @@ class DefaultPreferences(
             fullName = fullName
         )
     }
+
+    override fun deleteUser() {
+        sharedPreferences.edit().remove(Preferences.KEY_TOKEN).remove(Preferences.KEY_NAME)
+            .remove(Preferences.KEY_USERID).apply()
+    }
 }

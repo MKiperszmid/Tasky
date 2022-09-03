@@ -15,6 +15,10 @@ class AgendaRepositoryImpl(
         dao.insertReminder(reminder.toEntity())
     }
 
+    override suspend fun getReminderById(id: String): Reminder {
+        return dao.getReminderById(id).toDomain()
+    }
+
     override suspend fun getRemindersForDate(date: LocalDate): List<Reminder> {
         val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
@@ -26,5 +30,9 @@ class AgendaRepositoryImpl(
         ).map {
             it.toDomain()
         }
+    }
+
+    override suspend fun deleteReminderById(id: String) {
+        dao.deleteReminderById(id)
     }
 }
