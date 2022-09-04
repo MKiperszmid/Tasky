@@ -15,6 +15,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mk.tasky.agenda.detail.reminder.presentation.DetailReminderEvent
 import com.mk.tasky.agenda.home.presentation.components.HomeAgendaItem
 import com.mk.tasky.agenda.home.presentation.components.HomeDayPicker
 import com.mk.tasky.agenda.home.presentation.components.HomeHeader
@@ -22,6 +23,9 @@ import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyDropdown
 import com.mk.tasky.ui.theme.Light
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -47,10 +51,23 @@ fun HomeScreen(
         }
     }
 
+    val datepickerState = rememberMaterialDialogState()
+    MaterialDialog(
+        dialogState = datepickerState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        datepicker { date ->
+            viewModel.onEvent(HomeEvent.OnDateSelected(date))
+        }
+    }
+
     TaskyBackground(
         header = {
             HomeHeader(date = state.currentDate, name = state.profileName, onMonthClick = {
-                Toast.makeText(context, "Clicked Month!", Toast.LENGTH_SHORT).show()
+                datepickerState.show()
             }, onProfileClick = {
                     viewModel.onEvent(HomeEvent.OnLogoutClick)
                 })
@@ -92,7 +109,7 @@ fun HomeScreen(
                         description = it.description,
                         color = Light,
                         onOptionsClick = {
-                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it.id!!))
+                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it.id))
                         },
                         startDatetime = it.dateTime
                     )

@@ -6,18 +6,21 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.usecase.DeleteReminder
 import com.mk.tasky.agenda.home.domain.usecase.FormatNameUseCase
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import okhttp3.internal.wait
+import java.time.LocalDateTime
+import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
     private val preferences: Preferences,
     private val formatNameUseCase: FormatNameUseCase,
-    private val repository: AgendaRepository
+    private val repository: AgendaRepository,
+    private val deleteReminder: DeleteReminder
 ) : ViewModel() {
     var state by mutableStateOf(HomeState())
         private set
@@ -86,9 +89,16 @@ class HomeViewModel @Inject constructor(
             }
             is HomeEvent.OnDeleteItem -> {
                 viewModelScope.launch {
-                    repository.deleteReminderById(event.itemId)
+                    deleteReminder(event.itemId)
                     getRemindersForSelectedDate()
                 }
+            }
+            is HomeEvent.OnDateSelected -> {
+                state = state.copy(
+                    currentDate = LocalDateTime.of(event.date, LocalTime.now()),
+                    selectedDay = 0
+                )
+                getRemindersForSelectedDate()
             }
         }
     }

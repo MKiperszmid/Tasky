@@ -8,7 +8,6 @@ import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.util.ErrorParser
-import kotlinx.coroutines.delay
 import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.ZoneId
@@ -58,7 +57,21 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun deleteReminderById(id: String) {
+    override suspend fun deleteReminderById(id: String): Result<Unit> {
         dao.deleteReminderById(id)
+        return deleteReminderByIdRemotely(id)
+    }
+
+    private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
+        return try {
+            api.deleteReminder(id)
+            Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            return ErrorParser.parseError(e)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 }

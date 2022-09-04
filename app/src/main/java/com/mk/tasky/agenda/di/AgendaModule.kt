@@ -5,7 +5,9 @@ import androidx.room.Room
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.detail.reminder.domain.usecase.ReminderUseCases
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.usecase.DeleteReminder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -45,5 +47,13 @@ object AgendaModule {
         agendaApi: AgendaApi
     ): AgendaRepository {
         return AgendaRepositoryImpl(agendaDatabase.dao, agendaApi)
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteReminderUseCase(
+        repository: AgendaRepository
+    ): DeleteReminder {
+        return DeleteReminder(repository)
     }
 }
