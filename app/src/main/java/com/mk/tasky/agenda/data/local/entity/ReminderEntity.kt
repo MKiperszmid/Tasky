@@ -7,7 +7,7 @@ import java.util.*
 @Entity
 data class ReminderEntity(
     @PrimaryKey
-    val id: String = UUID.randomUUID().toString(),
+    val id: String,
     val title: String,
     val description: String,
     val remindAt: Long,

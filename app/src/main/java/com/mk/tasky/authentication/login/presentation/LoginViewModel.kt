@@ -5,7 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.authentication.data.remote.exceptions.LoginException
+import com.mk.tasky.core.data.remote.exceptions.NetworkErrorException
 import com.mk.tasky.core.domain.repository.AuthenticationRepository
 import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
 import com.mk.tasky.core.domain.preferences.Preferences
@@ -70,7 +70,7 @@ class LoginViewModel @Inject constructor(
                     isLoggedIn = true
                 )
             }.onFailure {
-                if (it is LoginException && it.message?.isBlank() == false) {
+                if (it is NetworkErrorException && it.message?.isBlank() == false) {
                     println(it.message)
                 } else {
                     println(it)

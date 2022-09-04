@@ -13,7 +13,6 @@ import com.mk.tasky.agenda.home.presentation.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.time.Duration
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -105,20 +104,20 @@ class DetailReminderViewModel @Inject constructor(
                     isEditing = false
                 )
                 viewModelScope.launch {
-                    withContext(NonCancellable) {
-                        reminderUseCases.saveReminder(
-                            id = state.id,
-                            title = state.title,
-                            description = state.description,
-                            time = state.time,
-                            date = state.date,
-                            reminder = state.reminder
-                        )
+                    reminderUseCases.saveReminder(
+                        id = state.id,
+                        title = state.title,
+                        description = state.description,
+                        time = state.time,
+                        date = state.date,
+                        reminder = state.reminder
+                    ).onFailure {
+                        println("Couldn't save remotely") // TODO: Maybe save the ID on the DB to later save it remotely once internet is up
                     }
+                    state = state.copy(
+                        shouldExit = true
+                    )
                 }
-                state = state.copy(
-                    shouldExit = true
-                )
             }
             is DetailReminderEvent.OnNotificationReminderSelect -> {
                 state = state.copy(reminder = event.reminderType)

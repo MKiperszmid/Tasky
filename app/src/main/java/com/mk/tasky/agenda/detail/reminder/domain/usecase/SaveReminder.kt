@@ -6,6 +6,7 @@ import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
+import java.util.*
 
 class SaveReminder(
     private val repository: AgendaRepository
@@ -17,7 +18,7 @@ class SaveReminder(
         date: LocalDate,
         time: LocalTime,
         reminder: ReminderTypes
-    ) {
+    ): Result<Unit> {
         val reminderTime = LocalDateTime.of(date, time)
         val remindAtTime = when (
             reminder
@@ -28,14 +29,15 @@ class SaveReminder(
             ReminderTypes.SIX_HOURS -> reminderTime.minusHours(6)
             ReminderTypes.ONE_DAY -> reminderTime.minusDays(1)
         }
-        val reminder = Reminder(
-            id = id,
+        val isEdit = id != null
+        val agendaReminder = Reminder(
+            id = id ?: UUID.randomUUID().toString(),
             title = title,
             description = description,
             dateTime = reminderTime,
             remindAt = remindAtTime
         )
 
-        repository.insertReminder(reminder)
+        return repository.insertReminder(agendaReminder, isEdit)
     }
 }
