@@ -93,14 +93,14 @@ class HomeViewModel @Inject constructor(
 
     private fun getAgendaForSelectedDate(forceRemote: Boolean) {
         viewModelScope.launch {
-            val agenda =
-                repository.getAgenda(
-                    state.currentDate.plusDays(state.selectedDay.toLong()),
-                    forceRemote
+            repository.getAgenda(
+                state.currentDate.plusDays(state.selectedDay.toLong()),
+                forceRemote
+            ).collect { agenda ->
+                state = state.copy(
+                    reminders = agenda.reminders.sortedBy { it.dateTime }
                 )
-            state = state.copy(
-                reminders = agenda.reminders.sortedBy { it.dateTime }
-            )
+            }
         }
     }
 }

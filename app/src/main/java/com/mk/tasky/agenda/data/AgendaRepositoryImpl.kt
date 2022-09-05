@@ -10,6 +10,8 @@ import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.util.ErrorParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -65,19 +67,24 @@ class AgendaRepositoryImpl(
         return deleteReminderByIdRemotely(id)
     }
 
-    override suspend fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Agenda {
+    override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
         // TODO: Update with Tasks and Events
-        val reminders = getRemindersForDate(date.toLocalDate()).toMutableList()
-        if (forceRemote) {
-            getAgendaRemotely(date).onSuccess { response ->
-                reminders.addAll(response.reminders.map { it.toDomain() })
-            }.onFailure {
-                // TODO: Internet error
-                println("")
+        return flow {
+            val localReminders = getRemindersForDate(date.toLocalDate()).toMutableList()
+            emit(Agenda(reminders = localReminders, tasks = emptyList(), events = emptyList()))
+            if (forceRemote) {
+                getAgendaRemotely(date).onSuccess { response ->
+                    response.reminders.forEach {
+                        dao.insertReminder(it.toDomain().toEntity())
+                    }
+                    val updatedLocalReminders = getRemindersForDate(date.toLocalDate()).toMutableList()
+                    emit(Agenda(reminders = updatedLocalReminders, tasks = emptyList(), events = emptyList()))
+                }.onFailure {
+                    // TODO: Internet error
+                    println("")
+                }
             }
         }
-
-        return Agenda(reminders = reminders, tasks = emptyList(), events = emptyList())
     }
 
     private suspend fun getAgendaRemotely(date: LocalDateTime): Result<AgendaResponseDto> {
