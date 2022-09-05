@@ -1,9 +1,7 @@
 package com.mk.tasky.agenda.data.remote
 
 import com.mk.tasky.agenda.data.remote.dto.ReminderDto
-import retrofit2.http.Body
-import retrofit2.http.POST
-import retrofit2.http.PUT
+import retrofit2.http.*
 
 interface AgendaApi {
     companion object {
@@ -15,4 +13,7 @@ interface AgendaApi {
 
     @PUT("/reminder")
     suspend fun updateReminder(@Body body: ReminderDto)
+
+    @DELETE("/reminder")
+    suspend fun deleteReminder(@Query("reminderId") id: String)
 }

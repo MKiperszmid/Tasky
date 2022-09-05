@@ -1,5 +1,7 @@
 package com.mk.tasky.agenda.home.presentation
 
+import java.time.LocalDate
+
 sealed class HomeEvent {
     data class OnDayClick(val day: Int) : HomeEvent()
     object OnAgendaItemDismiss : HomeEvent()
@@ -10,4 +12,5 @@ sealed class HomeEvent {
     object OnLogoutClick : HomeEvent()
     object OnRefreshAgenda : HomeEvent()
     data class OnDeleteItem(val itemId: String) : HomeEvent()
+    data class OnDateSelected(val date: LocalDate) : HomeEvent()
 }

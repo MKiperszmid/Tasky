@@ -1,6 +1,6 @@
 package com.mk.tasky.agenda.detail.reminder.domain.di
 
-import com.mk.tasky.agenda.detail.reminder.domain.usecase.DeleteReminder
+import com.mk.tasky.agenda.domain.usecase.DeleteReminder
 import com.mk.tasky.agenda.detail.reminder.domain.usecase.GetReminder
 import com.mk.tasky.agenda.detail.reminder.domain.usecase.ReminderUseCases
 import com.mk.tasky.agenda.detail.reminder.domain.usecase.SaveReminder
@@ -17,12 +17,13 @@ object ReminderModule {
     @Provides
     @Singleton
     fun provideReminderUseCases(
-        repository: AgendaRepository
+        repository: AgendaRepository,
+        deleteReminder: DeleteReminder
     ): ReminderUseCases {
         return ReminderUseCases(
             getReminder = GetReminder(repository),
             saveReminder = SaveReminder(repository),
-            deleteReminder = DeleteReminder(repository)
+            deleteReminder = deleteReminder
         )
     }
 }
