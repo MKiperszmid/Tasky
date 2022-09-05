@@ -37,6 +37,16 @@ fun ReminderEntity.toDomain(): Reminder {
     )
 }
 
+fun ReminderDto.toDomain(): Reminder {
+    return Reminder(
+        id = this.id,
+        title = this.title,
+        description = this.description,
+        remindAt = longToTime(this.remindAt),
+        dateTime = longToTime(this.time)
+    )
+}
+
 private fun timeToLong(time: LocalDateTime): Long {
     return time.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
 }

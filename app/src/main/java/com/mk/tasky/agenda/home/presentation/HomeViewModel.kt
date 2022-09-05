@@ -30,19 +30,7 @@ class HomeViewModel @Inject constructor(
         state = state.copy(
             profileName = formatNameUseCase(user.fullName)
         )
-        getRemindersForSelectedDate()
-    }
-
-    private fun getRemindersForSelectedDate() {
-        viewModelScope.launch {
-            val reminders = repository.getRemindersForDate(
-                state.currentDate.toLocalDate()
-                    .plusDays(state.selectedDay.toLong())
-            )
-            state = state.copy(
-                reminders = reminders.sortedBy { it.dateTime }
-            )
-        }
+        getAgendaForSelectedDate(true)
     }
 
     fun onEvent(event: HomeEvent) {
@@ -51,7 +39,7 @@ class HomeViewModel @Inject constructor(
                 state = state.copy(
                     selectedDay = event.day
                 )
-                getRemindersForSelectedDate()
+                getAgendaForSelectedDate(true)
             }
             is HomeEvent.OnAgendaItemDismiss -> {
                 state = state.copy(
@@ -85,12 +73,12 @@ class HomeViewModel @Inject constructor(
                 )
             }
             HomeEvent.OnRefreshAgenda -> {
-                getRemindersForSelectedDate()
+                getAgendaForSelectedDate(false)
             }
             is HomeEvent.OnDeleteItem -> {
                 viewModelScope.launch {
                     deleteReminder(event.itemId)
-                    getRemindersForSelectedDate()
+                    getAgendaForSelectedDate(false)
                 }
             }
             is HomeEvent.OnDateSelected -> {
@@ -98,8 +86,21 @@ class HomeViewModel @Inject constructor(
                     currentDate = LocalDateTime.of(event.date, LocalTime.now()),
                     selectedDay = 0
                 )
-                getRemindersForSelectedDate()
+                getAgendaForSelectedDate(true)
             }
+        }
+    }
+
+    private fun getAgendaForSelectedDate(forceRemote: Boolean) {
+        viewModelScope.launch {
+            val agenda =
+                repository.getAgenda(
+                    state.currentDate.plusDays(state.selectedDay.toLong()),
+                    forceRemote
+                )
+            state = state.copy(
+                reminders = agenda.reminders.sortedBy { it.dateTime }
+            )
         }
     }
 }
