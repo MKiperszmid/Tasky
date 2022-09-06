@@ -12,6 +12,8 @@ import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.util.ErrorParser
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -74,11 +76,21 @@ class AgendaRepositoryImpl(
             emit(Agenda(reminders = localReminders, tasks = emptyList(), events = emptyList()))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
-                    response.reminders.forEach {
-                        dao.insertReminder(it.toDomain().toEntity())
+                    supervisorScope {
+                        response.reminders.map {
+                            launch { dao.insertReminder(it.toDomain().toEntity()) }
+                        }.forEach { it.join() }
                     }
-                    val updatedLocalReminders = getRemindersForDate(date.toLocalDate()).toMutableList()
-                    emit(Agenda(reminders = updatedLocalReminders, tasks = emptyList(), events = emptyList()))
+
+                    val updatedLocalReminders =
+                        getRemindersForDate(date.toLocalDate()).toMutableList()
+                    emit(
+                        Agenda(
+                            reminders = updatedLocalReminders,
+                            tasks = emptyList(),
+                            events = emptyList()
+                        )
+                    )
                 }.onFailure {
                     // TODO: Internet error
                     println("")
