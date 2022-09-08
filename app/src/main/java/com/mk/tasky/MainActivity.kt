@@ -17,10 +17,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.mk.tasky.agenda.detail.reminder.presentation.DetailReminderScreen
-import com.mk.tasky.agenda.editor.EditorScreen
-import com.mk.tasky.agenda.home.presentation.HomeAgendaType
-import com.mk.tasky.agenda.home.presentation.HomeScreen
+import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderScreen
+import com.mk.tasky.agenda.presentation.editor.EditorScreen
+import com.mk.tasky.agenda.presentation.home.HomeAgendaType
+import com.mk.tasky.agenda.presentation.home.HomeScreen
 import com.mk.tasky.authentication.login.presentation.LoginScreen
 import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
 import com.mk.tasky.core.presentation.TaskyBackground

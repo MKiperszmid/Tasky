@@ -6,7 +6,7 @@ import androidx.compose.material.DropdownMenu
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.mk.tasky.agenda.home.presentation.HomeAgendaType
+import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 
 @Composable
 fun TaskyDropdown(
