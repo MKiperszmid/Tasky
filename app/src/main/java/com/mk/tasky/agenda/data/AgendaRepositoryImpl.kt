@@ -5,11 +5,18 @@ import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
+import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.util.ErrorParser
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.ZoneId
 import java.util.concurrent.CancellationException
 
@@ -44,7 +51,7 @@ class AgendaRepositoryImpl(
         return dao.getReminderById(id).toDomain()
     }
 
-    override suspend fun getRemindersForDate(date: LocalDate): List<Reminder> {
+    private suspend fun getRemindersForDate(date: LocalDate): List<Reminder> {
         val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
             .toEpochMilli()
@@ -60,6 +67,50 @@ class AgendaRepositoryImpl(
     override suspend fun deleteReminderById(id: String): Result<Unit> {
         dao.deleteReminderById(id)
         return deleteReminderByIdRemotely(id)
+    }
+
+    override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
+        // TODO: Update with Tasks and Events
+        return flow {
+            val localReminders = getRemindersForDate(date.toLocalDate()).toMutableList()
+            emit(Agenda(reminders = localReminders, tasks = emptyList(), events = emptyList()))
+            if (forceRemote) {
+                getAgendaRemotely(date).onSuccess { response ->
+                    supervisorScope {
+                        response.reminders.map {
+                            launch { dao.insertReminder(it.toDomain().toEntity()) }
+                        }.forEach { it.join() }
+                    }
+
+                    val updatedLocalReminders =
+                        getRemindersForDate(date.toLocalDate()).toMutableList()
+                    emit(
+                        Agenda(
+                            reminders = updatedLocalReminders,
+                            tasks = emptyList(),
+                            events = emptyList()
+                        )
+                    )
+                }.onFailure {
+                    // TODO: Internet error
+                    println("")
+                }
+            }
+        }
+    }
+
+    private suspend fun getAgendaRemotely(date: LocalDateTime): Result<AgendaResponseDto> {
+        return try {
+            val response =
+                api.getAgenda(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+            Result.success(response)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            return ErrorParser.parseError(e)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
     }
 
     private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
