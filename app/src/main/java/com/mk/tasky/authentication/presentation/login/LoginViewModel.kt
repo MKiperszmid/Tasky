@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.presentation
+package com.mk.tasky.authentication.presentation.login
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

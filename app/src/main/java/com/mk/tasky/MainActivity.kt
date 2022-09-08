@@ -21,8 +21,8 @@ import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
 import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 import com.mk.tasky.agenda.presentation.home.HomeScreen
-import com.mk.tasky.authentication.login.presentation.LoginScreen
-import com.mk.tasky.authentication.registration.presentation.RegistrationScreen
+import com.mk.tasky.authentication.presentation.login.LoginScreen
+import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme

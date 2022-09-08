@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.presentation
+package com.mk.tasky.authentication.presentation.login
 
 sealed class LoginEvent {
     data class OnEmailChange(val email: String) : LoginEvent()

@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.registration.presentation
+package com.mk.tasky.authentication.presentation.registration
 
 data class RegistrationState(
     val name: String = "",

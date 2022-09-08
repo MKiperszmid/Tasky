@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.registration.presentation
+package com.mk.tasky.authentication.presentation.registration
 
 sealed class RegistrationEvent {
     data class OnNameChange(val name: String) : RegistrationEvent()

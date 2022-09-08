@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.registration.presentation
+package com.mk.tasky.authentication.presentation.registration
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable

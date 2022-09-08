@@ -1,4 +1,4 @@
-package com.mk.tasky.authentication.login.presentation
+package com.mk.tasky.authentication.presentation.login
 
 data class LoginState(
     val email: String = "",
