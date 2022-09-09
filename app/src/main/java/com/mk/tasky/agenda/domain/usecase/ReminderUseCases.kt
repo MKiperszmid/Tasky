@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.domain.reminder.usecase
+package com.mk.tasky.agenda.domain.usecase
 
 data class ReminderUseCases(
     val getReminder: GetReminder,

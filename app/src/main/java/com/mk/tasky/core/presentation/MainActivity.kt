@@ -1,4 +1,4 @@
-package com.mk.tasky
+package com.mk.tasky.core.presentation
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -17,14 +17,14 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import com.mk.tasky.R
 import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
 import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 import com.mk.tasky.agenda.presentation.home.HomeScreen
 import com.mk.tasky.authentication.presentation.login.LoginScreen
 import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
-import com.mk.tasky.core.presentation.TaskyBackground
-import com.mk.tasky.navigation.Route
+import com.mk.tasky.core.presentation.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
 

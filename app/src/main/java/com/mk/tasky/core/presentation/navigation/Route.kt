@@ -1,4 +1,4 @@
-package com.mk.tasky.navigation
+package com.mk.tasky.core.presentation.navigation
 
 object Route {
     const val LOGIN = "login"

@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.domain.home
+package com.mk.tasky.agenda.domain.usecase
 
 class FormatNameUseCase {
     operator fun invoke(name: String): String {

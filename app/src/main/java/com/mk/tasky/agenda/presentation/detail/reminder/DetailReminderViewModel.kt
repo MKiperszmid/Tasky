@@ -7,7 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.agenda.presentation.detail.components.model.ReminderTypes
-import com.mk.tasky.agenda.domain.reminder.usecase.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel

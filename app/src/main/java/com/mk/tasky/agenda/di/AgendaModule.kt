@@ -5,12 +5,12 @@ import androidx.room.Room
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.domain.home.FormatNameUseCase
-import com.mk.tasky.agenda.domain.reminder.usecase.GetReminder
-import com.mk.tasky.agenda.domain.reminder.usecase.ReminderUseCases
-import com.mk.tasky.agenda.domain.reminder.usecase.SaveReminder
+import com.mk.tasky.agenda.domain.usecase.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.GetReminder
+import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.SaveReminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.reminder.usecase.DeleteReminder
+import com.mk.tasky.agenda.domain.usecase.DeleteReminder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.domain.reminder.usecase
+package com.mk.tasky.agenda.domain.usecase
 
 import com.mk.tasky.agenda.presentation.detail.components.model.ReminderTypes
 import com.mk.tasky.agenda.domain.model.Reminder

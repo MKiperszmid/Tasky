@@ -1,4 +1,4 @@
-package com.mk.tasky.core.data.di
+package com.mk.tasky.core.di
 
 import android.app.Application
 import android.content.SharedPreferences

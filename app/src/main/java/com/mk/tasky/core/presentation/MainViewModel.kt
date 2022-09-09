@@ -1,4 +1,4 @@
-package com.mk.tasky
+package com.mk.tasky.core.presentation
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

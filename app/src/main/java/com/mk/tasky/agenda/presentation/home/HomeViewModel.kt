@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.reminder.usecase.DeleteReminder
-import com.mk.tasky.agenda.domain.home.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.DeleteReminder
+import com.mk.tasky.agenda.domain.usecase.FormatNameUseCase
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
