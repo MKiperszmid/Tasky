@@ -5,7 +5,10 @@ import androidx.room.Room
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.detail.reminder.domain.usecase.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.GetReminder
+import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.SaveReminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.usecase.DeleteReminder
 import dagger.Module
@@ -55,5 +58,24 @@ object AgendaModule {
         repository: AgendaRepository
     ): DeleteReminder {
         return DeleteReminder(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideFormatName(): FormatNameUseCase {
+        return FormatNameUseCase()
+    }
+
+    @Provides
+    @Singleton
+    fun provideReminderUseCases(
+        repository: AgendaRepository,
+        deleteReminder: DeleteReminder
+    ): ReminderUseCases {
+        return ReminderUseCases(
+            getReminder = GetReminder(repository),
+            saveReminder = SaveReminder(repository),
+            deleteReminder = deleteReminder
+        )
     }
 }
