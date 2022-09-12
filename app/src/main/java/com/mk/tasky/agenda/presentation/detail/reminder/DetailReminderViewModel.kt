@@ -6,17 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
-import com.mk.tasky.agenda.domain.model.Reminder
+import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
-import java.time.Duration
 import java.time.LocalDateTime
 import javax.inject.Inject
-import kotlin.math.abs
 
 @HiltViewModel
 class DetailReminderViewModel @Inject constructor(
@@ -44,7 +41,7 @@ class DetailReminderViewModel @Inject constructor(
                     description = reminder.description,
                     date = reminder.dateTime.toLocalDate(),
                     time = reminder.dateTime.toLocalTime(),
-                    reminder = calculateRemindAtTime(reminder)
+                    reminder = NotificationTypes.from(reminder.dateTime, reminder.remindAt)
                 )
             }
             savedStateHandle.get<String>("action")?.let {
@@ -71,25 +68,6 @@ class DetailReminderViewModel @Inject constructor(
                 }
             }
         }
-    }
-
-    private fun calculateRemindAtTime(reminder: Reminder): NotificationTypes {
-        val date = reminder.dateTime
-        val remindAt = reminder.remindAt
-        val difference = Duration.between(date, remindAt)
-        if (abs(difference.toDays()) == 1L) {
-            return NotificationTypes.ONE_DAY
-        }
-        if (abs(difference.toHours()) == 6L) {
-            return NotificationTypes.SIX_HOURS
-        }
-        if (abs(difference.toHours()) == 1L) {
-            return NotificationTypes.ONE_HOUR
-        }
-        if (abs(difference.toMinutes()) == 30L) {
-            return NotificationTypes.THIRTY_MINUTES
-        }
-        return NotificationTypes.TEN_MINUTES
     }
 
     fun onEvent(event: DetailReminderEvent) {
