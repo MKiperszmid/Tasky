@@ -19,6 +19,7 @@ import com.mk.tasky.agenda.presentation.detail.components.*
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
+import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -91,7 +92,7 @@ fun DetailTaskScreen(
             Column {
                 DetailColor(
                     text = stringResource(id = R.string.task),
-                    color = Gray,
+                    color = Green,
                     modifier = Modifier.padding(top = 14.dp)
                 )
                 DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
