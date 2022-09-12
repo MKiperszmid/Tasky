@@ -1,6 +1,12 @@
 package com.mk.tasky.agenda.domain.model
 
-// TODO: Update class with information
+import java.time.LocalDateTime
+
 data class Task(
-    val id: String
+    val id: String,
+    val title: String,
+    val description: String,
+    val remindAt: LocalDateTime,
+    val dateTime: LocalDateTime,
+    val isDone: Boolean
 )

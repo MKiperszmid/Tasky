@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.presentation.detail.reminder
+package com.mk.tasky.agenda.presentation.detail.task
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,23 +26,23 @@ import com.vanpra.composematerialdialogs.datetime.time.timepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
-fun DetailReminderScreen(
-    reminderTitle: String,
-    reminderDescription: String,
+fun DetailTaskScreen(
+    taskTitle: String,
+    taskDescription: String,
     onClose: () -> Unit,
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
-    viewModel: DetailReminderViewModel = hiltViewModel()
+    viewModel: DetailTaskViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
+    val context = LocalContext.current
     val datepickerState = rememberMaterialDialogState()
     val timepickerState = rememberMaterialDialogState()
-    val context = LocalContext.current
 
-    LaunchedEffect(reminderTitle, reminderDescription) {
+    LaunchedEffect(taskTitle, taskDescription) {
         viewModel.onEvent(
-            DetailReminderEvent.OnUpdatedInformation(
-                reminderTitle,
-                reminderDescription
+            DetailTaskEvent.OnUpdatedInformation(
+                taskTitle,
+                taskDescription
             )
         )
     }
@@ -61,7 +61,7 @@ fun DetailReminderScreen(
         }
     ) {
         timepicker { time ->
-            viewModel.onEvent(DetailReminderEvent.OnTimeSelected(time))
+            viewModel.onEvent(DetailTaskEvent.OnTimeSelected(time))
         }
     }
 
@@ -73,30 +73,30 @@ fun DetailReminderScreen(
         }
     ) {
         datepicker { date ->
-            viewModel.onEvent(DetailReminderEvent.OnDateSelected(date))
+            viewModel.onEvent(DetailTaskEvent.OnDateSelected(date))
         }
     }
 
     TaskyBackground(header = {
         DetailHeader(
-            editingText = stringResource(R.string.edit_reminder),
+            editingText = stringResource(R.string.edit_task),
             date = state.date,
             onClose = onClose,
-            onEdit = { viewModel.onEvent(DetailReminderEvent.OnEdit) },
-            onSave = { viewModel.onEvent(DetailReminderEvent.OnSave) },
+            onEdit = { viewModel.onEvent(DetailTaskEvent.OnEdit) },
+            onSave = { viewModel.onEvent(DetailTaskEvent.OnSave) },
             isEditing = state.isEditing
         )
     }) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
             Column {
                 DetailColor(
-                    text = stringResource(id = R.string.reminder),
+                    text = stringResource(id = R.string.task),
                     color = Gray,
                     modifier = Modifier.padding(top = 14.dp)
                 )
                 DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
                     openEditor(
-                        "reminder_title",
+                        "task_title",
                         context.getString(R.string.edit_title),
                         state.title,
                         26
@@ -108,7 +108,7 @@ fun DetailReminderScreen(
                     isEditable = state.isEditing,
                     onClick = {
                         openEditor(
-                            "reminder_description",
+                            "task_description",
                             context.getString(R.string.edit_description),
                             state.description,
                             16
@@ -132,14 +132,14 @@ fun DetailReminderScreen(
                 DetailNotificationReminder(
                     notificationTypes = NotificationTypes.values().toList(),
                     onClick = {
-                        viewModel.onEvent(DetailReminderEvent.OnNotificationReminderClick)
+                        viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorClick)
                     },
-                    selectedValue = state.reminder,
+                    selectedValue = state.notificationType,
                     onItemSelected = {
-                        viewModel.onEvent(DetailReminderEvent.OnNotificationReminderSelect(it))
+                        viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorSelect(it))
                     },
                     showDropdown = state.showDropdown,
-                    onDismiss = { viewModel.onEvent(DetailReminderEvent.OnNotificationReminderDismiss) },
+                    onDismiss = { viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorDismiss) },
                     isEditable = state.isEditing
                 )
             }
@@ -152,12 +152,12 @@ fun DetailReminderScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.delete_reminder),
+                        text = stringResource(R.string.delete_task),
                         color = Gray,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable {
-                            viewModel.onEvent(DetailReminderEvent.OnReminderDelete)
+                            viewModel.onEvent(DetailTaskEvent.OnTaskDelete)
                         }
                     )
                 }

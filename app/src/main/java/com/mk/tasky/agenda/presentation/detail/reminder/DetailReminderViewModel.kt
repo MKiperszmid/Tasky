@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.agenda.presentation.detail.components.model.ReminderTypes
+import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
@@ -73,23 +73,23 @@ class DetailReminderViewModel @Inject constructor(
         }
     }
 
-    private fun calculateRemindAtTime(reminder: Reminder): ReminderTypes {
+    private fun calculateRemindAtTime(reminder: Reminder): NotificationTypes {
         val date = reminder.dateTime
         val remindAt = reminder.remindAt
         val difference = Duration.between(date, remindAt)
         if (abs(difference.toDays()) == 1L) {
-            return ReminderTypes.ONE_DAY
+            return NotificationTypes.ONE_DAY
         }
         if (abs(difference.toHours()) == 6L) {
-            return ReminderTypes.SIX_HOURS
+            return NotificationTypes.SIX_HOURS
         }
         if (abs(difference.toHours()) == 1L) {
-            return ReminderTypes.ONE_HOUR
+            return NotificationTypes.ONE_HOUR
         }
         if (abs(difference.toMinutes()) == 30L) {
-            return ReminderTypes.THIRTY_MINUTES
+            return NotificationTypes.THIRTY_MINUTES
         }
-        return ReminderTypes.TEN_MINUTES
+        return NotificationTypes.TEN_MINUTES
     }
 
     fun onEvent(event: DetailReminderEvent) {
