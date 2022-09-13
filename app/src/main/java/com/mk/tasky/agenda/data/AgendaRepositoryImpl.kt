@@ -129,14 +129,14 @@ class AgendaRepositoryImpl(
 
     override suspend fun insertTask(task: Task, isEdit: Boolean): Result<Unit> {
         dao.insertTask(task.toEntity())
-        return saveTaskRemotely(task, isEdit)
+        return saveTaskRemotely(task = task, isEdit = isEdit)
     }
 
     override suspend fun changeStatusTask(id: String, isDone: Boolean): Result<Unit> {
         val task = getTaskById(id).copy(
             isDone = isDone
         )
-        return insertTask(task, true)
+        return insertTask(task = task, isEdit = true)
     }
 
     private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean): Result<Unit> {
