@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.domain.usecase
+package com.mk.tasky.agenda.domain.usecase.reminder
 
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 

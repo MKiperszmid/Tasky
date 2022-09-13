@@ -30,5 +30,15 @@ enum class NotificationTypes(val type: UIText) {
             }
             return TEN_MINUTES
         }
+
+        fun remindAt(time: LocalDateTime, notificationTypes: NotificationTypes): LocalDateTime {
+            return when (notificationTypes) {
+                TEN_MINUTES -> time.minusMinutes(10)
+                THIRTY_MINUTES -> time.minusMinutes(30)
+                ONE_HOUR -> time.minusHours(1)
+                SIX_HOURS -> time.minusHours(6)
+                ONE_DAY -> time.minusDays(1)
+            }
+        }
     }
 }

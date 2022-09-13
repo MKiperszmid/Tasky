@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.domain.usecase
+package com.mk.tasky.agenda.domain.usecase.reminder
 
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.domain.model.Reminder
@@ -20,15 +20,7 @@ class SaveReminder(
         reminder: NotificationTypes
     ): Result<Unit> {
         val reminderTime = LocalDateTime.of(date, time)
-        val remindAtTime = when (
-            reminder
-        ) {
-            NotificationTypes.TEN_MINUTES -> reminderTime.minusMinutes(10)
-            NotificationTypes.THIRTY_MINUTES -> reminderTime.minusMinutes(30)
-            NotificationTypes.ONE_HOUR -> reminderTime.minusHours(1)
-            NotificationTypes.SIX_HOURS -> reminderTime.minusHours(6)
-            NotificationTypes.ONE_DAY -> reminderTime.minusDays(1)
-        }
+        val remindAtTime = NotificationTypes.remindAt(reminderTime, reminder)
         val isEdit = id != null
         val agendaReminder = Reminder(
             id = id ?: UUID.randomUUID().toString(),

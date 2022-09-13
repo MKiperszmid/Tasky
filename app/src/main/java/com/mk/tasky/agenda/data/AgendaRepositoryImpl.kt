@@ -8,6 +8,7 @@ import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.Reminder
+import com.mk.tasky.agenda.domain.model.Task
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.util.ErrorParser
 import kotlinx.coroutines.flow.Flow
@@ -69,6 +70,19 @@ class AgendaRepositoryImpl(
         return deleteReminderByIdRemotely(id)
     }
 
+    private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
+        return try {
+            api.deleteReminder(id)
+            Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            return ErrorParser.parseError(e)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
     override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
         // TODO: Update with Tasks and Events
         return flow {
@@ -113,9 +127,48 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
+    override suspend fun insertTask(task: Task, isEdit: Boolean): Result<Unit> {
+        dao.insertTask(task.toEntity())
+        return saveTaskRemotely(task, isEdit)
+    }
+
+    override suspend fun changeStatusTask(id: String, isDone: Boolean): Result<Unit> {
+        val task = getTaskById(id).copy(
+            isDone = isDone
+        )
+        return insertTask(task, true)
+    }
+
+    private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean): Result<Unit> {
+        val dto = task.toDto()
         return try {
-            api.deleteReminder(id)
+            if (isEdit) {
+                api.updateTask(dto)
+            } else {
+                api.createTask(dto)
+            }
+            Result.success(Unit)
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: HttpException) {
+            return ErrorParser.parseError(e)
+        } catch (e: Exception) {
+            return Result.failure(e)
+        }
+    }
+
+    override suspend fun getTaskById(id: String): Task {
+        return dao.getTaskById(id).toDomain()
+    }
+
+    override suspend fun deleteTaskById(id: String): Result<Unit> {
+        dao.deleteTaskById(id)
+        return deleteTaskByIdRemotely(id)
+    }
+
+    private suspend fun deleteTaskByIdRemotely(id: String): Result<Unit> {
+        return try {
+            api.deleteTask(id)
             Result.success(Unit)
         } catch (e: CancellationException) {
             throw e
