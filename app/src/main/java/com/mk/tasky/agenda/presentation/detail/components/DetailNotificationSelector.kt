@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -18,7 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.R
-import com.mk.tasky.agenda.presentation.detail.components.model.ReminderTypes
+import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.core.presentation.TaskyDropdown
 import com.mk.tasky.ui.theme.Black
 import com.mk.tasky.ui.theme.DarkGray
@@ -26,9 +27,9 @@ import com.mk.tasky.ui.theme.Gray
 
 @Composable
 fun DetailNotificationReminder(
-    reminderTypes: List<ReminderTypes>,
-    onItemSelected: (ReminderTypes) -> Unit,
-    selectedValue: ReminderTypes,
+    notificationTypes: List<NotificationTypes>,
+    onItemSelected: (NotificationTypes) -> Unit,
+    selectedValue: NotificationTypes,
     showDropdown: Boolean,
     onClick: () -> Unit,
     onDismiss: () -> Unit,
@@ -36,14 +37,20 @@ fun DetailNotificationReminder(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val mappedNotifications = remember {
+        notificationTypes.map { it.type.asString(context) }
+    }
     Row(
-        modifier = modifier.fillMaxWidth().then(
-            if (isEditable) {
-                Modifier.clickable {
-                    onClick()
-                }
-            } else Modifier
-        ).padding(top = 20.dp, bottom = 20.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (isEditable) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else Modifier
+            )
+            .padding(top = 20.dp, bottom = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -73,9 +80,9 @@ fun DetailNotificationReminder(
         }
     }
     TaskyDropdown(
-        items = reminderTypes.map { it.type.asString(context) },
+        items = mappedNotifications,
         onItemSelected = {
-            onItemSelected(reminderTypes[it])
+            onItemSelected(notificationTypes[it])
         },
         onDismiss = onDismiss,
         modifier = modifier,
@@ -87,15 +94,15 @@ fun DetailNotificationReminder(
 @Composable
 fun DetailNotificationReminderPreview() {
     DetailNotificationReminder(
-        reminderTypes = listOf(
-            ReminderTypes.ONE_DAY,
-            ReminderTypes.ONE_HOUR
+        notificationTypes = listOf(
+            NotificationTypes.ONE_DAY,
+            NotificationTypes.ONE_HOUR
         ),
         onClick = {},
         onDismiss = {},
         showDropdown = true,
         onItemSelected = {},
-        selectedValue = ReminderTypes.TEN_MINUTES,
+        selectedValue = NotificationTypes.TEN_MINUTES,
         isEditable = false
     )
 }

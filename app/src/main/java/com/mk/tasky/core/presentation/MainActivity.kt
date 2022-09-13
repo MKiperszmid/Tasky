@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mk.tasky.R
 import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderScreen
+import com.mk.tasky.agenda.presentation.detail.task.DetailTaskScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
 import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 import com.mk.tasky.agenda.presentation.home.HomeScreen
@@ -131,6 +132,40 @@ fun MainScreen(
             DetailReminderScreen(
                 reminderTitle = reminderTitle,
                 reminderDescription = reminderDescription,
+                onClose = {
+                    navController.navigateUp()
+                },
+                openEditor = { id, title, body, size ->
+                    navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
+                }
+            )
+        }
+
+        composable(
+            route = Route.TASK + "?date={date}&action={action}&id={id}",
+            arguments = listOf(
+                navArgument("date") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("action") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("id") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            val taskTitle = it.savedStateHandle.get<String>("task_title") ?: ""
+            val taskDescription = it.savedStateHandle.get<String>("task_description") ?: ""
+            DetailTaskScreen(
+                taskTitle = taskTitle,
+                taskDescription = taskDescription,
                 onClose = {
                     navController.navigateUp()
                 },
