@@ -25,9 +25,11 @@ class AgendaRepositoryImpl(
     private val dao: AgendaDao,
     private val api: AgendaApi
 ) : AgendaRepository {
-    override suspend fun insertReminder(reminder: Reminder, isEdit: Boolean): Result<Unit> {
+    override suspend fun insertReminder(reminder: Reminder, isEdit: Boolean) {
         dao.insertReminder(reminder.toEntity())
-        return saveReminderRemotely(reminder, isEdit)
+        saveReminderRemotely(reminder, isEdit).onFailure {
+            // TODO: Save id on db to later sync with server
+        }
     }
 
     private suspend fun saveReminderRemotely(reminder: Reminder, isEdit: Boolean): Result<Unit> {
@@ -65,9 +67,11 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun deleteReminderById(id: String): Result<Unit> {
+    override suspend fun deleteReminderById(id: String) {
         dao.deleteReminderById(id)
-        return deleteReminderByIdRemotely(id)
+        deleteReminderByIdRemotely(id).onFailure {
+            // TODO: Save id on db to later sync with server
+        }
     }
 
     private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
@@ -127,16 +131,18 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun insertTask(task: Task, isEdit: Boolean): Result<Unit> {
+    override suspend fun insertTask(task: Task, isEdit: Boolean) {
         dao.insertTask(task.toEntity())
-        return saveTaskRemotely(task = task, isEdit = isEdit)
+        saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
+            // TODO: Save id on db to later sync with server
+        }
     }
 
-    override suspend fun changeStatusTask(id: String, isDone: Boolean): Result<Unit> {
+    override suspend fun changeStatusTask(id: String, isDone: Boolean) {
         val task = getTaskById(id).copy(
             isDone = isDone
         )
-        return insertTask(task = task, isEdit = true)
+        insertTask(task = task, isEdit = true)
     }
 
     private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean): Result<Unit> {
@@ -161,9 +167,11 @@ class AgendaRepositoryImpl(
         return dao.getTaskById(id).toDomain()
     }
 
-    override suspend fun deleteTaskById(id: String): Result<Unit> {
+    override suspend fun deleteTaskById(id: String) {
         dao.deleteTaskById(id)
-        return deleteTaskByIdRemotely(id)
+        deleteTaskByIdRemotely(id).onFailure {
+            // TODO: Save id on db to later sync with server
+        }
     }
 
     private suspend fun deleteTaskByIdRemotely(id: String): Result<Unit> {

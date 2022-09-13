@@ -6,8 +6,6 @@ class ChangeStatusTask(
     private val repository: AgendaRepository
 ) {
     suspend operator fun invoke(id: String, isDone: Boolean) {
-        repository.changeStatusTask(id, isDone).onFailure {
-            // TODO: Do something
-        }
+        repository.changeStatusTask(id, isDone)
     }
 }

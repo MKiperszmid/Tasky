@@ -19,7 +19,7 @@ class SaveTask(
         time: LocalTime,
         isDone: Boolean,
         reminder: NotificationTypes
-    ): Result<Unit> {
+    ) {
         val reminderTime = LocalDateTime.of(date, time)
         val remindAtTime = NotificationTypes.remindAt(reminderTime, reminder)
         val isEdit = id != null
@@ -32,6 +32,6 @@ class SaveTask(
             isDone = isDone
         )
 
-        return repository.insertTask(agendaTask, isEdit)
+        repository.insertTask(agendaTask, isEdit)
     }
 }

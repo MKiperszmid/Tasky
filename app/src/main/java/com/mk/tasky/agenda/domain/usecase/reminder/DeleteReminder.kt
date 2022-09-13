@@ -6,8 +6,6 @@ class DeleteReminder(
     private val repository: AgendaRepository
 ) {
     suspend operator fun invoke(id: String) {
-        repository.deleteReminderById(id).onFailure {
-            // TODO: Save id on db to later sync with server
-        }
+        repository.deleteReminderById(id)
     }
 }

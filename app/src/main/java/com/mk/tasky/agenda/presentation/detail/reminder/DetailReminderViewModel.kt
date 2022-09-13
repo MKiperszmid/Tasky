@@ -89,9 +89,7 @@ class DetailReminderViewModel @Inject constructor(
                         time = state.time,
                         date = state.date,
                         reminder = state.reminder
-                    ).onFailure {
-                        println("Couldn't save remotely") // TODO: Maybe save the ID on the DB to later save it remotely once internet is up
-                    }
+                    )
                     state = state.copy(
                         shouldExit = true
                     )
