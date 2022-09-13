@@ -10,6 +10,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -36,14 +37,20 @@ fun DetailNotificationReminder(
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
+    val mappedNotifications = remember {
+        notificationTypes.map { it.type.asString(context) }
+    }
     Row(
-        modifier = modifier.fillMaxWidth().then(
-            if (isEditable) {
-                Modifier.clickable {
-                    onClick()
-                }
-            } else Modifier
-        ).padding(top = 20.dp, bottom = 20.dp),
+        modifier = modifier
+            .fillMaxWidth()
+            .then(
+                if (isEditable) {
+                    Modifier.clickable {
+                        onClick()
+                    }
+                } else Modifier
+            )
+            .padding(top = 20.dp, bottom = 20.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
@@ -73,7 +80,7 @@ fun DetailNotificationReminder(
         }
     }
     TaskyDropdown(
-        items = notificationTypes.map { it.type.asString(context) },
+        items = mappedNotifications,
         onItemSelected = {
             onItemSelected(notificationTypes[it])
         },

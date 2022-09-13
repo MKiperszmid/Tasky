@@ -28,15 +28,7 @@ class DetailTaskViewModel @Inject constructor(
         val itemId = savedStateHandle.get<String>("id")
         if (itemId != null) {
             viewModelScope.launch {
-                /*val reminder = reminderUseCases.getReminder(itemId)
-                state = state.copy(
-                    id = itemId,
-                    title = reminder.title,
-                    description = reminder.description,
-                    date = reminder.dateTime.toLocalDate(),
-                    time = reminder.dateTime.toLocalTime(),
-                    reminder = calculateRemindAtTime(reminder)
-                )*/
+                // TODO: Get Tasks from backend
             }
             savedStateHandle.get<String>("action")?.let {
                 when (HomeItemOptions.from(it)) {
@@ -50,14 +42,7 @@ class DetailTaskViewModel @Inject constructor(
                             isEditing = false
                         )
                     }
-                    HomeItemOptions.DELETE -> {
-                        /*viewModelScope.launch {
-                            reminderUseCases.deleteReminder(itemId)
-                            state = state.copy(
-                                shouldExit = true
-                            )
-                        }*/
-                    }
+                    HomeItemOptions.DELETE -> { }
                     else -> Unit
                 }
             }
