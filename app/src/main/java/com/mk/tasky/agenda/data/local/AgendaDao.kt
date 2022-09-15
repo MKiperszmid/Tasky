@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.mk.tasky.agenda.data.local.entity.ReminderEntity
+import com.mk.tasky.agenda.data.local.entity.TaskEntity
 
 @Dao
 interface AgendaDao {
@@ -30,4 +31,27 @@ interface AgendaDao {
         """
     )
     suspend fun getRemindersBetweenTimestamps(dayOne: Long, dayTwo: Long): List<ReminderEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertTask(task: TaskEntity)
+
+    @Query(
+        """
+            SELECT * FROM TaskEntity
+            WHERE id = :id
+        """
+    )
+    suspend fun getTaskById(id: String): TaskEntity
+
+    @Query("DELETE FROM TaskEntity WHERE id = :id")
+    suspend fun deleteTaskById(id: String)
+
+    @Query(
+        """
+            SELECT * FROM TaskEntity
+            WHERE dateTime >= :dayOne
+            AND dateTime < :dayTwo
+        """
+    )
+    suspend fun getTasksBetweenTimestamps(dayOne: Long, dayTwo: Long): List<TaskEntity>
 }

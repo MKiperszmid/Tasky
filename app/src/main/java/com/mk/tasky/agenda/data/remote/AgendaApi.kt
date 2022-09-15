@@ -2,6 +2,7 @@ package com.mk.tasky.agenda.data.remote
 
 import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.mk.tasky.agenda.data.remote.dto.ReminderDto
+import com.mk.tasky.agenda.data.remote.dto.TaskDto
 import retrofit2.http.*
 import java.util.*
 
@@ -18,6 +19,15 @@ interface AgendaApi {
 
     @DELETE("/reminder")
     suspend fun deleteReminder(@Query("reminderId") id: String)
+
+    @POST("/task")
+    suspend fun createTask(@Body body: TaskDto)
+
+    @PUT("/task")
+    suspend fun updateTask(@Body body: TaskDto)
+
+    @DELETE("/task")
+    suspend fun deleteTask(@Query("taskId") id: String)
 
     @GET("/agenda")
     suspend fun getAgenda(

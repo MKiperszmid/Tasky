@@ -6,7 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.reminder.ReminderUseCases
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -89,9 +89,7 @@ class DetailReminderViewModel @Inject constructor(
                         time = state.time,
                         date = state.date,
                         reminder = state.reminder
-                    ).onFailure {
-                        println("Couldn't save remotely") // TODO: Maybe save the ID on the DB to later save it remotely once internet is up
-                    }
+                    )
                     state = state.copy(
                         shouldExit = true
                     )

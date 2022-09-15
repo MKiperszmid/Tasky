@@ -5,9 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.domain.usecase.task.TaskUseCases
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
-import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
@@ -27,9 +26,7 @@ class DetailTaskViewModel @Inject constructor(
 
         val itemId = savedStateHandle.get<String>("id")
         if (itemId != null) {
-            viewModelScope.launch {
-                // TODO: Get Tasks from backend
-            }
+            // TODO: Get Tasks from backend
             savedStateHandle.get<String>("action")?.let {
                 when (HomeItemOptions.from(it)) {
                     HomeItemOptions.EDIT -> {
@@ -42,7 +39,7 @@ class DetailTaskViewModel @Inject constructor(
                             isEditing = false
                         )
                     }
-                    HomeItemOptions.DELETE -> { }
+                    HomeItemOptions.DELETE -> {}
                     else -> Unit
                 }
             }

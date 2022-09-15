@@ -5,12 +5,13 @@ import androidx.room.Room
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.domain.usecase.FormatNameUseCase
-import com.mk.tasky.agenda.domain.usecase.GetReminder
-import com.mk.tasky.agenda.domain.usecase.ReminderUseCases
-import com.mk.tasky.agenda.domain.usecase.SaveReminder
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.usecase.DeleteReminder
+import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
+import com.mk.tasky.agenda.domain.usecase.reminder.GetReminder
+import com.mk.tasky.agenda.domain.usecase.reminder.ReminderUseCases
+import com.mk.tasky.agenda.domain.usecase.reminder.SaveReminder
+import com.mk.tasky.agenda.domain.usecase.task.*
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -76,6 +77,28 @@ object AgendaModule {
             getReminder = GetReminder(repository),
             saveReminder = SaveReminder(repository),
             deleteReminder = deleteReminder
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideDeleteTaskUseCase(
+        repository: AgendaRepository
+    ): DeleteTask {
+        return DeleteTask(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideTaskUseCases(
+        repository: AgendaRepository,
+        deleteTask: DeleteTask
+    ): TaskUseCases {
+        return TaskUseCases(
+            getTask = GetTask(repository),
+            saveTask = SaveTask(repository),
+            deleteTask = deleteTask,
+            changeStatusTask = ChangeStatusTask(repository)
         )
     }
 }
