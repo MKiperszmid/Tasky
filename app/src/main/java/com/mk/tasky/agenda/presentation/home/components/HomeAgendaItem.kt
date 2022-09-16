@@ -45,6 +45,7 @@ fun HomeAgendaItem(
             } else date
         }
     }
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -77,7 +78,12 @@ fun HomeAgendaItem(
                 Icon(imageVector = Icons.Default.MoreHoriz, contentDescription = "options")
             }
         }
-        Text(text = description, fontSize = 14.sp, color = DarkGray, modifier = Modifier.padding(start = 36.dp))
+        Text(
+            text = description,
+            fontSize = 14.sp,
+            color = DarkGray,
+            modifier = Modifier.padding(start = 36.dp)
+        )
         Spacer(modifier = Modifier.height(16.dp))
         Text(
             text = itemDate,
