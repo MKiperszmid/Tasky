@@ -109,6 +109,7 @@ class AgendaRepositoryImpl(
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
             // TODO: Save id on db to later sync with server
+            println("")
         }
     }
 
@@ -116,7 +117,8 @@ class AgendaRepositoryImpl(
         val task = getTaskById(id).copy(
             isDone = isDone
         )
-        insertTask(task = task, isEdit = true)
+        dao.insertTask(task.toEntity())
+        // TODO: Save id on db to later sync with server, as to avoid DDOS when user spams the DONE and UNDONE
     }
 
     private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean) = resultOf {
