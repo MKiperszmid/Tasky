@@ -70,22 +70,26 @@ class AgendaRepositoryImpl(
     override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
         // TODO: Update with Tasks and Events
         return flow {
-            val localReminders = getRemindersForDate(date.toLocalDate()).toMutableList()
-            emit(Agenda(reminders = localReminders, tasks = emptyList(), events = emptyList()))
+            val localReminders = getRemindersForDate(date.toLocalDate())
+            val localTasks = getTasksForDate(date.toLocalDate())
+            emit(Agenda(reminders = localReminders, tasks = localTasks, events = emptyList()))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
                         response.reminders.map {
                             launch { dao.insertReminder(it.toDomain().toEntity()) }
                         }.forEach { it.join() }
+                        response.tasks.map {
+                            launch { dao.insertTask(it.toDomain().toEntity()) }
+                        }.forEach { it.join() }
                     }
 
-                    val updatedLocalReminders =
-                        getRemindersForDate(date.toLocalDate()).toMutableList()
+                    val updatedLocalReminders = getRemindersForDate(date.toLocalDate())
+                    val updatedLocalTasks = getTasksForDate(date.toLocalDate())
                     emit(
                         Agenda(
                             reminders = updatedLocalReminders,
-                            tasks = emptyList(),
+                            tasks = updatedLocalTasks,
                             events = emptyList()
                         )
                     )
@@ -127,6 +131,19 @@ class AgendaRepositoryImpl(
 
     override suspend fun getTaskById(id: String): Task {
         return dao.getTaskById(id).toDomain()
+    }
+
+    private suspend fun getTasksForDate(date: LocalDate): List<Task> {
+        val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
+
+        return dao.getTasksBetweenTimestamps(
+            dayOne = dayOne,
+            dayTwo = dayTwo
+        ).map {
+            it.toDomain()
+        }
     }
 
     override suspend fun deleteTaskById(id: String) {

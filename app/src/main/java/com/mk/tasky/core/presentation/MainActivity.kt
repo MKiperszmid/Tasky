@@ -94,11 +94,15 @@ fun MainScreen(
                         HomeAgendaType.Reminder -> Route.REMINDER
                         HomeAgendaType.Task -> Route.TASK
                     }
-                    navController.navigate("$route?action=create&date=$date") // TODO: Redirect to Route.DETAIL, and detail checks the type, and depending the type it shows ReminderScreen, EventScreen or TaskScreen
+                    navController.navigate("$route?action=create&date=$date")
                 },
-                options = { itemOptions, itemId ->
-                    val type = Route.REMINDER // TODO: Make it so it detects based on itemId
-                    navController.navigate("$type?action=${itemOptions.name}&id=$itemId")
+                options = { itemOptions, item ->
+                    val route = when (item.type) {
+                        HomeAgendaType.Event -> Route.EVENT
+                        HomeAgendaType.Reminder -> Route.REMINDER
+                        HomeAgendaType.Task -> Route.TASK
+                    }
+                    navController.navigate("$route?action=${itemOptions.name}&id=${item.id}")
                 },
                 onLogout = {
                     onLogout()

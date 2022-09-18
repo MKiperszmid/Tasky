@@ -9,5 +9,5 @@ data class AgendaResponseDto(
     @field:Json(name = "reminders")
     val reminders: List<ReminderDto>,
     @field:Json(name = "tasks")
-    val tasks: List<Any>
+    val tasks: List<TaskDto>
 )

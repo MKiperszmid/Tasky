@@ -7,10 +7,11 @@ sealed class HomeEvent {
     object OnAgendaItemDismiss : HomeEvent()
     object OnAddAgendaClick : HomeEvent()
     object OnItemOptionsDismiss : HomeEvent()
-    data class OnItemOptionsClick(val itemId: String) : HomeEvent()
+    data class OnItemOptionsClick(val agendaItem: AgendaItem) : HomeEvent()
+    data class OnItemClick(val agendaItem: AgendaItem) : HomeEvent()
     object OnLogoutDismiss : HomeEvent()
     object OnLogoutClick : HomeEvent()
     object OnRefreshAgenda : HomeEvent()
-    data class OnDeleteItem(val itemId: String) : HomeEvent()
+    data class OnDeleteItem(val agendaItem: AgendaItem) : HomeEvent()
     data class OnDateSelected(val date: LocalDate) : HomeEvent()
 }
