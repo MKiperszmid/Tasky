@@ -5,7 +5,7 @@ import com.mk.tasky.authentication.data.remote.dto.LoginBodyDto
 import com.mk.tasky.authentication.data.remote.dto.RegistrationBodyDto
 import com.mk.tasky.core.data.remote.AuthenticationApi
 import com.mk.tasky.core.domain.repository.AuthenticationRepository
-import com.mk.tasky.core.util.resultOf
+import com.mk.tasky.core.data.util.resultOf
 
 class AuthenticationRepositoryImpl(
     private val api: AuthenticationApi

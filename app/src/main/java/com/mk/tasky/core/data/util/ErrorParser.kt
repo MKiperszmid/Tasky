@@ -1,4 +1,4 @@
-package com.mk.tasky.core.util
+package com.mk.tasky.core.data.util
 
 import com.mk.tasky.authentication.data.remote.dto.ErrorResponseDto
 import com.squareup.moshi.Moshi

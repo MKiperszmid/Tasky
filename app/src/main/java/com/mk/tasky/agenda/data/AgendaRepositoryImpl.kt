@@ -9,7 +9,7 @@ import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.model.Task
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.core.util.resultOf
+import com.mk.tasky.core.data.util.resultOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch

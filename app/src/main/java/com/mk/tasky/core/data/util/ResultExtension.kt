@@ -1,4 +1,4 @@
-package com.mk.tasky.core.util
+package com.mk.tasky.core.data.util
 
 import com.mk.tasky.core.data.remote.exceptions.NetworkErrorException
 import kotlinx.coroutines.CancellationException
