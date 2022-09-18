@@ -5,21 +5,18 @@ import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.Reminder
 import com.mk.tasky.agenda.domain.model.Task
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.core.util.ErrorParser
+import com.mk.tasky.core.data.util.resultOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import retrofit2.HttpException
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.ZoneId
-import java.util.concurrent.CancellationException
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao,
@@ -32,21 +29,13 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun saveReminderRemotely(reminder: Reminder, isEdit: Boolean): Result<Unit> {
-        val reminderDto = reminder.toDto()
-        return try {
+    private suspend fun saveReminderRemotely(reminder: Reminder, isEdit: Boolean) = resultOf {
+        reminder.toDto().let {
             if (isEdit) {
-                api.updateReminder(reminderDto)
+                api.updateReminder(it)
             } else {
-                api.createReminder(reminderDto)
+                api.createReminder(it)
             }
-            Result.success(Unit)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: HttpException) {
-            return ErrorParser.parseError(e)
-        } catch (e: Exception) {
-            return Result.failure(e)
         }
     }
 
@@ -74,17 +63,8 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun deleteReminderByIdRemotely(id: String): Result<Unit> {
-        return try {
-            api.deleteReminder(id)
-            Result.success(Unit)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: HttpException) {
-            return ErrorParser.parseError(e)
-        } catch (e: Exception) {
-            return Result.failure(e)
-        }
+    private suspend fun deleteReminderByIdRemotely(id: String) = resultOf {
+        api.deleteReminder(id)
     }
 
     override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
@@ -117,18 +97,8 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun getAgendaRemotely(date: LocalDateTime): Result<AgendaResponseDto> {
-        return try {
-            val response =
-                api.getAgenda(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
-            Result.success(response)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: HttpException) {
-            return ErrorParser.parseError(e)
-        } catch (e: Exception) {
-            return Result.failure(e)
-        }
+    private suspend fun getAgendaRemotely(date: LocalDateTime) = resultOf {
+        api.getAgenda(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
     }
 
     override suspend fun insertTask(task: Task, isEdit: Boolean) {
@@ -145,21 +115,13 @@ class AgendaRepositoryImpl(
         insertTask(task = task, isEdit = true)
     }
 
-    private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean): Result<Unit> {
-        val dto = task.toDto()
-        return try {
+    private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean) = resultOf {
+        task.toDto().let {
             if (isEdit) {
-                api.updateTask(dto)
+                api.updateTask(it)
             } else {
-                api.createTask(dto)
+                api.createTask(it)
             }
-            Result.success(Unit)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: HttpException) {
-            return ErrorParser.parseError(e)
-        } catch (e: Exception) {
-            return Result.failure(e)
         }
     }
 
@@ -174,16 +136,7 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun deleteTaskByIdRemotely(id: String): Result<Unit> {
-        return try {
-            api.deleteTask(id)
-            Result.success(Unit)
-        } catch (e: CancellationException) {
-            throw e
-        } catch (e: HttpException) {
-            return ErrorParser.parseError(e)
-        } catch (e: Exception) {
-            return Result.failure(e)
-        }
+    private suspend fun deleteTaskByIdRemotely(id: String) = resultOf {
+        api.deleteTask(id)
     }
 }
