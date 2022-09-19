@@ -17,15 +17,16 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.mk.tasky.agenda.presentation.home.AgendaItem
-import com.mk.tasky.agenda.presentation.home.HomeAgendaType
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.ui.theme.Black
 import com.mk.tasky.ui.theme.DarkGray
+import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.White
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -33,6 +34,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeAgendaItem(
     item: AgendaItem,
+    color: Color,
     onOptionsClick: () -> Unit,
     onItemClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -40,20 +42,17 @@ fun HomeAgendaItem(
     val itemDate by remember {
         derivedStateOf {
             val dateFormatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm")
-            val date = item.firstDatetime.format(dateFormatter)
-            if (item.secondDatetime != null) {
-                date + " - ${item.secondDatetime.format(dateFormatter)}"
-            } else date
+            item.firstDatetime.format(dateFormatter)
         }
     }
-    val textColor = if (item.type == HomeAgendaType.Task) White else Black
-    val descriptionColor = if (item.type == HomeAgendaType.Task) White else DarkGray
+    val textColor = if (item is AgendaItem.Task) White else Black
+    val descriptionColor = if (item is AgendaItem.Task) White else DarkGray
 
     Column(
         modifier = modifier
             .fillMaxWidth()
             .heightIn(min = 130.dp)
-            .background(color = item.type.color, shape = RoundedCornerShape(20.dp))
+            .background(color = color, shape = RoundedCornerShape(20.dp))
             .padding(16.dp)
     ) {
         Row(
@@ -64,7 +63,7 @@ fun HomeAgendaItem(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier.then(
-                    if (item.type == HomeAgendaType.Task) {
+                    if (item is AgendaItem.Task) {
                         Modifier.clickable {
                             onItemClick()
                         }
@@ -72,7 +71,7 @@ fun HomeAgendaItem(
                 ).weight(9f)
             ) {
                 Icon(
-                    imageVector = if (item.isDone) Icons.Outlined.CheckCircleOutline else Icons.Outlined.Circle,
+                    imageVector = if (item is AgendaItem.Task && item.isDone) Icons.Outlined.CheckCircleOutline else Icons.Outlined.Circle,
                     contentDescription = "title",
                     tint = textColor
                 )
@@ -83,7 +82,7 @@ fun HomeAgendaItem(
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
                     color = textColor,
-                    textDecoration = if (item.isDone) TextDecoration.LineThrough else null
+                    textDecoration = if (item is AgendaItem.Task && item.isDone) TextDecoration.LineThrough else null
                 )
             }
             IconButton(onClick = onOptionsClick, modifier = Modifier.weight(1f)) {
@@ -116,14 +115,15 @@ fun HomeAgendaItem(
 @Composable
 fun HomeReminderPreview() {
     HomeAgendaItem(
-        item = AgendaItem(
-            id = "",
-            title = "Lunch break",
-            isDone = false,
-            description = "It's time to take a lunch break!",
-            type = HomeAgendaType.Reminder,
-            firstDatetime = LocalDateTime.now()
+        item = AgendaItem.Task(
+            taskId = "",
+            taskTitle = "Lunch Break",
+            taskDescription = "It's time for a lunch break",
+            taskDateTime = LocalDateTime.now(),
+            taskRemindAt = LocalDateTime.now(),
+            isDone = true
         ),
+        color = Green,
         onOptionsClick = {},
         onItemClick = {}
     )

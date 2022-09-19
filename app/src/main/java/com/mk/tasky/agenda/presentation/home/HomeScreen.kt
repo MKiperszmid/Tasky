@@ -14,12 +14,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.presentation.home.components.HomeAgendaItem
 import com.mk.tasky.agenda.presentation.home.components.HomeDayPicker
 import com.mk.tasky.agenda.presentation.home.components.HomeHeader
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyDropdown
+import com.mk.tasky.ui.theme.Green
+import com.mk.tasky.ui.theme.Light
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
@@ -108,6 +111,10 @@ fun HomeScreen(
                         },
                         onItemClick = {
                             viewModel.onEvent(HomeEvent.OnItemClick(it))
+                        },
+                        color = when (it) {
+                            is AgendaItem.Reminder -> Light
+                            is AgendaItem.Task -> Green
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))

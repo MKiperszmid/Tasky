@@ -39,9 +39,9 @@ class DetailTaskViewModel @Inject constructor(
                     id = itemId,
                     title = task.title,
                     description = task.description,
-                    date = task.dateTime.toLocalDate(),
-                    time = task.dateTime.toLocalTime(),
-                    notificationType = NotificationTypes.from(task.dateTime, task.remindAt),
+                    date = task.taskDateTime.toLocalDate(),
+                    time = task.taskDateTime.toLocalTime(),
+                    notificationType = NotificationTypes.from(task.taskDateTime, task.remindAt),
                     isDone = task.isDone
                 )
             }

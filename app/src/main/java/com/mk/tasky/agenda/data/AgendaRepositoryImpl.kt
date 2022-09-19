@@ -6,8 +6,7 @@ import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.model.Agenda
-import com.mk.tasky.agenda.domain.model.Reminder
-import com.mk.tasky.agenda.domain.model.Task
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
 import kotlinx.coroutines.flow.Flow
@@ -22,28 +21,30 @@ class AgendaRepositoryImpl(
     private val dao: AgendaDao,
     private val api: AgendaApi
 ) : AgendaRepository {
-    override suspend fun insertReminder(reminder: Reminder, isEdit: Boolean) {
+    // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
+    override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
             // TODO: Save id on db to later sync with server
         }
     }
 
-    private suspend fun saveReminderRemotely(reminder: Reminder, isEdit: Boolean) = resultOf {
-        reminder.toDto().let {
-            if (isEdit) {
-                api.updateReminder(it)
-            } else {
-                api.createReminder(it)
+    private suspend fun saveReminderRemotely(reminder: AgendaItem.Reminder, isEdit: Boolean) =
+        resultOf {
+            reminder.toDto().let {
+                if (isEdit) {
+                    api.updateReminder(it)
+                } else {
+                    api.createReminder(it)
+                }
             }
         }
-    }
 
-    override suspend fun getReminderById(id: String): Reminder {
+    override suspend fun getReminderById(id: String): AgendaItem.Reminder {
         return dao.getReminderById(id).toDomain()
     }
 
-    private suspend fun getRemindersForDate(date: LocalDate): List<Reminder> {
+    private suspend fun getRemindersForDate(date: LocalDate): List<AgendaItem.Reminder> {
         val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
             .toEpochMilli()
@@ -72,7 +73,7 @@ class AgendaRepositoryImpl(
         return flow {
             val localReminders = getRemindersForDate(date.toLocalDate())
             val localTasks = getTasksForDate(date.toLocalDate())
-            emit(Agenda(reminders = localReminders, tasks = localTasks, events = emptyList()))
+            emit(Agenda(localReminders + localTasks))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
@@ -86,13 +87,7 @@ class AgendaRepositoryImpl(
 
                     val updatedLocalReminders = getRemindersForDate(date.toLocalDate())
                     val updatedLocalTasks = getTasksForDate(date.toLocalDate())
-                    emit(
-                        Agenda(
-                            reminders = updatedLocalReminders,
-                            tasks = updatedLocalTasks,
-                            events = emptyList()
-                        )
-                    )
+                    emit(Agenda(updatedLocalReminders + updatedLocalTasks))
                 }.onFailure {
                     // TODO: Internet error
                     println("")
@@ -105,7 +100,7 @@ class AgendaRepositoryImpl(
         api.getAgenda(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
     }
 
-    override suspend fun insertTask(task: Task, isEdit: Boolean) {
+    override suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean) {
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
             // TODO: Save id on db to later sync with server
@@ -117,11 +112,11 @@ class AgendaRepositoryImpl(
         val task = getTaskById(id).copy(
             isDone = isDone
         )
-        dao.insertTask(task.toEntity())
-        // TODO: Save id on db to later sync with server, as to avoid DDOS when user spams the DONE and UNDONE
+
+        insertTask(task, isEdit = true)
     }
 
-    private suspend fun saveTaskRemotely(task: Task, isEdit: Boolean) = resultOf {
+    private suspend fun saveTaskRemotely(task: AgendaItem.Task, isEdit: Boolean) = resultOf {
         task.toDto().let {
             if (isEdit) {
                 api.updateTask(it)
@@ -131,11 +126,11 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun getTaskById(id: String): Task {
+    override suspend fun getTaskById(id: String): AgendaItem.Task {
         return dao.getTaskById(id).toDomain()
     }
 
-    private suspend fun getTasksForDate(date: LocalDate): List<Task> {
+    private suspend fun getTasksForDate(date: LocalDate): List<AgendaItem.Task> {
         val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
             .toEpochMilli()

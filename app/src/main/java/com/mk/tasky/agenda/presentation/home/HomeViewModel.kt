@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
@@ -77,10 +78,9 @@ class HomeViewModel @Inject constructor(
             }
             is HomeEvent.OnDeleteItem -> {
                 viewModelScope.launch {
-                    when (event.agendaItem.type) {
-                        HomeAgendaType.Event -> TODO()
-                        HomeAgendaType.Reminder -> homeUseCases.deleteReminder(event.agendaItem.id)
-                        HomeAgendaType.Task -> homeUseCases.deleteTask(event.agendaItem.id)
+                    when (event.agendaItem) {
+                        is AgendaItem.Reminder -> homeUseCases.deleteReminder(event.agendaItem.id)
+                        is AgendaItem.Task -> homeUseCases.deleteTask(event.agendaItem.id)
                     }
                     getAgendaForSelectedDate(forceRemote = false)
                 }
@@ -94,8 +94,10 @@ class HomeViewModel @Inject constructor(
             }
             is HomeEvent.OnItemClick -> {
                 viewModelScope.launch {
-                    homeUseCases.changeStatusTask(event.agendaItem.id, !event.agendaItem.isDone)
-                    getAgendaForSelectedDate(forceRemote = false)
+                    if (event.agendaItem is AgendaItem.Task) {
+                        homeUseCases.changeStatusTask(event.agendaItem.id, !event.agendaItem.isDone)
+                        getAgendaForSelectedDate(forceRemote = false)
+                    }
                 }
             }
         }
@@ -107,9 +109,7 @@ class HomeViewModel @Inject constructor(
                 state.currentDate.plusDays(state.selectedDay.toLong()),
                 forceRemote
             ).collect { agenda ->
-                state = state.copy(
-                    agendaItems = agenda.toAgendaItem().sortedBy { it.firstDatetime }
-                )
+                state = state.copy(agendaItems = agenda.items.sortedBy { it.firstDatetime })
             }
         }
     }

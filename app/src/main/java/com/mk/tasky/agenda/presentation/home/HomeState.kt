@@ -1,13 +1,13 @@
 package com.mk.tasky.agenda.presentation.home
 
-import com.mk.tasky.agenda.domain.model.Reminder
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import java.time.LocalDateTime
 
 data class HomeState(
     val currentDate: LocalDateTime = LocalDateTime.now(),
     val selectedDay: Int = 0,
     val profileName: String = "",
-    val agendaItems: List<AgendaItem> = emptyList(), // TODO: Make it Agenda items
+    val agendaItems: List<AgendaItem> = emptyList(),
     val showAgendaOptions: Boolean = false,
     val agendaTypes: List<HomeAgendaType> = listOf(
         HomeAgendaType.Event,

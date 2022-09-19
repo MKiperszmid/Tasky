@@ -39,9 +39,9 @@ class DetailReminderViewModel @Inject constructor(
                     id = itemId,
                     title = reminder.title,
                     description = reminder.description,
-                    date = reminder.dateTime.toLocalDate(),
-                    time = reminder.dateTime.toLocalTime(),
-                    reminder = NotificationTypes.from(reminder.dateTime, reminder.remindAt)
+                    date = reminder.reminderDateTime.toLocalDate(),
+                    time = reminder.reminderDateTime.toLocalTime(),
+                    reminder = NotificationTypes.from(reminder.reminderDateTime, reminder.remindAt)
                 )
             }
             savedStateHandle.get<String>("action")?.let {

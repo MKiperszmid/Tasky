@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.presentation.home
 
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import java.time.LocalDate
 
 sealed class HomeEvent {
