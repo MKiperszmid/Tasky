@@ -14,12 +14,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.presentation.home.components.HomeAgendaItem
 import com.mk.tasky.agenda.presentation.home.components.HomeDayPicker
 import com.mk.tasky.agenda.presentation.home.components.HomeHeader
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyDropdown
+import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
@@ -31,7 +33,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun HomeScreen(
     redirect: (HomeAgendaType, LocalDateTime) -> Unit,
-    options: (HomeItemOptions, String) -> Unit,
+    options: (HomeItemOptions, AgendaItem) -> Unit,
     onLogout: () -> Unit,
     viewModel: HomeViewModel = hiltViewModel()
 ) {
@@ -101,15 +103,19 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(24.dp))
             LazyColumn(modifier = Modifier.fillMaxWidth()) {
-                items(state.reminders) {
+                items(state.agendaItems) {
                     HomeAgendaItem(
-                        title = it.title,
-                        description = it.description,
-                        color = Light,
+                        item = it,
                         onOptionsClick = {
-                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it.id))
+                            viewModel.onEvent(HomeEvent.OnItemOptionsClick(it))
                         },
-                        startDatetime = it.dateTime
+                        onItemClick = {
+                            viewModel.onEvent(HomeEvent.OnItemClick(it))
+                        },
+                        color = when (it) {
+                            is AgendaItem.Reminder -> Light
+                            is AgendaItem.Task -> Green
+                        }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                 }
@@ -127,11 +133,11 @@ fun HomeScreen(
                 items = itemOptionNames,
                 onItemSelected = {
                     val selectedOption = itemOptions[it]
-                    state.selectedItemOptionId?.let { itemid ->
+                    state.selectedAgendaItem?.let { item ->
                         if (selectedOption == HomeItemOptions.DELETE) {
-                            viewModel.onEvent(HomeEvent.OnDeleteItem(itemid))
+                            viewModel.onEvent(HomeEvent.OnDeleteItem(item))
                         } else {
-                            options(selectedOption, itemid)
+                            options(selectedOption, item)
                         }
                     }
                 },

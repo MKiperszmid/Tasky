@@ -5,9 +5,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,7 +21,7 @@ class HomeViewModel @Inject constructor(
     private val preferences: Preferences,
     private val formatNameUseCase: FormatNameUseCase,
     private val repository: AgendaRepository,
-    private val deleteReminder: DeleteReminder
+    private val homeUseCases: HomeUseCases
 ) : ViewModel() {
     var state by mutableStateOf(HomeState())
         private set
@@ -30,7 +31,7 @@ class HomeViewModel @Inject constructor(
         state = state.copy(
             profileName = formatNameUseCase(user.fullName)
         )
-        getAgendaForSelectedDate(true)
+        getAgendaForSelectedDate(forceRemote = true)
     }
 
     fun onEvent(event: HomeEvent) {
@@ -39,7 +40,7 @@ class HomeViewModel @Inject constructor(
                 state = state.copy(
                     selectedDay = event.day
                 )
-                getAgendaForSelectedDate(true)
+                getAgendaForSelectedDate(forceRemote = true)
             }
             is HomeEvent.OnAgendaItemDismiss -> {
                 state = state.copy(
@@ -53,7 +54,7 @@ class HomeViewModel @Inject constructor(
             }
             is HomeEvent.OnItemOptionsClick -> {
                 state = state.copy(
-                    selectedItemOptionId = event.itemId,
+                    selectedAgendaItem = event.agendaItem,
                     showItemOptions = true
                 )
             }
@@ -73,12 +74,15 @@ class HomeViewModel @Inject constructor(
                 )
             }
             HomeEvent.OnRefreshAgenda -> {
-                getAgendaForSelectedDate(false)
+                getAgendaForSelectedDate(forceRemote = false)
             }
             is HomeEvent.OnDeleteItem -> {
                 viewModelScope.launch {
-                    deleteReminder(event.itemId)
-                    getAgendaForSelectedDate(false)
+                    when (event.agendaItem) {
+                        is AgendaItem.Reminder -> homeUseCases.deleteReminder(event.agendaItem.id)
+                        is AgendaItem.Task -> homeUseCases.deleteTask(event.agendaItem.id)
+                    }
+                    getAgendaForSelectedDate(forceRemote = false)
                 }
             }
             is HomeEvent.OnDateSelected -> {
@@ -86,7 +90,15 @@ class HomeViewModel @Inject constructor(
                     currentDate = LocalDateTime.of(event.date, LocalTime.now()),
                     selectedDay = 0
                 )
-                getAgendaForSelectedDate(true)
+                getAgendaForSelectedDate(forceRemote = true)
+            }
+            is HomeEvent.OnItemClick -> {
+                viewModelScope.launch {
+                    if (event.agendaItem is AgendaItem.Task) {
+                        homeUseCases.changeStatusTask(event.agendaItem.id, !event.agendaItem.isDone)
+                        getAgendaForSelectedDate(forceRemote = false)
+                    }
+                }
             }
         }
     }
@@ -97,9 +109,7 @@ class HomeViewModel @Inject constructor(
                 state.currentDate.plusDays(state.selectedDay.toLong()),
                 forceRemote
             ).collect { agenda ->
-                state = state.copy(
-                    reminders = agenda.reminders.sortedBy { it.dateTime }
-                )
+                state = state.copy(agendaItems = agenda.items.sortedBy { it.time })
             }
         }
     }

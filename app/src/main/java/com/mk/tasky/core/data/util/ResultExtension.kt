@@ -12,7 +12,11 @@ inline fun <T, R> T.resultOf(block: T.() -> R): Result<R> {
         throw e
     } catch (e: HttpException) {
         val errorMessage = e.parseError()
-        Result.failure(NetworkErrorException(errorMessage))
+        if (errorMessage == null) {
+            Result.failure(e)
+        } else {
+            Result.failure(NetworkErrorException(errorMessage))
+        }
     } catch (e: Exception) {
         Result.failure(e)
     }

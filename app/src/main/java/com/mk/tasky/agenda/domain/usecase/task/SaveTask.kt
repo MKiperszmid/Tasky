@@ -1,6 +1,6 @@
 package com.mk.tasky.agenda.domain.usecase.task
 
-import com.mk.tasky.agenda.domain.model.Task
+import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
@@ -23,12 +23,12 @@ class SaveTask(
         val reminderTime = LocalDateTime.of(date, time)
         val remindAtTime = NotificationTypes.remindAt(reminderTime, reminder)
         val isEdit = id != null
-        val agendaTask = Task(
-            id = id ?: UUID.randomUUID().toString(),
-            title = title,
-            description = description,
-            dateTime = reminderTime,
-            remindAt = remindAtTime,
+        val agendaTask = AgendaItem.Task(
+            taskId = id ?: UUID.randomUUID().toString(),
+            taskTitle = title,
+            taskDescription = description,
+            taskDateTime = reminderTime,
+            taskRemindAt = remindAtTime,
             isDone = isDone
         )
 

@@ -7,6 +7,7 @@ import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
+import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
 import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.GetReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.ReminderUseCases
@@ -90,6 +91,29 @@ object AgendaModule {
 
     @Provides
     @Singleton
+    fun provideChangeStatusTaskUseCase(
+        repository: AgendaRepository
+    ): ChangeStatusTask {
+        return ChangeStatusTask(repository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideHomeUseCases(
+        repository: AgendaRepository,
+        deleteTask: DeleteTask,
+        deleteReminder: DeleteReminder,
+        changeStatusTask: ChangeStatusTask
+    ): HomeUseCases {
+        return HomeUseCases(
+            deleteReminder = deleteReminder,
+            deleteTask = deleteTask,
+            changeStatusTask = changeStatusTask
+        )
+    }
+
+    @Provides
+    @Singleton
     fun provideTaskUseCases(
         repository: AgendaRepository,
         deleteTask: DeleteTask
@@ -97,8 +121,7 @@ object AgendaModule {
         return TaskUseCases(
             getTask = GetTask(repository),
             saveTask = SaveTask(repository),
-            deleteTask = deleteTask,
-            changeStatusTask = ChangeStatusTask(repository)
+            deleteTask = deleteTask
         )
     }
 }
