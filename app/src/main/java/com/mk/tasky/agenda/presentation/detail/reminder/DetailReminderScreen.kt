@@ -34,8 +34,6 @@ fun DetailReminderScreen(
     viewModel: DetailReminderViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
-    val datepickerState = rememberMaterialDialogState()
-    val timepickerState = rememberMaterialDialogState()
     val context = LocalContext.current
 
     LaunchedEffect(reminderTitle, reminderDescription) {
@@ -50,30 +48,6 @@ fun DetailReminderScreen(
     LaunchedEffect(key1 = state.shouldExit) {
         if (state.shouldExit) {
             onClose()
-        }
-    }
-
-    MaterialDialog(
-        dialogState = timepickerState,
-        buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }
-    ) {
-        timepicker { time ->
-            viewModel.onEvent(DetailReminderEvent.OnTimeSelected(time))
-        }
-    }
-
-    MaterialDialog(
-        dialogState = datepickerState,
-        buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }
-    ) {
-        datepicker { date ->
-            viewModel.onEvent(DetailReminderEvent.OnDateSelected(date))
         }
     }
 
@@ -121,11 +95,11 @@ fun DetailReminderScreen(
                     date = state.date,
                     time = state.time,
                     isEditable = state.isEditing,
-                    onTimeClick = {
-                        timepickerState.show()
+                    onTimeSelected = {
+                        viewModel.onEvent(DetailReminderEvent.OnTimeSelected(it))
                     },
-                    onDateClick = {
-                        datepickerState.show()
+                    onDateSelected = {
+                        viewModel.onEvent(DetailReminderEvent.OnDateSelected(it))
                     }
                 )
                 Divider(color = Light)

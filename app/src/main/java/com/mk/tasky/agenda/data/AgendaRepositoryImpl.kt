@@ -1,6 +1,5 @@
 package com.mk.tasky.agenda.data
 
-import android.util.Log
 import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
@@ -16,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.ZoneId
 
 class AgendaRepositoryImpl(
@@ -69,11 +69,11 @@ class AgendaRepositoryImpl(
         api.deleteReminder(id)
     }
 
-    override fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda> {
+    override fun getAgenda(date: LocalDate, forceRemote: Boolean): Flow<Agenda> {
         // TODO: Update with Tasks and Events
         return flow {
-            val localReminders = getRemindersForDate(date.toLocalDate())
-            val localTasks = getTasksForDate(date.toLocalDate())
+            val localReminders = getRemindersForDate(date)
+            val localTasks = getTasksForDate(date)
             emit(Agenda(localReminders + localTasks))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
@@ -87,8 +87,8 @@ class AgendaRepositoryImpl(
                         (reminders + tasks).forEach { it.join() }
                     }
 
-                    val updatedLocalReminders = getRemindersForDate(date.toLocalDate())
-                    val updatedLocalTasks = getTasksForDate(date.toLocalDate())
+                    val updatedLocalReminders = getRemindersForDate(date)
+                    val updatedLocalTasks = getTasksForDate(date)
                     emit(Agenda(updatedLocalReminders + updatedLocalTasks))
                 }.onFailure {
                     // TODO: Internet error
@@ -98,8 +98,9 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun getAgendaRemotely(date: LocalDateTime) = resultOf {
-        api.getAgenda(date.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
+    private suspend fun getAgendaRemotely(date: LocalDate) = resultOf {
+        val dateTime = LocalDateTime.of(date, LocalTime.now())
+        api.getAgenda(dateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli())
     }
 
     override suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean) {

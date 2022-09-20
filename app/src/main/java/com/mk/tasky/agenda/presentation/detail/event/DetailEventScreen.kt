@@ -1,4 +1,4 @@
-package com.mk.tasky.agenda.presentation.detail.task
+package com.mk.tasky.agenda.presentation.detail.event
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -17,32 +17,27 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.R
 import com.mk.tasky.agenda.presentation.detail.components.*
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
-import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderEvent
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
-import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
+import com.mk.tasky.ui.theme.LightGreen
 
 @Composable
-fun DetailTaskScreen(
-    taskTitle: String,
-    taskDescription: String,
+fun DetailEventScreen(
+    eventTitle: String,
+    eventDescription: String,
     onClose: () -> Unit,
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
-    viewModel: DetailTaskViewModel = hiltViewModel()
+    viewModel: DetailEventViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
     val context = LocalContext.current
 
-    LaunchedEffect(taskTitle, taskDescription) {
+    LaunchedEffect(eventTitle, eventDescription) {
         viewModel.onEvent(
-            DetailTaskEvent.OnUpdatedInformation(
-                taskTitle,
-                taskDescription
+            DetailEventEvents.OnUpdatedInformation(
+                eventTitle,
+                eventDescription
             )
         )
     }
@@ -55,24 +50,24 @@ fun DetailTaskScreen(
 
     TaskyBackground(header = {
         DetailHeader(
-            editingText = stringResource(R.string.edit_task),
-            date = state.date,
+            editingText = stringResource(R.string.edit_event),
+            date = state.fromDate,
             onClose = onClose,
-            onEdit = { viewModel.onEvent(DetailTaskEvent.OnEdit) },
-            onSave = { viewModel.onEvent(DetailTaskEvent.OnSave) },
+            onEdit = { viewModel.onEvent(DetailEventEvents.OnEdit) },
+            onSave = { viewModel.onEvent(DetailEventEvents.OnSave) },
             isEditing = state.isEditing
         )
     }) {
         Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
             Column {
                 DetailColor(
-                    text = stringResource(id = R.string.task),
-                    color = Green,
+                    text = stringResource(id = R.string.event),
+                    color = LightGreen,
                     modifier = Modifier.padding(top = 14.dp)
                 )
                 DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
                     openEditor(
-                        "task_title",
+                        "event_title",
                         context.getString(R.string.edit_title),
                         state.title,
                         26
@@ -84,7 +79,7 @@ fun DetailTaskScreen(
                     isEditable = state.isEditing,
                     onClick = {
                         openEditor(
-                            "task_description",
+                            "event_description",
                             context.getString(R.string.edit_description),
                             state.description,
                             16
@@ -93,29 +88,42 @@ fun DetailTaskScreen(
                 )
                 Divider(color = Light)
                 DetailTimeSelector(
-                    text = stringResource(R.string.at),
-                    date = state.date,
-                    time = state.time,
+                    text = stringResource(R.string.from),
+                    date = state.fromDate,
+                    time = state.fromTime,
                     isEditable = state.isEditing,
                     onTimeSelected = {
-                        viewModel.onEvent(DetailTaskEvent.OnTimeSelected(it))
+                        viewModel.onEvent(DetailEventEvents.OnFromTimeSelected(it))
                     },
                     onDateSelected = {
-                        viewModel.onEvent(DetailTaskEvent.OnDateSelected(it))
+                        viewModel.onEvent(DetailEventEvents.OnFromDateSelected(it))
+                    }
+                )
+                Divider(color = Light)
+                DetailTimeSelector(
+                    text = stringResource(R.string.to),
+                    date = state.toDate,
+                    time = state.toTime,
+                    isEditable = state.isEditing,
+                    onTimeSelected = {
+                        viewModel.onEvent(DetailEventEvents.OnToTimeSelected(it))
+                    },
+                    onDateSelected = {
+                        viewModel.onEvent(DetailEventEvents.OnToDateSelected(it))
                     }
                 )
                 Divider(color = Light)
                 DetailNotificationReminder(
                     notificationTypes = NotificationTypes.values().toList(),
                     onClick = {
-                        viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorClick)
+                        viewModel.onEvent(DetailEventEvents.OnNotificationReminderClick)
                     },
-                    selectedValue = state.notificationType,
+                    selectedValue = state.reminder,
                     onItemSelected = {
-                        viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorSelect(it))
+                        viewModel.onEvent(DetailEventEvents.OnNotificationReminderSelect(it))
                     },
                     showDropdown = state.showDropdown,
-                    onDismiss = { viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorDismiss) },
+                    onDismiss = { viewModel.onEvent(DetailEventEvents.OnNotificationReminderDismiss) },
                     isEditable = state.isEditing
                 )
             }
@@ -128,12 +136,12 @@ fun DetailTaskScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = stringResource(R.string.delete_task),
+                        text = stringResource(R.string.delete_event),
                         color = Gray,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.SemiBold,
                         modifier = Modifier.clickable {
-                            viewModel.onEvent(DetailTaskEvent.OnTaskDelete)
+                            viewModel.onEvent(DetailEventEvents.OnEventDelete)
                         }
                     )
                 }

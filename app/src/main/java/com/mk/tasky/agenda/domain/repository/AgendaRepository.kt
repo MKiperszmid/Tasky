@@ -3,13 +3,13 @@ package com.mk.tasky.agenda.domain.repository
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import kotlinx.coroutines.flow.Flow
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 interface AgendaRepository {
     suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean)
     suspend fun getReminderById(id: String): AgendaItem.Reminder
     suspend fun deleteReminderById(id: String)
-    fun getAgenda(date: LocalDateTime, forceRemote: Boolean): Flow<Agenda>
+    fun getAgenda(date: LocalDate, forceRemote: Boolean): Flow<Agenda>
 
     suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean)
     suspend fun changeStatusTask(id: String, isDone: Boolean)

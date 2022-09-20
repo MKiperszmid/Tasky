@@ -6,11 +6,12 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import java.time.LocalDate
 import java.time.LocalDateTime
 
 @Composable
 fun HomeDayPicker(
-    date: LocalDateTime,
+    date: LocalDate,
     selectedDay: Int = 0,
     onDayClick: (Int) -> Unit,
     modifier: Modifier = Modifier
@@ -32,7 +33,7 @@ fun HomeDayPicker(
 @Composable
 fun HomeDayPickerPreview() {
     HomeDayPicker(
-        date = LocalDateTime.now(),
+        date = LocalDate.now(),
         selectedDay = 3,
         onDayClick = {}
     )
