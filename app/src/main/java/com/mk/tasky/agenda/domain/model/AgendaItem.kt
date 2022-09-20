@@ -6,7 +6,7 @@ sealed class AgendaItem(
     val id: String,
     val title: String,
     val description: String,
-    val firstDatetime: LocalDateTime,
+    val time: LocalDateTime,
     val remindAt: LocalDateTime
 ) {
     data class Reminder(
@@ -19,7 +19,7 @@ sealed class AgendaItem(
         id = reminderId,
         title = reminderTitle,
         description = reminderDescription,
-        firstDatetime = reminderDateTime,
+        time = reminderDateTime,
         remindAt = reminderRemindAt
     )
 
@@ -34,7 +34,7 @@ sealed class AgendaItem(
         id = taskId,
         title = taskTitle,
         description = taskDescription,
-        firstDatetime = taskDateTime,
+        time = taskDateTime,
         remindAt = taskRemindAt
     )
 }

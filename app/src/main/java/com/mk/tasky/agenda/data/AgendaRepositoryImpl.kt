@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.data
 
+import android.util.Log
 import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
@@ -77,12 +78,13 @@ class AgendaRepositoryImpl(
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
-                        response.reminders.map {
+                        val reminders = response.reminders.map {
                             launch { dao.insertReminder(it.toDomain().toEntity()) }
-                        }.forEach { it.join() }
-                        response.tasks.map {
+                        }
+                        val tasks = response.tasks.map {
                             launch { dao.insertTask(it.toDomain().toEntity()) }
-                        }.forEach { it.join() }
+                        }
+                        (reminders + tasks).forEach { it.join() }
                     }
 
                     val updatedLocalReminders = getRemindersForDate(date.toLocalDate())

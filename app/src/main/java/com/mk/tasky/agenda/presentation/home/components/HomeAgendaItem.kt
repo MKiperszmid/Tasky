@@ -42,7 +42,7 @@ fun HomeAgendaItem(
     val itemDate by remember {
         derivedStateOf {
             val dateFormatter = DateTimeFormatter.ofPattern("dd MMM, HH:mm")
-            item.firstDatetime.format(dateFormatter)
+            item.time.format(dateFormatter)
         }
     }
     val textColor = if (item is AgendaItem.Task) White else Black

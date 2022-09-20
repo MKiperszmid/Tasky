@@ -109,7 +109,7 @@ class HomeViewModel @Inject constructor(
                 state.currentDate.plusDays(state.selectedDay.toLong()),
                 forceRemote
             ).collect { agenda ->
-                state = state.copy(agendaItems = agenda.items.sortedBy { it.firstDatetime })
+                state = state.copy(agendaItems = agenda.items.sortedBy { it.time })
             }
         }
     }
