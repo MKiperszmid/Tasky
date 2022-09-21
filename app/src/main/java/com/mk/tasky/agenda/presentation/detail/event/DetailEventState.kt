@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.presentation.detail.event
 
+import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
 import java.time.LocalTime
@@ -13,7 +14,7 @@ data class DetailEventState(
     val fromTime: LocalTime = LocalTime.now(),
     val toDate: LocalDate = LocalDate.now(),
     val toTime: LocalTime = LocalTime.now(),
-    val photos: List<String> = emptyList(), // TODO: Update with Photos
+    val photos: List<AgendaPhoto> = emptyList(),
     val reminder: NotificationTypes = NotificationTypes.THIRTY_MINUTES,
     val isSelectingNotificationReminder: Boolean = false,
     val shouldExit: Boolean = false

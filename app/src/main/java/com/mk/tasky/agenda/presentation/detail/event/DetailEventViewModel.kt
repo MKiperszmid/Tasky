@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -122,6 +123,15 @@ class DetailEventViewModel @Inject constructor(
             is DetailEventEvents.OnToTimeSelected -> {
                 state = state.copy(
                     toTime = event.time
+                )
+            }
+            is DetailEventEvents.OnAddPhoto -> {
+                if (state.photos.contains(event.photo)) return
+                val updatedPhotos = mutableListOf<AgendaPhoto>()
+                updatedPhotos.addAll(state.photos)
+                updatedPhotos.add(event.photo)
+                state = state.copy(
+                    photos = updatedPhotos
                 )
             }
         }

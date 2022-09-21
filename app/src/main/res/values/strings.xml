@@ -38,4 +38,6 @@
     <string name="delete_reminder">DELETE REMINDER</string>
     <string name="delete_event">DELETE EVENT</string>
     <string name="edit_description">Edit Description</string>
+    <string name="photos">Photos</string>
+    <string name="add_photos">Add Photos</string>
 </resources>
