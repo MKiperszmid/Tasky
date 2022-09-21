@@ -20,10 +20,6 @@ import com.mk.tasky.agenda.presentation.detail.components.model.NotificationType
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Light
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
 fun DetailReminderScreen(
@@ -112,7 +108,7 @@ fun DetailReminderScreen(
                     onItemSelected = {
                         viewModel.onEvent(DetailReminderEvent.OnNotificationReminderSelect(it))
                     },
-                    showDropdown = state.showDropdown,
+                    showDropdown = state.isSelectingNotificationReminder,
                     onDismiss = { viewModel.onEvent(DetailReminderEvent.OnNotificationReminderDismiss) },
                     isEditable = state.isEditing
                 )

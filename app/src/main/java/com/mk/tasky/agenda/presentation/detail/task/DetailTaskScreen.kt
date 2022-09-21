@@ -17,15 +17,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.R
 import com.mk.tasky.agenda.presentation.detail.components.*
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
-import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderEvent
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
 fun DetailTaskScreen(
@@ -114,7 +109,7 @@ fun DetailTaskScreen(
                     onItemSelected = {
                         viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorSelect(it))
                     },
-                    showDropdown = state.showDropdown,
+                    showDropdown = state.isSelectingNotificationReminder,
                     onDismiss = { viewModel.onEvent(DetailTaskEvent.OnNotificationSelectorDismiss) },
                     isEditable = state.isEditing
                 )

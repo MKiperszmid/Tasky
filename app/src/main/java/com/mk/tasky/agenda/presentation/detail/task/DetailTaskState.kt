@@ -13,6 +13,6 @@ data class DetailTaskState(
     val time: LocalTime = LocalTime.now(),
     val notificationType: NotificationTypes = NotificationTypes.THIRTY_MINUTES,
     val isDone: Boolean = false,
-    val showDropdown: Boolean = false,
+    val isSelectingNotificationReminder: Boolean = false,
     val shouldExit: Boolean = false
 )

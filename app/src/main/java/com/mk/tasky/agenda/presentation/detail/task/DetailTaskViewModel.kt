@@ -131,12 +131,12 @@ class DetailTaskViewModel @Inject constructor(
             }
             DetailTaskEvent.OnNotificationSelectorClick -> {
                 state = state.copy(
-                    showDropdown = true
+                    isSelectingNotificationReminder = true
                 )
             }
             DetailTaskEvent.OnNotificationSelectorDismiss -> {
                 state = state.copy(
-                    showDropdown = false
+                    isSelectingNotificationReminder = false
                 )
             }
             is DetailTaskEvent.OnNotificationSelectorSelect -> {

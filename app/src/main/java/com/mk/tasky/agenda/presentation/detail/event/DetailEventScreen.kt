@@ -122,7 +122,7 @@ fun DetailEventScreen(
                     onItemSelected = {
                         viewModel.onEvent(DetailEventEvents.OnNotificationReminderSelect(it))
                     },
-                    showDropdown = state.showDropdown,
+                    showDropdown = state.isSelectingNotificationReminder,
                     onDismiss = { viewModel.onEvent(DetailEventEvents.OnNotificationReminderDismiss) },
                     isEditable = state.isEditing
                 )

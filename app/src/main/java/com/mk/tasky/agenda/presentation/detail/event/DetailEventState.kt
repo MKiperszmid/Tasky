@@ -14,6 +14,6 @@ data class DetailEventState(
     val toDate: LocalDate = LocalDate.now(),
     val toTime: LocalTime = LocalTime.now(),
     val reminder: NotificationTypes = NotificationTypes.THIRTY_MINUTES,
-    val showDropdown: Boolean = false,
+    val isSelectingNotificationReminder: Boolean = false,
     val shouldExit: Boolean = false
 )
