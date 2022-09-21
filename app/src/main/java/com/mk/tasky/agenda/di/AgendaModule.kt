@@ -100,7 +100,6 @@ object AgendaModule {
     @Provides
     @Singleton
     fun provideHomeUseCases(
-        repository: AgendaRepository,
         deleteTask: DeleteTask,
         deleteReminder: DeleteReminder,
         changeStatusTask: ChangeStatusTask

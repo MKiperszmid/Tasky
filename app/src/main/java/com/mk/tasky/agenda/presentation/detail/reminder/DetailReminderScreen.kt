@@ -20,10 +20,6 @@ import com.mk.tasky.agenda.presentation.detail.components.model.NotificationType
 import com.mk.tasky.core.presentation.TaskyBackground
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Light
-import com.vanpra.composematerialdialogs.MaterialDialog
-import com.vanpra.composematerialdialogs.datetime.date.datepicker
-import com.vanpra.composematerialdialogs.datetime.time.timepicker
-import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 
 @Composable
 fun DetailReminderScreen(
@@ -34,8 +30,6 @@ fun DetailReminderScreen(
     viewModel: DetailReminderViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
-    val datepickerState = rememberMaterialDialogState()
-    val timepickerState = rememberMaterialDialogState()
     val context = LocalContext.current
 
     LaunchedEffect(reminderTitle, reminderDescription) {
@@ -50,30 +44,6 @@ fun DetailReminderScreen(
     LaunchedEffect(key1 = state.shouldExit) {
         if (state.shouldExit) {
             onClose()
-        }
-    }
-
-    MaterialDialog(
-        dialogState = timepickerState,
-        buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }
-    ) {
-        timepicker { time ->
-            viewModel.onEvent(DetailReminderEvent.OnTimeSelected(time))
-        }
-    }
-
-    MaterialDialog(
-        dialogState = datepickerState,
-        buttons = {
-            positiveButton("Ok")
-            negativeButton("Cancel")
-        }
-    ) {
-        datepicker { date ->
-            viewModel.onEvent(DetailReminderEvent.OnDateSelected(date))
         }
     }
 
@@ -121,11 +91,11 @@ fun DetailReminderScreen(
                     date = state.date,
                     time = state.time,
                     isEditable = state.isEditing,
-                    onTimeClick = {
-                        timepickerState.show()
+                    onTimeSelected = {
+                        viewModel.onEvent(DetailReminderEvent.OnTimeSelected(it))
                     },
-                    onDateClick = {
-                        datepickerState.show()
+                    onDateSelected = {
+                        viewModel.onEvent(DetailReminderEvent.OnDateSelected(it))
                     }
                 )
                 Divider(color = Light)
@@ -138,7 +108,7 @@ fun DetailReminderScreen(
                     onItemSelected = {
                         viewModel.onEvent(DetailReminderEvent.OnNotificationReminderSelect(it))
                     },
-                    showDropdown = state.showDropdown,
+                    showDropdown = state.isSelectingNotificationReminder,
                     onDismiss = { viewModel.onEvent(DetailReminderEvent.OnNotificationReminderDismiss) },
                     isEditable = state.isEditing
                 )

@@ -23,11 +23,13 @@ import com.mk.tasky.core.presentation.TaskyButton
 import com.mk.tasky.core.presentation.TaskyDropdown
 import com.mk.tasky.ui.theme.Green
 import com.mk.tasky.ui.theme.Light
+import com.mk.tasky.ui.theme.LightGreen
 import com.vanpra.composematerialdialogs.MaterialDialog
 import com.vanpra.composematerialdialogs.datetime.date.datepicker
 import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalDateTime
+import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -89,7 +91,7 @@ fun HomeScreen(
             })
 
             val date = state.currentDate.plusDays(state.selectedDay.toLong())
-            val dateTitle = if (date.toLocalDate() == LocalDate.now()) {
+            val dateTitle = if (date == LocalDate.now()) {
                 "Today"
             } else {
                 val dateFormatter = DateTimeFormatter.ofPattern("dd MMMM uuuu")
@@ -115,6 +117,7 @@ fun HomeScreen(
                         color = when (it) {
                             is AgendaItem.Reminder -> Light
                             is AgendaItem.Task -> Green
+                            is AgendaItem.Event -> LightGreen
                         }
                     )
                     Spacer(modifier = Modifier.height(16.dp))
@@ -159,7 +162,10 @@ fun HomeScreen(
                 onItemSelected = {
                     redirect(
                         state.agendaTypes[it],
-                        state.currentDate.plusDays(state.selectedDay.toLong())
+                        LocalDateTime.of(
+                            state.currentDate.plusDays(state.selectedDay.toLong()),
+                            LocalTime.now()
+                        )
                     )
                 },
                 onDismiss = { viewModel.onEvent(HomeEvent.OnAgendaItemDismiss) },

@@ -19,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.mk.tasky.R
 import com.mk.tasky.agenda.domain.model.AgendaItem
+import com.mk.tasky.agenda.presentation.detail.event.DetailEventScreen
 import com.mk.tasky.agenda.presentation.detail.reminder.DetailReminderScreen
 import com.mk.tasky.agenda.presentation.detail.task.DetailTaskScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
@@ -101,6 +102,7 @@ fun MainScreen(
                     val route = when (item) {
                         is AgendaItem.Reminder -> Route.REMINDER
                         is AgendaItem.Task -> Route.TASK
+                        is AgendaItem.Event -> Route.EVENT
                     }
                     navController.navigate("$route?action=${itemOptions.name}&id=${item.id}")
                 },
@@ -170,6 +172,40 @@ fun MainScreen(
             DetailTaskScreen(
                 taskTitle = taskTitle,
                 taskDescription = taskDescription,
+                onClose = {
+                    navController.navigateUp()
+                },
+                openEditor = { id, title, body, size ->
+                    navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
+                }
+            )
+        }
+
+        composable(
+            route = Route.EVENT + "?date={date}&action={action}&id={id}",
+            arguments = listOf(
+                navArgument("date") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("action") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                },
+                navArgument("id") {
+                    type = NavType.StringType
+                    nullable = true
+                    defaultValue = null
+                }
+            )
+        ) {
+            val eventTitle = it.savedStateHandle.get<String>("event_title") ?: ""
+            val eventDescription = it.savedStateHandle.get<String>("event_description") ?: ""
+            DetailEventScreen(
+                eventTitle = eventTitle,
+                eventDescription = eventDescription,
                 onClose = {
                     navController.navigateUp()
                 },

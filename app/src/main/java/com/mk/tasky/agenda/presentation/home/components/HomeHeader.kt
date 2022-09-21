@@ -4,11 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.mk.tasky.core.presentation.TaskyHeader
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
 fun HomeHeader(
-    date: LocalDateTime,
+    date: LocalDate,
     name: String,
     onMonthClick: () -> Unit,
     onProfileClick: () -> Unit,
@@ -28,5 +28,5 @@ fun HomeHeader(
 @Preview
 @Composable
 fun HomeHeaderPreview() {
-    HomeHeader(date = LocalDateTime.now(), name = "MK", {}, {})
+    HomeHeader(date = LocalDate.now(), name = "MK", {}, {})
 }

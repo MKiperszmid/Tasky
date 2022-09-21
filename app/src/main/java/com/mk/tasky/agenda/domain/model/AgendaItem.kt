@@ -37,4 +37,18 @@ sealed class AgendaItem(
         time = taskDateTime,
         remindAt = taskRemindAt
     )
+    data class Event(
+        val eventId: String,
+        val eventTitle: String,
+        val eventDescription: String,
+        val eventFromDateTime: LocalDateTime,
+        val eventRemindAt: LocalDateTime,
+        val eventToDateTime: LocalDateTime
+    ) : AgendaItem(
+        id = eventId,
+        title = eventTitle,
+        description = eventDescription,
+        time = eventFromDateTime,
+        remindAt = eventRemindAt
+    )
 }

@@ -18,11 +18,11 @@ import androidx.compose.ui.unit.sp
 import com.mk.tasky.ui.theme.Black
 import com.mk.tasky.ui.theme.Gray
 import com.mk.tasky.ui.theme.Orange
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
 fun HomeDayPickerItem(
-    day: LocalDateTime,
+    day: LocalDate,
     isSelected: Boolean = false,
     onDayClick: () -> Unit,
     modifier: Modifier = Modifier
@@ -53,7 +53,7 @@ fun HomeDayPickerItem(
 @Composable
 fun HomeDayPickerItemPreview() {
     HomeDayPickerItem(
-        day = LocalDateTime.now(),
+        day = LocalDate.now(),
         isSelected = true,
         onDayClick = {}
     )

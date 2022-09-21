@@ -13,11 +13,13 @@
     <string name="name">Name</string>
     <string name="get_started">GET STARTED</string>
     <string name="reminder">Reminder</string>
+    <string name="event">Event</string>
     <string name="task">Task</string>
     <string name="close">close</string>
     <string name="edit">Edit</string>
     <string name="edit_title">Edit Title</string>
     <string name="edit_reminder">Edit Reminder</string>
+    <string name="edit_event">Edit Event</string>
     <string name="edit_task">Edit Task</string>
     <string name="change_month">change month</string>
     <string name="edit_time">edit time</string>
@@ -28,9 +30,12 @@
     <string name="one_day_before">1 day before</string>
     <string name="save">Save</string>
     <string name="at">At</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
     <string name="open">Open</string>
     <string name="delete">Delete</string>
     <string name="delete_task">DELETE TASK</string>
     <string name="delete_reminder">DELETE REMINDER</string>
+    <string name="delete_event">DELETE EVENT</string>
     <string name="edit_description">Edit Description</string>
 </resources>

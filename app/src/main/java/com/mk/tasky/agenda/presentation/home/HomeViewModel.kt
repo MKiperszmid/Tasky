@@ -12,8 +12,6 @@ import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
 import com.mk.tasky.core.domain.preferences.Preferences
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import java.time.LocalDateTime
-import java.time.LocalTime
 import javax.inject.Inject
 
 @HiltViewModel
@@ -81,13 +79,14 @@ class HomeViewModel @Inject constructor(
                     when (event.agendaItem) {
                         is AgendaItem.Reminder -> homeUseCases.deleteReminder(event.agendaItem.id)
                         is AgendaItem.Task -> homeUseCases.deleteTask(event.agendaItem.id)
+                        is AgendaItem.Event -> Unit // TODO: Delete Event
                     }
                     getAgendaForSelectedDate(forceRemote = false)
                 }
             }
             is HomeEvent.OnDateSelected -> {
                 state = state.copy(
-                    currentDate = LocalDateTime.of(event.date, LocalTime.now()),
+                    currentDate = event.date,
                     selectedDay = 0
                 )
                 getAgendaForSelectedDate(forceRemote = true)

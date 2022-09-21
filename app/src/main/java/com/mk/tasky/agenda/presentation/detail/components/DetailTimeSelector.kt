@@ -14,7 +14,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.R
+import com.mk.tasky.agenda.presentation.detail.event.DetailEventEvents
 import com.mk.tasky.ui.theme.Black
+import com.vanpra.composematerialdialogs.MaterialDialog
+import com.vanpra.composematerialdialogs.datetime.date.datepicker
+import com.vanpra.composematerialdialogs.datetime.time.timepicker
+import com.vanpra.composematerialdialogs.rememberMaterialDialogState
 import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
@@ -25,10 +30,38 @@ fun DetailTimeSelector(
     date: LocalDate,
     time: LocalTime,
     isEditable: Boolean,
-    onTimeClick: () -> Unit,
-    onDateClick: () -> Unit,
+    onTimeSelected: (LocalTime) -> Unit,
+    onDateSelected: (LocalDate) -> Unit,
     modifier: Modifier = Modifier
 ) {
+
+    val datepickerState = rememberMaterialDialogState()
+    val timepickerState = rememberMaterialDialogState()
+
+    MaterialDialog(
+        dialogState = timepickerState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        timepicker { time ->
+            onTimeSelected(time)
+        }
+    }
+
+    MaterialDialog(
+        dialogState = datepickerState,
+        buttons = {
+            positiveButton("Ok")
+            negativeButton("Cancel")
+        }
+    ) {
+        datepicker { date ->
+            onDateSelected(date)
+        }
+    }
+
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -45,7 +78,7 @@ fun DetailTimeSelector(
                 modifier = Modifier.then(
                     if (isEditable) {
                         Modifier.clickable {
-                            onTimeClick()
+                            timepickerState.show()
                         }
                     } else Modifier
                 ).padding(start = 10.dp, end = 10.dp),
@@ -74,7 +107,7 @@ fun DetailTimeSelector(
                 modifier = Modifier.then(
                     if (isEditable) {
                         Modifier.clickable {
-                            onDateClick()
+                            datepickerState.show()
                         }
                     } else Modifier
                 ).padding(start = 10.dp, end = 10.dp)
@@ -99,7 +132,7 @@ fun DetailTimeSelectorPreview() {
         date = LocalDate.now(),
         time = LocalTime.now(),
         isEditable = true,
-        onTimeClick = {},
-        onDateClick = {}
+        onTimeSelected = {},
+        onDateSelected = {}
     )
 }

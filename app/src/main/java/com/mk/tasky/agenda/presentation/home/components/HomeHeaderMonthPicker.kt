@@ -18,11 +18,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.R
 import com.mk.tasky.ui.theme.White
-import java.time.LocalDateTime
+import java.time.LocalDate
 
 @Composable
 fun HomeHeaderMonthPicker(
-    date: LocalDateTime,
+    date: LocalDate,
     onMonthClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -51,5 +51,5 @@ fun HomeHeaderMonthPicker(
 @Preview
 @Composable
 fun HomeHeaderMonthPickerPreview() {
-    HomeHeaderMonthPicker(LocalDateTime.now(), {})
+    HomeHeaderMonthPicker(LocalDate.now(), {})
 }
