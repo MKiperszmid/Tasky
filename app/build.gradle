@@ -97,7 +97,6 @@ dependencies {
     implementation "androidx.room:room-ktx:$room_version"
 
     // Image Picker Contract
-    implementation "androidx.activity:activity:1.6.0"
     implementation "androidx.activity:activity-ktx:1.6.0"
     implementation "com.google.accompanist:accompanist-permissions:0.26.3-beta"
 
