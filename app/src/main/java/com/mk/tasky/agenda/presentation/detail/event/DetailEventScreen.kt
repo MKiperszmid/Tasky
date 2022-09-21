@@ -86,6 +86,7 @@ fun DetailEventScreen(
                         )
                     }
                 )
+                DetailPhotoSelector(photos = state.photos)
                 Divider(color = Light)
                 DetailTimeSelector(
                     text = stringResource(R.string.from),

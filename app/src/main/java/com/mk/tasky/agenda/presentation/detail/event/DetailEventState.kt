@@ -13,6 +13,7 @@ data class DetailEventState(
     val fromTime: LocalTime = LocalTime.now(),
     val toDate: LocalDate = LocalDate.now(),
     val toTime: LocalTime = LocalTime.now(),
+    val photos: List<String> = emptyList(), // TODO: Update with Photos
     val reminder: NotificationTypes = NotificationTypes.THIRTY_MINUTES,
     val isSelectingNotificationReminder: Boolean = false,
     val shouldExit: Boolean = false
