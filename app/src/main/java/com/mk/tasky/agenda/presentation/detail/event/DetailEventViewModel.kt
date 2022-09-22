@@ -127,11 +127,8 @@ class DetailEventViewModel @Inject constructor(
             }
             is DetailEventEvents.OnAddPhoto -> {
                 if (state.photos.contains(event.photo)) return
-                val updatedPhotos = mutableListOf<AgendaPhoto>()
-                updatedPhotos.addAll(state.photos)
-                updatedPhotos.add(event.photo)
                 state = state.copy(
-                    photos = updatedPhotos
+                    photos = state.photos + event.photo
                 )
             }
         }

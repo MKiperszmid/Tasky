@@ -40,4 +40,5 @@
     <string name="edit_description">Edit Description</string>
     <string name="photos">Photos</string>
     <string name="add_photos">Add Photos</string>
+    <string name="photo">photo</string>
 </resources>

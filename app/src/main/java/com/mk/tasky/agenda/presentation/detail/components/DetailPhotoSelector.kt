@@ -123,7 +123,7 @@ private fun PhotoViewer(
                             .data(it.location)
                             .crossfade(true)
                             .build(),
-                        contentDescription = "",
+                        contentDescription = stringResource(R.string.photo),
                         contentScale = ContentScale.Crop,
                         modifier = Modifier.fillMaxSize()
                     )
