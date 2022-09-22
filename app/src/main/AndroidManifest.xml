@@ -4,7 +4,7 @@
     package="com.mk.tasky">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <application
         android:name=".MyApp"
         android:allowBackup="true"

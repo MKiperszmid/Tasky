@@ -6,12 +6,12 @@ plugins {
 }
 
 android {
-    compileSdk 32
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.mk.tasky"
         minSdk 24
-        targetSdk 32
+        targetSdk 33
         versionCode 1
         versionName "1.0"
 
@@ -95,6 +95,13 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+    // Image Picker Contract
+    implementation "androidx.activity:activity-ktx:1.6.0"
+    implementation "com.google.accompanist:accompanist-permissions:0.26.3-beta"
+
+    // Coil
+    implementation("io.coil-kt:coil-compose:2.2.1")
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.google.truth:truth:1.1.3'

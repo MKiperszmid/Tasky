@@ -15,6 +15,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.mk.tasky.R
+import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.presentation.detail.components.*
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.core.presentation.TaskyBackground
@@ -86,6 +87,9 @@ fun DetailEventScreen(
                         )
                     }
                 )
+                DetailPhotoSelector(photos = state.photos, onPhotoSelected = {
+                    viewModel.onEvent(DetailEventEvents.OnAddPhoto(AgendaPhoto.Local(it.toString())))
+                })
                 Divider(color = Light)
                 DetailTimeSelector(
                     text = stringResource(R.string.from),
