@@ -10,6 +10,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -205,11 +206,8 @@ fun MainScreen(
         ) {
             val eventTitle = it.savedStateHandle.get<String>("event_title") ?: ""
             val eventDescription = it.savedStateHandle.get<String>("event_description") ?: ""
-            val selectedPhoto = it.savedStateHandle.get<String>("photo_location") ?: ""
-            val deletePhoto = it.savedStateHandle.get<Boolean>("should_delete") ?: false
-
-            val deletablePhoto =
-                if (deletePhoto && selectedPhoto.isNotBlank()) selectedPhoto else null
+            val selectedPhoto = it.savedStateHandle.get<String>("photo_location")
+            val shouldDeletePhoto = it.savedStateHandle.get<Boolean>("should_delete") ?: false
 
             DetailEventScreen(
                 eventTitle = eventTitle,
@@ -221,10 +219,12 @@ fun MainScreen(
                     navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
                 },
                 openPhotoViewer = { location ->
-                    val encodedLocation = URLEncoder.encode(location, "UTF-8")
+                    it.savedStateHandle["photo_location"] = location.toString()
+                    it.savedStateHandle["should_delete"] = false
+                    val encodedLocation = URLEncoder.encode(location.toString(), "UTF-8")
                     navController.navigate(Route.PHOTO_VIEWER + "/$encodedLocation")
                 },
-                deletablePhotoLocation = deletablePhoto
+                deletablePhotoLocation = if (shouldDeletePhoto) selectedPhoto?.toUri() else null
             )
         }
 
@@ -236,16 +236,11 @@ fun MainScreen(
                 }
             )
         ) {
-            val photoLocation = it.arguments?.getString("location")
             PhotoViewerScreen(
                 onBack = { shouldDelete ->
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         "should_delete",
                         shouldDelete
-                    )
-                    navController.previousBackStackEntry?.savedStateHandle?.set(
-                        "photo_location",
-                        photoLocation
                     )
                     navController.popBackStack()
                 }

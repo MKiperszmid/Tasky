@@ -131,7 +131,7 @@ class DetailEventViewModel @Inject constructor(
                 )
             }
             is DetailEventEvents.DeletePhoto -> {
-                val deletedPhoto = state.photos.find { it.location == event.location }
+                val deletedPhoto = state.photos.find { it.location == event.location.toString() }
                 if (deletedPhoto != null) {
                     state = state.copy(
                         photos = state.photos - deletedPhoto
