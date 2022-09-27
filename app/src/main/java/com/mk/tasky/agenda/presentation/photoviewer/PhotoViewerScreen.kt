@@ -27,7 +27,7 @@ import com.mk.tasky.ui.theme.White
 
 @Composable
 fun PhotoViewerScreen(
-    onBack: (Boolean) -> Unit,
+    onBack: (shouldDelete: Boolean) -> Unit,
     viewModel: PhotoViewerViewModel = hiltViewModel()
 ) {
     LazyColumn(
