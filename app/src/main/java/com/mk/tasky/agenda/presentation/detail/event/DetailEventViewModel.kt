@@ -6,7 +6,6 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -130,6 +129,14 @@ class DetailEventViewModel @Inject constructor(
                 state = state.copy(
                     photos = state.photos + event.photo
                 )
+            }
+            is DetailEventEvents.DeletePhoto -> {
+                val deletedPhoto = state.photos.find { it.location == event.location }
+                if (deletedPhoto != null) {
+                    state = state.copy(
+                        photos = state.photos - deletedPhoto
+                    )
+                }
             }
         }
     }

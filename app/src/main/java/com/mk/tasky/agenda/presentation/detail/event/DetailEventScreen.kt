@@ -30,6 +30,7 @@ fun DetailEventScreen(
     onClose: () -> Unit,
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
     openPhotoViewer: (String) -> Unit,
+    deletablePhotoLocation: String?,
     viewModel: DetailEventViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -42,6 +43,12 @@ fun DetailEventScreen(
                 eventDescription
             )
         )
+    }
+
+    LaunchedEffect(deletablePhotoLocation) {
+        if (!deletablePhotoLocation.isNullOrBlank()) {
+            viewModel.onEvent(DetailEventEvents.DeletePhoto(deletablePhotoLocation))
+        }
     }
 
     LaunchedEffect(key1 = state.shouldExit) {

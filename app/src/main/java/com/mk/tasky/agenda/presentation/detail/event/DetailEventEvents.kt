@@ -24,4 +24,5 @@ sealed class DetailEventEvents {
     data class OnToTimeSelected(val time: LocalTime) : DetailEventEvents()
 
     data class OnAddPhoto(val photo: AgendaPhoto) : DetailEventEvents()
+    data class DeletePhoto(val location: String) : DetailEventEvents()
 }

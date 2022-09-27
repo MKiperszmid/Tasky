@@ -31,9 +31,7 @@ import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
 import com.mk.tasky.core.presentation.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
-import java.net.URLDecoder
 import java.net.URLEncoder
-import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -207,6 +205,12 @@ fun MainScreen(
         ) {
             val eventTitle = it.savedStateHandle.get<String>("event_title") ?: ""
             val eventDescription = it.savedStateHandle.get<String>("event_description") ?: ""
+            val selectedPhoto = it.savedStateHandle.get<String>("photo_location") ?: ""
+            val deletePhoto = it.savedStateHandle.get<Boolean>("should_delete") ?: false
+
+            val deletablePhoto =
+                if (deletePhoto && selectedPhoto.isNotBlank()) selectedPhoto else null
+
             DetailEventScreen(
                 eventTitle = eventTitle,
                 eventDescription = eventDescription,
@@ -219,7 +223,8 @@ fun MainScreen(
                 openPhotoViewer = { location ->
                     val encodedLocation = URLEncoder.encode(location, "UTF-8")
                     navController.navigate(Route.PHOTO_VIEWER + "/$encodedLocation")
-                }
+                },
+                deletablePhotoLocation = deletablePhoto
             )
         }
 
@@ -232,7 +237,6 @@ fun MainScreen(
             )
         ) {
             val photoLocation = it.arguments?.getString("location")
-            val decodedLocation = URLDecoder.decode(photoLocation, "UTF-8")
             PhotoViewerScreen(
                 onBack = { shouldDelete ->
                     navController.previousBackStackEntry?.savedStateHandle?.set(
@@ -241,7 +245,7 @@ fun MainScreen(
                     )
                     navController.previousBackStackEntry?.savedStateHandle?.set(
                         "photo_location",
-                        decodedLocation
+                        photoLocation
                     )
                     navController.popBackStack()
                 }
