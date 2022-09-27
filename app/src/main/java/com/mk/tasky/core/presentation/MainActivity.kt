@@ -25,11 +25,15 @@ import com.mk.tasky.agenda.presentation.detail.task.DetailTaskScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
 import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 import com.mk.tasky.agenda.presentation.home.HomeScreen
+import com.mk.tasky.agenda.presentation.photoviewer.PhotoViewerScreen
 import com.mk.tasky.authentication.presentation.login.LoginScreen
 import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
 import com.mk.tasky.core.presentation.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLDecoder
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -211,6 +215,35 @@ fun MainScreen(
                 },
                 openEditor = { id, title, body, size ->
                     navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
+                },
+                openPhotoViewer = { location ->
+                    val encodedLocation = URLEncoder.encode(location, "UTF-8")
+                    navController.navigate(Route.PHOTO_VIEWER + "/$encodedLocation")
+                }
+            )
+        }
+
+        composable(
+            route = Route.PHOTO_VIEWER + "/{location}",
+            arguments = listOf(
+                navArgument("location") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            val photoLocation = it.arguments?.getString("location")
+            val decodedLocation = URLDecoder.decode(photoLocation, "UTF-8")
+            PhotoViewerScreen(
+                onBack = { shouldDelete ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "should_delete",
+                        shouldDelete
+                    )
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "photo_location",
+                        decodedLocation
+                    )
+                    navController.popBackStack()
                 }
             )
         }

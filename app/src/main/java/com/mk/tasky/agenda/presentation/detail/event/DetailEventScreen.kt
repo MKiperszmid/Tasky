@@ -29,6 +29,7 @@ fun DetailEventScreen(
     eventDescription: String,
     onClose: () -> Unit,
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
+    openPhotoViewer: (String) -> Unit,
     viewModel: DetailEventViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -89,7 +90,9 @@ fun DetailEventScreen(
                 )
                 DetailPhotoSelector(photos = state.photos, onPhotoSelected = {
                     viewModel.onEvent(DetailEventEvents.OnAddPhoto(AgendaPhoto.Local(it.toString())))
-                })
+                }, onPhotoClick = {
+                        openPhotoViewer(it.location)
+                    })
                 Divider(color = Light)
                 DetailTimeSelector(
                     text = stringResource(R.string.from),
