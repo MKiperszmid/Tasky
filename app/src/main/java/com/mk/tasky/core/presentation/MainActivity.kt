@@ -10,6 +10,7 @@ import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -25,11 +26,13 @@ import com.mk.tasky.agenda.presentation.detail.task.DetailTaskScreen
 import com.mk.tasky.agenda.presentation.editor.EditorScreen
 import com.mk.tasky.agenda.presentation.home.HomeAgendaType
 import com.mk.tasky.agenda.presentation.home.HomeScreen
+import com.mk.tasky.agenda.presentation.photoviewer.PhotoViewerScreen
 import com.mk.tasky.authentication.presentation.login.LoginScreen
 import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
 import com.mk.tasky.core.presentation.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
+import java.net.URLEncoder
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -203,6 +206,9 @@ fun MainScreen(
         ) {
             val eventTitle = it.savedStateHandle.get<String>("event_title") ?: ""
             val eventDescription = it.savedStateHandle.get<String>("event_description") ?: ""
+            val selectedPhoto = it.savedStateHandle.get<String>("photo_location")
+            val shouldDeletePhoto = it.savedStateHandle.get<Boolean>("should_delete") ?: false
+
             DetailEventScreen(
                 eventTitle = eventTitle,
                 eventDescription = eventDescription,
@@ -211,6 +217,32 @@ fun MainScreen(
                 },
                 openEditor = { id, title, body, size ->
                     navController.navigate(Route.EDITOR + "/$id/$title/$body/$size")
+                },
+                openPhotoViewer = { location ->
+                    it.savedStateHandle["photo_location"] = location.toString()
+                    it.savedStateHandle["should_delete"] = false
+                    val encodedLocation = URLEncoder.encode(location.toString(), "UTF-8")
+                    navController.navigate(Route.PHOTO_VIEWER + "/$encodedLocation")
+                },
+                deletablePhotoLocation = if (shouldDeletePhoto) selectedPhoto?.toUri() else null
+            )
+        }
+
+        composable(
+            route = Route.PHOTO_VIEWER + "/{location}",
+            arguments = listOf(
+                navArgument("location") {
+                    type = NavType.StringType
+                }
+            )
+        ) {
+            PhotoViewerScreen(
+                onBack = { shouldDelete ->
+                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                        "should_delete",
+                        shouldDelete
+                    )
+                    navController.popBackStack()
                 }
             )
         }

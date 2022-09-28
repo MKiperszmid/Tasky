@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.presentation.detail.event
 
+import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Divider
@@ -29,6 +30,8 @@ fun DetailEventScreen(
     eventDescription: String,
     onClose: () -> Unit,
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
+    openPhotoViewer: (Uri) -> Unit,
+    deletablePhotoLocation: Uri?,
     viewModel: DetailEventViewModel = hiltViewModel()
 ) {
     val state = viewModel.state
@@ -41,6 +44,12 @@ fun DetailEventScreen(
                 eventDescription
             )
         )
+    }
+
+    LaunchedEffect(deletablePhotoLocation) {
+        if (deletablePhotoLocation != null) {
+            viewModel.onEvent(DetailEventEvents.DeletePhoto(deletablePhotoLocation))
+        }
     }
 
     LaunchedEffect(key1 = state.shouldExit) {
@@ -89,7 +98,9 @@ fun DetailEventScreen(
                 )
                 DetailPhotoSelector(photos = state.photos, onPhotoSelected = {
                     viewModel.onEvent(DetailEventEvents.OnAddPhoto(AgendaPhoto.Local(it.toString())))
-                })
+                }, onPhotoClick = {
+                        openPhotoViewer(Uri.parse(it.location))
+                    })
                 Divider(color = Light)
                 DetailTimeSelector(
                     text = stringResource(R.string.from),

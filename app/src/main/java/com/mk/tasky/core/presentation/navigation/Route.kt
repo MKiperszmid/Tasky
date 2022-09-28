@@ -8,4 +8,5 @@ object Route {
     const val REMINDER = "reminder"
     const val EVENT = "event"
     const val EDITOR = "editor"
+    const val PHOTO_VIEWER = "photoviewer"
 }

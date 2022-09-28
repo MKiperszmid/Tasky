@@ -45,6 +45,7 @@ import com.mk.tasky.ui.theme.LightBlue
 @Composable
 fun DetailPhotoSelector(
     photos: List<AgendaPhoto>,
+    onPhotoClick: (AgendaPhoto) -> Unit,
     onPhotoSelected: (Uri) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -68,9 +69,11 @@ fun DetailPhotoSelector(
                 launchImageGallery(readGalleryPermissionState, galleryLauncher)
             })
         } else {
-            PhotoViewer(photos = photos, onPhotoClick = { }, onAddPhoto = {
-                launchImageGallery(readGalleryPermissionState, galleryLauncher)
-            })
+            PhotoViewer(photos = photos, onPhotoClick = {
+                onPhotoClick(it)
+            }, onAddPhoto = {
+                    launchImageGallery(readGalleryPermissionState, galleryLauncher)
+                })
         }
     }
 }
@@ -189,5 +192,9 @@ private fun EmptyPhotoPicker(
 @Preview
 @Composable
 fun DetailPhotoSelectorPreview() {
-    DetailPhotoSelector(photos = listOf(AgendaPhoto.Local("")), onPhotoSelected = {})
+    DetailPhotoSelector(
+        photos = listOf(AgendaPhoto.Local("")),
+        onPhotoSelected = {},
+        onPhotoClick = {}
+    )
 }

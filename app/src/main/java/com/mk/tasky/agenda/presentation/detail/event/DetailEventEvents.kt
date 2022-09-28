@@ -1,5 +1,6 @@
 package com.mk.tasky.agenda.presentation.detail.event
 
+import android.net.Uri
 import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
@@ -24,4 +25,5 @@ sealed class DetailEventEvents {
     data class OnToTimeSelected(val time: LocalTime) : DetailEventEvents()
 
     data class OnAddPhoto(val photo: AgendaPhoto) : DetailEventEvents()
+    data class DeletePhoto(val location: Uri) : DetailEventEvents()
 }
