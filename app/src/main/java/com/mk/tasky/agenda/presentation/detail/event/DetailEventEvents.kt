@@ -26,4 +26,5 @@ sealed class DetailEventEvents {
 
     data class OnAddPhoto(val photo: AgendaPhoto) : DetailEventEvents()
     data class DeletePhoto(val location: Uri) : DetailEventEvents()
+    data class OnFilterTypeSelect(val type: DetailEventFilterType) : DetailEventEvents()
 }

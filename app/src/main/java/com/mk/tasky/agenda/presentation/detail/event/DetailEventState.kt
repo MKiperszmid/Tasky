@@ -1,6 +1,7 @@
 package com.mk.tasky.agenda.presentation.detail.event
 
 import com.mk.tasky.agenda.domain.model.AgendaPhoto
+import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
 import java.time.LocalTime
@@ -17,5 +18,35 @@ data class DetailEventState(
     val photos: List<AgendaPhoto> = emptyList(),
     val reminder: NotificationTypes = NotificationTypes.THIRTY_MINUTES,
     val isSelectingNotificationReminder: Boolean = false,
-    val shouldExit: Boolean = false
+    val shouldExit: Boolean = false,
+    val selectedFilterType: DetailEventFilterType = DetailEventFilterType.ALL,
+    val attendees: List<Attendee> = defaultList, // emptyList()
+    val hostId: String = ""
+)
+
+private val defaultList = listOf(
+    Attendee(
+        "ms@asd.com",
+        "Michael Scott",
+        "1",
+        "123",
+        true,
+        1L
+    ),
+    Attendee(
+        "ds@asd.com",
+        "Dwyght Schrute",
+        "2",
+        "123",
+        true,
+        1L
+    ),
+    Attendee(
+        "jh@asd.com",
+        "Jim Halpert",
+        "3",
+        "123",
+        false,
+        1L
+    )
 )

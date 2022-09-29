@@ -138,6 +138,11 @@ class DetailEventViewModel @Inject constructor(
                     )
                 }
             }
+            is DetailEventEvents.OnFilterTypeSelect -> {
+                state = state.copy(
+                    selectedFilterType = event.type
+                )
+            }
         }
     }
 }
