@@ -3,6 +3,7 @@ package com.mk.tasky.agenda.presentation.detail.event
 import android.net.Uri
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.Divider
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -68,13 +69,18 @@ fun DetailEventScreen(
             isEditing = state.isEditing
         )
     }) {
-        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween) {
-            Column {
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            item {
                 DetailColor(
                     text = stringResource(id = R.string.event),
                     color = LightGreen,
                     modifier = Modifier.padding(top = 14.dp)
                 )
+            }
+            item {
                 DetailTitle(title = state.title, isEditable = state.isEditing, onClick = {
                     openEditor(
                         "event_title",
@@ -84,6 +90,8 @@ fun DetailEventScreen(
                     )
                 })
                 Divider(color = Light)
+            }
+            item {
                 DetailDescription(
                     description = state.description,
                     isEditable = state.isEditing,
@@ -96,12 +104,16 @@ fun DetailEventScreen(
                         )
                     }
                 )
+            }
+            item {
                 DetailPhotoSelector(photos = state.photos, onPhotoSelected = {
                     viewModel.onEvent(DetailEventEvents.OnAddPhoto(AgendaPhoto.Local(it.toString())))
                 }, onPhotoClick = {
                         openPhotoViewer(Uri.parse(it.location))
                     })
                 Divider(color = Light)
+            }
+            item {
                 DetailTimeSelector(
                     text = stringResource(R.string.from),
                     date = state.fromDate,
@@ -115,6 +127,8 @@ fun DetailEventScreen(
                     }
                 )
                 Divider(color = Light)
+            }
+            item {
                 DetailTimeSelector(
                     text = stringResource(R.string.to),
                     date = state.toDate,
@@ -128,6 +142,8 @@ fun DetailEventScreen(
                     }
                 )
                 Divider(color = Light)
+            }
+            item {
                 DetailNotificationReminder(
                     notificationTypes = NotificationTypes.values().toList(),
                     onClick = {
@@ -141,24 +157,42 @@ fun DetailEventScreen(
                     onDismiss = { viewModel.onEvent(DetailEventEvents.OnNotificationReminderDismiss) },
                     isEditable = state.isEditing
                 )
-            }
-            Box {
                 Divider(color = Light)
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 16.dp, bottom = 48.dp),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = stringResource(R.string.delete_event),
-                        color = Gray,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.clickable {
-                            viewModel.onEvent(DetailEventEvents.OnEventDelete)
-                        }
-                    )
+            }
+            item {
+                DetailVisitors(
+                    visitors = state.attendees,
+                    hostId = state.hostId,
+                    selectedFilterType = state.selectedFilterType,
+                    onFilterTypeClick = {
+                        viewModel.onEvent(DetailEventEvents.OnFilterTypeSelect(it))
+                    },
+                    isEditable = state.isEditing,
+                    onAddVisitorClick = {
+                        // TODO: Add Visitor Dialog
+                    },
+                    modifier = Modifier.padding(top = 30.dp)
+                )
+            }
+            item {
+                Box {
+                    Divider(color = Light)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 16.dp, bottom = 48.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = stringResource(R.string.delete_event),
+                            color = Gray,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            modifier = Modifier.clickable {
+                                viewModel.onEvent(DetailEventEvents.OnEventDelete)
+                            }
+                        )
+                    }
                 }
             }
         }

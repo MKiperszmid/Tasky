@@ -41,4 +41,7 @@
     <string name="photos">Photos</string>
     <string name="add_photos">Add Photos</string>
     <string name="photo">photo</string>
+    <string name="all">All</string>
+    <string name="going">Going</string>
+    <string name="not_going">Not going</string>
 </resources>
