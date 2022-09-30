@@ -162,14 +162,15 @@ class AgendaRepositoryImpl(
         // - If we get event remotelly with different attendees, we should remove all from db and add the new ones, since we could have outdated users
         // - Same as above, but with photos.
 
-        // TODO: Make all calls async
-
-        event.attendees.forEach {
-            dao.insertAttendee(it.toEntity(event.eventId))
+        supervisorScope {
+            val attendees = event.attendees.map {
+                launch { dao.insertAttendee(it.toEntity(event.eventId)) }
+            }
+            val photos = event.photos.map {
+                launch { dao.insertPhoto(it.toEntity(event.eventId)) }
+            }
+            (attendees + photos).forEach { it.join() }
+            dao.insertEvent(event.toEntity())
         }
-        event.photos.forEach {
-            dao.insertPhoto(it.toEntity(event.eventId))
-        }
-        dao.insertEvent(event.toEntity())
     }
 }
