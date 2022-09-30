@@ -156,4 +156,20 @@ class AgendaRepositoryImpl(
     private suspend fun deleteTaskByIdRemotely(id: String) = resultOf {
         api.deleteTask(id)
     }
+
+    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
+        // Edge Cases:
+        // - If we get event remotelly with different attendees, we should remove all from db and add the new ones, since we could have outdated users
+        // - Same as above, but with photos.
+
+        // TODO: Make all calls async
+
+        event.attendees.forEach {
+            dao.insertAttendee(it.toEntity(event.eventId))
+        }
+        event.photos.forEach {
+            dao.insertPhoto(it.toEntity(event.eventId))
+        }
+        dao.insertEvent(event.toEntity())
+    }
 }

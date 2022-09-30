@@ -15,4 +15,6 @@ interface AgendaRepository {
     suspend fun changeStatusTask(id: String, isDone: Boolean)
     suspend fun getTaskById(id: String): AgendaItem.Task
     suspend fun deleteTaskById(id: String)
+
+    suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean)
 }

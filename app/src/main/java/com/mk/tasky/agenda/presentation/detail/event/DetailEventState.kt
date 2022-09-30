@@ -4,6 +4,7 @@ import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
+import java.time.LocalDateTime
 import java.time.LocalTime
 
 data class DetailEventState(
@@ -21,7 +22,8 @@ data class DetailEventState(
     val shouldExit: Boolean = false,
     val selectedFilterType: DetailEventFilterType = DetailEventFilterType.ALL,
     val attendees: List<Attendee> = defaultList, // emptyList()
-    val hostId: String = ""
+    val hostId: String = "", // TODO: Update with hostId
+    val isHost: Boolean = true // TODO: Update so it changes value based on hostId
 )
 
 private val defaultList = listOf(
@@ -31,7 +33,7 @@ private val defaultList = listOf(
         "1",
         "123",
         true,
-        1L
+        LocalDateTime.now()
     ),
     Attendee(
         "ds@asd.com",
@@ -39,7 +41,7 @@ private val defaultList = listOf(
         "2",
         "123",
         true,
-        1L
+        LocalDateTime.now()
     ),
     Attendee(
         "jh@asd.com",
@@ -47,6 +49,6 @@ private val defaultList = listOf(
         "3",
         "123",
         false,
-        1L
+        LocalDateTime.now()
     )
 )

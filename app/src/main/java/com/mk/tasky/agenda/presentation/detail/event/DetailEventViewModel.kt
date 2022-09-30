@@ -6,6 +6,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,6 +15,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailEventViewModel @Inject constructor(
+    private val saveEvent: SaveEvent,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var state by mutableStateOf(DetailEventState())
@@ -90,7 +92,25 @@ class DetailEventViewModel @Inject constructor(
                 state = state.copy(
                     isEditing = false
                 )
-                // TODO: Save Event
+                viewModelScope.launch {
+                    saveEvent(
+                        id = state.id,
+                        title = state.title,
+                        description = state.description,
+                        reminder = state.reminder,
+                        fromDate = state.fromDate,
+                        fromTime = state.fromTime,
+                        toDate = state.toDate,
+                        toTime = state.toTime,
+                        attendees = state.attendees,
+                        hostId = state.hostId,
+                        isHost = state.isHost,
+                        photos = state.photos
+                    )
+                    /*state = state.copy(
+                        shouldExit = true
+                    )*/
+                }
             }
             is DetailEventEvents.OnFromTimeSelected -> {
                 state = state.copy(

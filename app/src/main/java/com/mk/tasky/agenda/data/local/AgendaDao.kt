@@ -1,11 +1,8 @@
 package com.mk.tasky.agenda.data.local
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy
-import androidx.room.Query
-import com.mk.tasky.agenda.data.local.entity.ReminderEntity
-import com.mk.tasky.agenda.data.local.entity.TaskEntity
+import androidx.room.*
+import com.mk.tasky.agenda.data.local.entity.*
+import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
 
 @Dao
 interface AgendaDao {
@@ -54,4 +51,13 @@ interface AgendaDao {
         """
     )
     suspend fun getTasksBetweenTimestamps(dayOne: Long, dayTwo: Long): List<TaskEntity>
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAttendee(attendee: AttendeeEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertPhoto(photo: PhotoEntity)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertEvent(event: EventEntity)
 }
