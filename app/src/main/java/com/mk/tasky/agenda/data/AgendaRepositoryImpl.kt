@@ -9,7 +9,6 @@ import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.util.toLong
 import com.mk.tasky.core.data.util.resultOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -72,11 +71,11 @@ class AgendaRepositoryImpl(
     }
 
     override fun getAgenda(date: LocalDate, forceRemote: Boolean): Flow<Agenda> {
-        // TODO: Update with Tasks and Events
         return flow {
             val localReminders = getRemindersForDate(date)
             val localTasks = getTasksForDate(date)
-            emit(Agenda(localReminders + localTasks))
+            val localEvents = getEventsForDate(date)
+            emit(Agenda(localReminders + localTasks + localEvents))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
@@ -86,12 +85,14 @@ class AgendaRepositoryImpl(
                         val tasks = response.tasks.map {
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
+                        // TODO: Update with Events
                         (reminders + tasks).forEach { it.join() }
                     }
 
                     val updatedLocalReminders = getRemindersForDate(date)
                     val updatedLocalTasks = getTasksForDate(date)
-                    emit(Agenda(updatedLocalReminders + updatedLocalTasks))
+                    val updatedLocalEvents = getEventsForDate(date)
+                    emit(Agenda(updatedLocalReminders + updatedLocalTasks + updatedLocalEvents))
                 }.onFailure {
                     // TODO: Internet error
                     println("")
@@ -157,6 +158,19 @@ class AgendaRepositoryImpl(
 
     private suspend fun deleteTaskByIdRemotely(id: String) = resultOf {
         api.deleteTask(id)
+    }
+
+    private suspend fun getEventsForDate(date: LocalDate): List<AgendaItem.Event> {
+        val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
+
+        return dao.getEventsBetweenTimestamps(
+            dayOne = dayOne,
+            dayTwo = dayTwo
+        ).map {
+            it.toDomain()
+        }
     }
 
     override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {

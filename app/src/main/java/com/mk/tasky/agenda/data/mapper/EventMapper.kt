@@ -1,7 +1,9 @@
 package com.mk.tasky.agenda.data.mapper
 
 import com.mk.tasky.agenda.data.local.entity.EventEntity
+import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
 import com.mk.tasky.agenda.domain.model.AgendaItem
+import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.util.toCurrentTime
 import com.mk.tasky.agenda.util.toLong
 
@@ -20,7 +22,7 @@ fun AgendaItem.Event.toEntity(): EventEntity {
     )
 }
 
-fun EventEntity.toDomain(): AgendaItem.Event {
+fun EventEntity.toDomain(attendees: List<Attendee>): AgendaItem.Event {
     return AgendaItem.Event(
         eventId = this.eventId,
         eventDescription = this.description,
@@ -28,9 +30,14 @@ fun EventEntity.toDomain(): AgendaItem.Event {
         eventFromDateTime = this.fromDateTime.toCurrentTime(),
         eventToDateTime = this.toDateTime.toCurrentTime(),
         eventRemindAt = this.remindAt.toCurrentTime(), // TODO: Receive list of attendees and photos to later add on params
-        attendees = emptyList(), // this.attendees.map { it.toDomain() },
+        attendees = attendees,
         photos = emptyList(), // this.photos.map { it.toDomain() },
         hostId = this.hostId,
         isHost = this.isHost
     )
+}
+
+fun EventWithAttendees.toDomain(): AgendaItem.Event {
+    val attendees = this.attendees.map { it.toDomain() }
+    return event.toDomain(attendees)
 }
