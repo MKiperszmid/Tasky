@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.ui.theme.DarkGray
+import java.time.LocalDateTime
 
 @Composable
 fun DetailVisitorsList(
@@ -47,8 +48,8 @@ fun DetailVisitorsListPreview() {
         "",
         true,
         listOf(
-            Attendee("asd@asd.com", "Michael Scott", "1", "1", true, 1L),
-            Attendee("asd@asd.com", "Dwyght Schrute", "1", "1", true, 1L)
+            Attendee("asd@asd.com", "Michael Scott", "1", true, LocalDateTime.now()),
+            Attendee("asd@asd.com", "Dwyght Schrute", "1", true, LocalDateTime.now())
         )
     )
 }

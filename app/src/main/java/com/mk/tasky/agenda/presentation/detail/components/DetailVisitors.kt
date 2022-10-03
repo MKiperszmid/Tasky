@@ -21,6 +21,7 @@ import com.mk.tasky.agenda.presentation.detail.event.DetailEventFilterType
 import com.mk.tasky.ui.theme.Black
 import com.mk.tasky.ui.theme.Light2
 import com.mk.tasky.ui.theme.LightBlue
+import java.time.LocalDateTime
 
 @Composable
 fun DetailVisitors(
@@ -93,8 +94,8 @@ fun DetailVisitors(
 fun DetailVisitorsPreview() {
     DetailVisitors(
         listOf(
-            Attendee("asd@asd.com", "Michael Scott", "1", "1", true, 1L),
-            Attendee("asd@asd.com", "Dwyght Schrute", "1", "1", false, 1L)
+            Attendee("asd@asd.com", "Michael Scott", "1", true, LocalDateTime.now()),
+            Attendee("asd@asd.com", "Dwyght Schrute",  "1", false, LocalDateTime.now())
         ),
         "",
         selectedFilterType = DetailEventFilterType.ALL,

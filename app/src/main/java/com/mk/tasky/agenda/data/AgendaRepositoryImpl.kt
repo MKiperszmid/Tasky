@@ -1,6 +1,7 @@
 package com.mk.tasky.agenda.data
 
 import com.mk.tasky.agenda.data.local.AgendaDao
+import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
@@ -70,11 +71,11 @@ class AgendaRepositoryImpl(
     }
 
     override fun getAgenda(date: LocalDate, forceRemote: Boolean): Flow<Agenda> {
-        // TODO: Update with Tasks and Events
         return flow {
             val localReminders = getRemindersForDate(date)
             val localTasks = getTasksForDate(date)
-            emit(Agenda(localReminders + localTasks))
+            val localEvents = getEventsForDate(date)
+            emit(Agenda(localReminders + localTasks + localEvents))
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
@@ -84,12 +85,14 @@ class AgendaRepositoryImpl(
                         val tasks = response.tasks.map {
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
+                        // TODO: Update with Events
                         (reminders + tasks).forEach { it.join() }
                     }
 
                     val updatedLocalReminders = getRemindersForDate(date)
                     val updatedLocalTasks = getTasksForDate(date)
-                    emit(Agenda(updatedLocalReminders + updatedLocalTasks))
+                    val updatedLocalEvents = getEventsForDate(date)
+                    emit(Agenda(updatedLocalReminders + updatedLocalTasks + updatedLocalEvents))
                 }.onFailure {
                     // TODO: Internet error
                     println("")
@@ -155,5 +158,39 @@ class AgendaRepositoryImpl(
 
     private suspend fun deleteTaskByIdRemotely(id: String) = resultOf {
         api.deleteTask(id)
+    }
+
+    private suspend fun getEventsForDate(date: LocalDate): List<AgendaItem.Event> {
+        val dayOne = date.atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val dayTwo = date.atStartOfDay().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()
+            .toEpochMilli()
+
+        return dao.getEventsBetweenTimestamps(
+            dayOne = dayOne,
+            dayTwo = dayTwo
+        ).map {
+            it.toDomain()
+        }
+    }
+
+    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
+        // Edge Cases:
+        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
+
+        supervisorScope {
+            val attendees = event.attendees.map {
+                launch { dao.insertAttendee(it.toEntity()) }
+                launch {
+                    dao.insertEventAttendeeCrossRef(
+                        EventAttendeesCrossRef(
+                            event.eventId,
+                            it.userId
+                        )
+                    )
+                }
+            }
+            attendees.forEach { it.join() }
+            dao.insertEvent(event.toEntity())
+        }
     }
 }
