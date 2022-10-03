@@ -2,18 +2,18 @@ package com.mk.tasky.agenda.data.mapper
 
 import com.mk.tasky.agenda.data.local.entity.AttendeeEntity
 import com.mk.tasky.agenda.domain.model.Attendee
-import com.mk.tasky.agenda.util.TimeUtil
+import com.mk.tasky.agenda.util.toCurrentTime
+import com.mk.tasky.agenda.util.toLong
 
 // TODO: Event ID should be removed from here and be added to the attendee as soon as they get added on the event
-fun Attendee.toEntity(eventId: String): AttendeeEntity {
+fun Attendee.toEntity(): AttendeeEntity {
     return AttendeeEntity(
-        id = this.userId,
+        attendeeId = this.userId,
         fullName = this.fullName,
         userId = this.userId,
         isGoing = this.isGoing,
-        eventId = eventId, // this.eventId,
         email = this.email,
-        remindAt = TimeUtil.timeToLong(this.remindAt)
+        remindAt = this.remindAt.toLong()
     )
 }
 
@@ -21,9 +21,8 @@ fun AttendeeEntity.toDomain(): Attendee {
     return Attendee(
         email = this.email,
         fullName = this.fullName,
-        userId = this.id,
-        eventId = this.eventId,
+        userId = this.attendeeId,
         isGoing = this.isGoing,
-        remindAt = TimeUtil.longToTime(this.remindAt)
+        remindAt = this.remindAt.toCurrentTime()
     )
 }

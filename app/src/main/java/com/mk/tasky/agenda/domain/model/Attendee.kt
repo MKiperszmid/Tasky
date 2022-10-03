@@ -6,7 +6,7 @@ data class Attendee(
     val email: String,
     val fullName: String,
     val userId: String,
-    val eventId: String,
+    // TODO: Removed for testing locally. val eventId: String,
     val isGoing: Boolean,
     val remindAt: LocalDateTime
 )

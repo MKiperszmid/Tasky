@@ -1,6 +1,7 @@
 package com.mk.tasky.agenda.data
 
 import com.mk.tasky.agenda.data.local.AgendaDao
+import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
@@ -8,6 +9,7 @@ import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.util.toLong
 import com.mk.tasky.core.data.util.resultOf
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -159,17 +161,21 @@ class AgendaRepositoryImpl(
 
     override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
         // Edge Cases:
-        // - If we get event remotelly with different attendees, we should remove all from db and add the new ones, since we could have outdated users
-        // - Same as above, but with photos.
+        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
 
         supervisorScope {
             val attendees = event.attendees.map {
-                launch { dao.insertAttendee(it.toEntity(event.eventId)) }
+                launch { dao.insertAttendee(it.toEntity()) }
+                launch {
+                    dao.insertEventAttendeeCrossRef(
+                        EventAttendeesCrossRef(
+                            event.eventId,
+                            it.userId
+                        )
+                    )
+                }
             }
-            val photos = event.photos.map {
-                launch { dao.insertPhoto(it.toEntity(event.eventId)) }
-            }
-            (attendees + photos).forEach { it.join() }
+            attendees.forEach { it.join() }
             dao.insertEvent(event.toEntity())
         }
     }

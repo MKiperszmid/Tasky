@@ -94,8 +94,8 @@ fun DetailVisitors(
 fun DetailVisitorsPreview() {
     DetailVisitors(
         listOf(
-            Attendee("asd@asd.com", "Michael Scott", "1", "1", true, LocalDateTime.now()),
-            Attendee("asd@asd.com", "Dwyght Schrute", "1", "1", false, LocalDateTime.now())
+            Attendee("asd@asd.com", "Michael Scott", "1", true, LocalDateTime.now()),
+            Attendee("asd@asd.com", "Dwyght Schrute",  "1", false, LocalDateTime.now())
         ),
         "",
         selectedFilterType = DetailEventFilterType.ALL,

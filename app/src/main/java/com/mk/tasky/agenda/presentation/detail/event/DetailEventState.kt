@@ -30,24 +30,21 @@ private val defaultList = listOf(
     Attendee(
         "ms@asd.com",
         "Michael Scott",
-        "1",
-        "123",
+        "111",
         true,
         LocalDateTime.now()
     ),
     Attendee(
         "ds@asd.com",
         "Dwyght Schrute",
-        "2",
-        "123",
+        "222",
         true,
         LocalDateTime.now()
     ),
     Attendee(
         "jh@asd.com",
         "Jim Halpert",
-        "3",
-        "123",
+        "333",
         false,
         LocalDateTime.now()
     )
