@@ -1,11 +1,9 @@
 package com.mk.tasky.authentication.di
 
-import com.mk.tasky.authentication.data.utils.EmailMatcherImpl
 import com.mk.tasky.authentication.domain.usecase.FormValidatorUseCase
-import com.mk.tasky.authentication.domain.usecase.ValidateEmailUseCase
 import com.mk.tasky.authentication.domain.usecase.ValidateFullNameUseCase
 import com.mk.tasky.authentication.domain.usecase.ValidatePasswordUseCase
-import com.mk.tasky.authentication.domain.utils.EmailMatcher
+import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,15 +15,9 @@ import javax.inject.Singleton
 object AuthenticationModule {
     @Provides
     @Singleton
-    fun provideEmailMatcher(): EmailMatcher {
-        return EmailMatcherImpl()
-    }
-
-    @Provides
-    @Singleton
-    fun provideFormValidator(emailMatcher: EmailMatcher): FormValidatorUseCase {
+    fun provideFormValidator(validateEmail: ValidateEmailUseCase): FormValidatorUseCase {
         return FormValidatorUseCase(
-            ValidateEmailUseCase(emailMatcher),
+            validateEmail,
             ValidatePasswordUseCase(),
             ValidateFullNameUseCase()
         )

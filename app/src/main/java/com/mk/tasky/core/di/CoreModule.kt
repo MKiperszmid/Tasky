@@ -9,8 +9,11 @@ import com.mk.tasky.core.data.preferences.DefaultPreferences
 import com.mk.tasky.core.data.remote.AuthenticationApi
 import com.mk.tasky.core.data.remote.interceptors.ApiKeyInterceptor
 import com.mk.tasky.core.data.remote.interceptors.JwtInterceptor
+import com.mk.tasky.core.data.util.EmailMatcherImpl
 import com.mk.tasky.core.domain.preferences.Preferences
 import com.mk.tasky.core.domain.repository.AuthenticationRepository
+import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
+import com.mk.tasky.core.domain.util.EmailMatcher
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -67,5 +70,17 @@ object CoreModule {
     @Singleton
     fun provideRepository(api: AuthenticationApi): AuthenticationRepository {
         return AuthenticationRepositoryImpl(api)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmailMatcher(): EmailMatcher {
+        return EmailMatcherImpl()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEmailValidator(emailMatcher: EmailMatcher): ValidateEmailUseCase {
+        return ValidateEmailUseCase(emailMatcher)
     }
 }

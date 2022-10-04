@@ -156,6 +156,16 @@ class AgendaRepositoryImpl(
         }
     }
 
+    override suspend fun getAttendee(email: String) = resultOf {
+        api.getAttendee(email).let {
+            if (!it.doesUserExist) {
+                null
+            } else {
+                it.attendee.toDomain()
+            }
+        }
+    }
+
     private suspend fun deleteTaskByIdRemotely(id: String) = resultOf {
         api.deleteTask(id)
     }

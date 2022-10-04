@@ -33,7 +33,7 @@ fun DetailEventScreen(
     openEditor: (id: String, title: String, body: String, size: Int) -> Unit,
     openPhotoViewer: (Uri) -> Unit,
     deletablePhotoLocation: Uri?,
-    viewModel: DetailEventViewModel = hiltViewModel()
+    viewModel: DetailEventViewModel = hiltViewModel(),
 ) {
     val state = viewModel.state
     val context = LocalContext.current
@@ -69,6 +69,22 @@ fun DetailEventScreen(
             isEditing = state.isEditing
         )
     }) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            if (state.showDialog) {
+                DetailDialog(
+                    title = "Add visitor",
+                    onClose = { viewModel.onEvent(DetailEventEvents.OnCloseDialog) },
+                    onAdd = { viewModel.onEvent(DetailEventEvents.OnAddVisitor(it)) },
+                    placeholder = "Email address",
+                    showError = state.isErrorDialog,
+                    isValid = state.isValidDialog,
+                    submitText = "Add",
+                    emailAddress = state.dialogEmail,
+                    onValueChange = { viewModel.onEvent(DetailEventEvents.OnValueChangeDialog(it)) },
+                    isLoading = state.isLoadingDialog
+                )
+            }
+        }
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
             verticalArrangement = Arrangement.SpaceBetween
@@ -109,8 +125,8 @@ fun DetailEventScreen(
                 DetailPhotoSelector(photos = state.photos, onPhotoSelected = {
                     viewModel.onEvent(DetailEventEvents.OnAddPhoto(AgendaPhoto.Local(it.toString())))
                 }, onPhotoClick = {
-                        openPhotoViewer(Uri.parse(it.location))
-                    })
+                    openPhotoViewer(Uri.parse(it.location))
+                })
                 Divider(color = Light)
             }
             item {
@@ -169,7 +185,7 @@ fun DetailEventScreen(
                     },
                     isEditable = state.isEditing,
                     onAddVisitorClick = {
-                        // TODO: Add Visitor Dialog
+                        viewModel.onEvent(DetailEventEvents.OnOpenDialog)
                     },
                     modifier = Modifier.padding(top = 30.dp)
                 )
