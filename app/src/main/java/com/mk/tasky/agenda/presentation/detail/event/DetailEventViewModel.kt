@@ -37,7 +37,7 @@ class DetailEventViewModel @Inject constructor(
 
         val itemId = savedStateHandle.get<String>("id")
         if (itemId != null) {
-            // TODO: Get Event from Repository
+            // TODO: Get Event from Repository, and get photos from api
             savedStateHandle.get<String>("action")?.let {
                 when (HomeItemOptions.from(it)) {
                     HomeItemOptions.EDIT -> {
