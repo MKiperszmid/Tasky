@@ -72,13 +72,13 @@ fun DetailEventScreen(
         Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
             if (state.showDialog) {
                 DetailDialog(
-                    title = "Add visitor",
+                    title = stringResource(R.string.add_visitor),
                     onClose = { viewModel.onEvent(DetailEventEvents.OnCloseDialog) },
                     onAdd = { viewModel.onEvent(DetailEventEvents.OnAddVisitor(it)) },
-                    placeholder = "Email address",
+                    placeholder = stringResource(R.string.email_address),
                     showError = state.isErrorDialog,
                     isValid = state.isValidDialog,
-                    submitText = "Add",
+                    submitText = stringResource(R.string.add),
                     emailAddress = state.dialogEmail,
                     onValueChange = { viewModel.onEvent(DetailEventEvents.OnValueChangeDialog(it)) },
                     isLoading = state.isLoadingDialog
