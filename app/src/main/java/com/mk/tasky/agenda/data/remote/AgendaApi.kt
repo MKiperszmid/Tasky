@@ -33,7 +33,7 @@ interface AgendaApi {
     @GET("/agenda")
     suspend fun getAgenda(
         @Query("time") time: Long,
-        @Query("timezone") timeZone: String = TimeZone.getDefault().id,
+        @Query("timezone") timeZone: String = TimeZone.getDefault().id
     ): AgendaResponseDto
 
     @GET("/attendee")
