@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -19,26 +20,35 @@ import com.mk.tasky.ui.theme.White
 fun TaskyButton(
     text: String,
     onClick: () -> Unit,
+    isLoading: Boolean = false,
     fontSize: TextUnit = 16.sp,
     fontWeight: FontWeight = FontWeight.Bold,
     modifier: Modifier = Modifier
 ) {
     Button(
         modifier = modifier,
-        onClick = onClick,
+        onClick = {
+            if (!isLoading) {
+                onClick()
+            }
+        },
         colors = ButtonDefaults.buttonColors(
             backgroundColor = Black,
             contentColor = White
         ),
         shape = RoundedCornerShape(if (text.length == 1) 16.dp else 38.dp)
     ) {
-        Text(
-            text = text,
-            modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
-            fontWeight = fontWeight,
-            maxLines = 1,
-            fontSize = fontSize
-        )
+        if (isLoading) {
+            CircularProgressIndicator(color = White)
+        } else {
+            Text(
+                text = text,
+                modifier = Modifier.padding(top = 8.dp, bottom = 8.dp),
+                fontWeight = fontWeight,
+                maxLines = 1,
+                fontSize = fontSize
+            )
+        }
     }
 }
 
@@ -46,4 +56,10 @@ fun TaskyButton(
 @Preview(showBackground = true)
 fun TaskyButtonPreview() {
     TaskyButton(text = "LOG IN", onClick = {})
+}
+
+@Composable
+@Preview(showBackground = true)
+fun TaskyButtonPreviewLoader() {
+    TaskyButton(text = "LOG IN", onClick = {}, isLoading = true)
 }

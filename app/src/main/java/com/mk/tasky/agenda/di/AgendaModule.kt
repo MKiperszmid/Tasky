@@ -6,6 +6,8 @@ import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
+import com.mk.tasky.agenda.domain.usecase.event.GetAttendee
 import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
@@ -129,7 +131,10 @@ object AgendaModule {
     @Singleton // TODO: Update with all the use cases
     fun provideEventUseCases(
         repository: AgendaRepository
-    ): SaveEvent {
-        return SaveEvent(repository)
+    ): EventUseCases {
+        return EventUseCases(
+            SaveEvent(repository),
+            GetAttendee(repository)
+        )
     }
 }

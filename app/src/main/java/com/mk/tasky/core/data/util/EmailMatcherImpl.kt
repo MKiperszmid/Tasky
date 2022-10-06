@@ -1,7 +1,7 @@
-package com.mk.tasky.authentication.data.utils
+package com.mk.tasky.core.data.util
 
 import android.util.Patterns
-import com.mk.tasky.authentication.domain.utils.EmailMatcher
+import com.mk.tasky.core.domain.util.EmailMatcher
 
 class EmailMatcherImpl : EmailMatcher {
     override fun matches(email: String): Boolean {

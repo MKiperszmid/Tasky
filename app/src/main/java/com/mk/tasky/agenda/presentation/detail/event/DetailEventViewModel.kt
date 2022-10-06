@@ -6,8 +6,10 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
+import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
+import com.mk.tasky.core.domain.preferences.Preferences
+import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -15,7 +17,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailEventViewModel @Inject constructor(
-    private val saveEvent: SaveEvent,
+    private val eventUseCases: EventUseCases,
+    private val preferences: Preferences,
+    private val validateEmailUseCase: ValidateEmailUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     var state by mutableStateOf(DetailEventState())
@@ -33,7 +37,7 @@ class DetailEventViewModel @Inject constructor(
 
         val itemId = savedStateHandle.get<String>("id")
         if (itemId != null) {
-            // TODO: Get Event from Repository
+            // TODO: Get Event from Repository, and get photos from api
             savedStateHandle.get<String>("action")?.let {
                 when (HomeItemOptions.from(it)) {
                     HomeItemOptions.EDIT -> {
@@ -57,6 +61,11 @@ class DetailEventViewModel @Inject constructor(
                     else -> Unit
                 }
             }
+        } else {
+            state = state.copy(
+                isHost = true,
+                hostId = preferences.loadLoggedUser()?.userId!!
+            )
         }
     }
 
@@ -93,7 +102,7 @@ class DetailEventViewModel @Inject constructor(
                     isEditing = false
                 )
                 viewModelScope.launch {
-                    saveEvent(
+                    eventUseCases.saveEvent(
                         id = state.id,
                         title = state.title,
                         description = state.description,
@@ -161,6 +170,62 @@ class DetailEventViewModel @Inject constructor(
             is DetailEventEvents.OnFilterTypeSelect -> {
                 state = state.copy(
                     selectedFilterType = event.type
+                )
+            }
+            is DetailEventEvents.OnAddVisitor -> {
+                if (validateEmailUseCase(state.dialogEmail)) {
+                    viewModelScope.launch {
+                        state = state.copy(
+                            isLoadingDialog = true
+                        )
+                        eventUseCases.getAttendee(state.dialogEmail).onSuccess {
+                            it?.let {
+                                val doesAttendeeExists = state.attendees.firstOrNull { element -> element.userId == it.userId } != null
+                                if (!doesAttendeeExists) {
+                                    state = state.copy(
+                                        attendees = state.attendees + it,
+                                        showDialog = false
+                                    )
+                                }
+                            } ?: kotlin.run {
+                                // TODO: Add a snackbar saying the attendee doesn't exist
+                                state = state.copy(
+                                    isErrorDialog = true
+                                )
+                            }
+                        }.onFailure {
+                            // TODO: Add a snackbar with the error message
+                            state = state.copy(
+                                isErrorDialog = true
+                            )
+                        }
+                        onEvent(DetailEventEvents.OnCloseDialog)
+                    }
+                } else {
+                    state = state.copy(
+                        isErrorDialog = true
+                    )
+                }
+            }
+            DetailEventEvents.OnCloseDialog -> {
+                state = state.copy(
+                    showDialog = false,
+                    isLoadingDialog = false,
+                    isErrorDialog = false,
+                    dialogEmail = "",
+                    isValidDialog = false
+                )
+            }
+            DetailEventEvents.OnOpenDialog -> {
+                state = state.copy(
+                    showDialog = true
+                )
+            }
+            is DetailEventEvents.OnValueChangeDialog -> {
+                state = state.copy(
+                    dialogEmail = event.email,
+                    isErrorDialog = false,
+                    isValidDialog = validateEmailUseCase(event.email)
                 )
             }
         }

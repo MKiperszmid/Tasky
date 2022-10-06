@@ -1,6 +1,6 @@
-package com.mk.tasky.authentication.domain.usecase
+package com.mk.tasky.core.domain.usecase
 
-import com.mk.tasky.authentication.domain.utils.EmailMatcher
+import com.mk.tasky.core.domain.util.EmailMatcher
 
 class ValidateEmailUseCase(
     private val emailMatcher: EmailMatcher

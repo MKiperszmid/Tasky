@@ -1,7 +1,8 @@
 package com.mk.tasky.authentication.domain.usecase
 
 import com.google.common.truth.Truth
-import com.mk.tasky.authentication.domain.utils.EmailMatcher
+import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
+import com.mk.tasky.core.domain.util.EmailMatcher
 import org.junit.Before
 import org.junit.Test
 

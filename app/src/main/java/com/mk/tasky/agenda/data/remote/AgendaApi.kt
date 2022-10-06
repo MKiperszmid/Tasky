@@ -1,6 +1,7 @@
 package com.mk.tasky.agenda.data.remote
 
 import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
+import com.mk.tasky.agenda.data.remote.dto.AttendeeExistResponseDto
 import com.mk.tasky.agenda.data.remote.dto.ReminderDto
 import com.mk.tasky.agenda.data.remote.dto.TaskDto
 import retrofit2.http.*
@@ -34,4 +35,7 @@ interface AgendaApi {
         @Query("time") time: Long,
         @Query("timezone") timeZone: String = TimeZone.getDefault().id
     ): AgendaResponseDto
+
+    @GET("/attendee")
+    suspend fun getAttendee(@Query("email") email: String): AttendeeExistResponseDto
 }

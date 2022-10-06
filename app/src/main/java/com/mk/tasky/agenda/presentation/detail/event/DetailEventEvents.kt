@@ -27,4 +27,9 @@ sealed class DetailEventEvents {
     data class OnAddPhoto(val photo: AgendaPhoto) : DetailEventEvents()
     data class DeletePhoto(val location: Uri) : DetailEventEvents()
     data class OnFilterTypeSelect(val type: DetailEventFilterType) : DetailEventEvents()
+
+    object OnOpenDialog : DetailEventEvents()
+    object OnCloseDialog : DetailEventEvents()
+    data class OnValueChangeDialog(val email: String) : DetailEventEvents()
+    data class OnAddVisitor(val email: String) : DetailEventEvents()
 }

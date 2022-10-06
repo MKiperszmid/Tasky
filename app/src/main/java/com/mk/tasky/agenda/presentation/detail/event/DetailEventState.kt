@@ -23,7 +23,13 @@ data class DetailEventState(
     val selectedFilterType: DetailEventFilterType = DetailEventFilterType.ALL,
     val attendees: List<Attendee> = defaultList, // emptyList()
     val hostId: String = "", // TODO: Update with hostId
-    val isHost: Boolean = true // TODO: Update so it changes value based on hostId
+    val isHost: Boolean = true, // TODO: Update so it changes value based on hostId
+
+    val showDialog: Boolean = false,
+    val isValidDialog: Boolean = false,
+    val isErrorDialog: Boolean = false,
+    val dialogEmail: String = "",
+    val isLoadingDialog: Boolean = false
 )
 
 private val defaultList = listOf(
