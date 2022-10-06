@@ -180,7 +180,8 @@ class DetailEventViewModel @Inject constructor(
                         )
                         eventUseCases.getAttendee(state.dialogEmail).onSuccess {
                             it?.let {
-                                if (state.attendees.firstOrNull { element -> element.userId == it.userId } == null) {
+                                val doesAttendeeExists = state.attendees.firstOrNull { element -> element.userId == it.userId } != null
+                                if (!doesAttendeeExists) {
                                     state = state.copy(
                                         attendees = state.attendees + it,
                                         showDialog = false
