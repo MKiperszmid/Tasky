@@ -196,6 +196,7 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun getEventById(id: String): AgendaItem.Event {
+        // TODO: Get the event remotely so it gets the images
         return dao.getEventById(id).toDomain()
     }
 
@@ -221,8 +222,6 @@ class AgendaRepositoryImpl(
         saveEventRemotely(event, isEdit).onFailure {
             // TODO: Save id on db to later sync with server
             println(it.message)
-        }.onSuccess {
-            println()
         }
     }
 

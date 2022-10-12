@@ -39,5 +39,5 @@ interface AgendaApi {
 
     @Multipart
     @POST("/event")
-    suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>): EventResponseDto
+    suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
 }

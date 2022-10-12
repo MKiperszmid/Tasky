@@ -27,7 +27,7 @@ class PhotoByteConverterImpl @Inject constructor(
         return withContext(dispatcher) {
             val bitmap = bitmapFromUri(uri)
             val outputStream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.PNG, 90, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 80, outputStream) // TODO: Test different compression settings
             outputStream.toByteArray()
         }
     }
