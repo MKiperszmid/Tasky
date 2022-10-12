@@ -96,7 +96,7 @@ class AgendaRepositoryImpl(
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
                         val events = response.events.map {
-                            launch { dao.insertEvent(it.toDomain().toEntity()) }
+                            launch { insertEventLocally(it.toDomain()) }
                         }
                         (reminders + tasks + events).forEach { it.join() }
                     }
@@ -200,10 +200,7 @@ class AgendaRepositoryImpl(
         return dao.getEventById(id).toDomain()
     }
 
-    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
-        // Edge Cases:
-        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
-
+    private suspend fun insertEventLocally(event: AgendaItem.Event) {
         supervisorScope {
             val attendees = event.attendees.map {
                 launch { dao.insertAttendee(it.toEntity()) }
@@ -219,6 +216,12 @@ class AgendaRepositoryImpl(
             attendees.forEach { it.join() }
             dao.insertEvent(event.toEntity())
         }
+    }
+
+    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
+        // Edge Cases:
+        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
+        insertEventLocally(event)
         saveEventRemotely(event, isEdit).onFailure {
             // TODO: Save id on db to later sync with server
             println(it.message)

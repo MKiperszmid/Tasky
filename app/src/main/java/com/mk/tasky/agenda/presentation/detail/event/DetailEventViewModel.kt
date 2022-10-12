@@ -48,7 +48,11 @@ class DetailEventViewModel @Inject constructor(
                     fromTime = event.eventFromDateTime.toLocalTime(),
                     toDate = event.eventToDateTime.toLocalDate(),
                     toTime = event.eventFromDateTime.toLocalTime(),
-                    reminder = NotificationTypes.from(event.eventFromDateTime, event.remindAt)
+                    reminder = NotificationTypes.from(event.eventFromDateTime, event.remindAt),
+                    photos = event.photos,
+                    attendees = event.attendees,
+                    hostId = event.hostId,
+                    isHost = event.isHost
                 )
             }
             savedStateHandle.get<String>("action")?.let {
