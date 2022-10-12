@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
+import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import com.mk.tasky.core.domain.preferences.Preferences
 import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
@@ -37,7 +38,19 @@ class DetailEventViewModel @Inject constructor(
 
         val itemId = savedStateHandle.get<String>("id")
         if (itemId != null) {
-            // TODO: Get Event from Repository, and get photos from api
+            viewModelScope.launch {
+                val event = eventUseCases.getEvent(itemId)
+                state = state.copy(
+                    id = itemId,
+                    title = event.title,
+                    description = event.description,
+                    fromDate = event.eventFromDateTime.toLocalDate(),
+                    fromTime = event.eventFromDateTime.toLocalTime(),
+                    toDate = event.eventToDateTime.toLocalDate(),
+                    toTime = event.eventFromDateTime.toLocalTime(),
+                    reminder = NotificationTypes.from(event.eventFromDateTime, event.remindAt)
+                )
+            }
             savedStateHandle.get<String>("action")?.let {
                 when (HomeItemOptions.from(it)) {
                     HomeItemOptions.EDIT -> {

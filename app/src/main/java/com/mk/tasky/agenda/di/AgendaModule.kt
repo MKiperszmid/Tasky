@@ -5,9 +5,14 @@ import androidx.room.Room
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
+import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
+import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
 import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
 import com.mk.tasky.agenda.domain.usecase.event.GetAttendee
+import com.mk.tasky.agenda.domain.usecase.event.GetEvent
 import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
@@ -20,6 +25,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -52,9 +58,16 @@ object AgendaModule {
     @Singleton
     fun provideAgendaRepository(
         agendaDatabase: AgendaDatabase,
-        agendaApi: AgendaApi
+        agendaApi: AgendaApi,
+        photoExtensionParser: PhotoExtensionParser,
+        photoByteConverter: PhotoByteConverter
     ): AgendaRepository {
-        return AgendaRepositoryImpl(agendaDatabase.dao, agendaApi)
+        return AgendaRepositoryImpl(
+            agendaDatabase.dao,
+            agendaApi,
+            photoExtensionParser,
+            photoByteConverter
+        )
     }
 
     @Provides
@@ -134,7 +147,25 @@ object AgendaModule {
     ): EventUseCases {
         return EventUseCases(
             SaveEvent(repository),
-            GetAttendee(repository)
+            GetAttendee(repository),
+            GetEvent(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun providePhotoByteConverter(
+        application: Application,
+        dispatcher: CoroutineDispatcher
+    ): PhotoByteConverter {
+        return PhotoByteConverterImpl(application, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun providePhotoExtensionParser(
+        application: Application
+    ): PhotoExtensionParser {
+        return PhotoExtensionParserImpl(application)
     }
 }

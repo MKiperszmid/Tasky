@@ -68,6 +68,14 @@ interface AgendaDao {
     @Query(
         """
             SELECT * FROM EventEntity
+            WHERE eventId = :id
+        """
+    )
+    suspend fun getEventById(id: String): EventWithAttendees
+
+    @Query(
+        """
+            SELECT * FROM EventEntity
             WHERE fromDateTime >= :dayOne
             AND fromDateTime < :dayTwo
         """
