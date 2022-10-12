@@ -10,7 +10,6 @@ import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.data.remote.dto.EventDto
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
-import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
 import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
@@ -96,8 +95,10 @@ class AgendaRepositoryImpl(
                         val tasks = response.tasks.map {
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
-                        // TODO: Update with Events
-                        (reminders + tasks).forEach { it.join() }
+                        val events = response.events.map {
+                            launch { dao.insertEvent(it.toDomain().toEntity()) }
+                        }
+                        (reminders + tasks + events).forEach { it.join() }
                     }
 
                     val updatedLocalReminders = getRemindersForDate(date)

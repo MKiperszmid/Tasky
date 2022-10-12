@@ -3,6 +3,7 @@ package com.mk.tasky.agenda.data.mapper
 import com.mk.tasky.agenda.data.local.entity.EventEntity
 import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
 import com.mk.tasky.agenda.data.remote.dto.EventDto
+import com.mk.tasky.agenda.data.remote.dto.EventResponseDto
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.util.toCurrentTime
@@ -35,6 +36,21 @@ fun EventEntity.toDomain(attendees: List<Attendee>): AgendaItem.Event {
         photos = emptyList(), // this.photos.map { it.toDomain() },
         hostId = this.hostId,
         isHost = this.isHost
+    )
+}
+
+fun EventResponseDto.toDomain(): AgendaItem.Event {
+    return AgendaItem.Event(
+        eventId = this.id,
+        eventDescription = this.description,
+        eventTitle = this.title,
+        eventFromDateTime = this.from.toCurrentTime(),
+        eventToDateTime = this.to.toCurrentTime(),
+        eventRemindAt = this.remindAt.toCurrentTime(),
+        attendees = this.attendees.map { it.toDomain() },
+        photos = this.photos.map { it.toDomain() },
+        hostId = this.host,
+        isHost = this.isUserEventCreator
     )
 }
 
