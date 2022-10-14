@@ -133,9 +133,9 @@ class DetailEventViewModel @Inject constructor(
                         isHost = state.isHost,
                         photos = state.photos
                     )
-                    /*state = state.copy(
+                    state = state.copy(
                         shouldExit = true
-                    )*/
+                    )
                 }
             }
             is DetailEventEvents.OnFromTimeSelected -> {
