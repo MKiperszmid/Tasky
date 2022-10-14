@@ -224,10 +224,10 @@ class AgendaRepositoryImpl(
         val json: String = jsonAdapter.toJson(event.toDto())
 
         val photoLocations = event.photos.map { it.location }
-        val uploaderWorker = OneTimeWorkRequestBuilder<EventUploaderWorker>()/*.setConstraints(
+        val uploaderWorker = OneTimeWorkRequestBuilder<EventUploaderWorker>().setConstraints(
             Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
-        )*/.setInputData(
+        ).setInputData(
             Data.Builder()
                 .putString(EventUploaderWorkerParameters.EVENT_JSON, json)
                 .putBoolean(EventUploaderWorkerParameters.IS_EDIT, isEdit)
