@@ -2,6 +2,7 @@ package com.mk.tasky.agenda.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
@@ -59,14 +60,12 @@ object AgendaModule {
     fun provideAgendaRepository(
         agendaDatabase: AgendaDatabase,
         agendaApi: AgendaApi,
-        photoExtensionParser: PhotoExtensionParser,
-        photoByteConverter: PhotoByteConverter
+        workManager: WorkManager
     ): AgendaRepository {
         return AgendaRepositoryImpl(
             agendaDatabase.dao,
             agendaApi,
-            photoExtensionParser,
-            photoByteConverter
+            workManager
         )
     }
 
@@ -167,5 +166,13 @@ object AgendaModule {
         application: Application
     ): PhotoExtensionParser {
         return PhotoExtensionParserImpl(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        application: Application
+    ): WorkManager {
+        return WorkManager.getInstance(application)
     }
 }
