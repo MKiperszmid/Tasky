@@ -1,20 +1,15 @@
 package com.mk.tasky.agenda.data
 
-import androidx.work.*
 import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.data.remote.dto.EventDto
-import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorker
-import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorkerParameters
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
-import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -26,8 +21,7 @@ import java.time.ZoneId
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao,
-    private val api: AgendaApi,
-    private val workManager: WorkManager
+    private val api: AgendaApi
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
@@ -92,7 +86,7 @@ class AgendaRepositoryImpl(
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
                         val events = response.events.map {
-                            launch { insertEventLocally(it.toDomain()) }
+                            launch { insertEvent(it.toDomain()) }
                         }
                         (reminders + tasks + events).forEach { it.join() }
                     }
@@ -196,7 +190,9 @@ class AgendaRepositoryImpl(
         return dao.getEventById(id).toDomain()
     }
 
-    private suspend fun insertEventLocally(event: AgendaItem.Event) {
+    override suspend fun insertEvent(event: AgendaItem.Event) {
+        // Edge Cases:
+        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
         supervisorScope {
             val attendees = event.attendees.map {
                 launch { dao.insertAttendee(it.toEntity()) }
@@ -212,32 +208,5 @@ class AgendaRepositoryImpl(
             attendees.forEach { it.join() }
             dao.insertEvent(event.toEntity())
         }
-    }
-
-    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
-        // Edge Cases:
-        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
-        insertEventLocally(event)
-
-        val moshi = Moshi.Builder().build()
-        val jsonAdapter = moshi.adapter(EventDto::class.java)
-        val json: String = jsonAdapter.toJson(event.toDto())
-
-        val photoLocations = event.photos.map { it.location }
-        val uploaderWorker = OneTimeWorkRequestBuilder<EventUploaderWorker>().setConstraints(
-            Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
-
-        ).setInputData(
-            Data.Builder()
-                .putString(EventUploaderWorkerParameters.EVENT_JSON, json)
-                .putBoolean(EventUploaderWorkerParameters.IS_EDIT, isEdit)
-                .putStringArray(
-                    EventUploaderWorkerParameters.EVENT_PHOTO_ARRAY,
-                    photoLocations.toTypedArray()
-                ).build()
-        ).build()
-
-        workManager.beginUniqueWork("asd", ExistingWorkPolicy.APPEND_OR_REPLACE, uploaderWorker)
-            .enqueue()
     }
 }

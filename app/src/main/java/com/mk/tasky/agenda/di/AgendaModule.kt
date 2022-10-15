@@ -6,9 +6,11 @@ import androidx.work.WorkManager
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.remote.uploader.EventUploaderImpl
 import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
 import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.uploader.EventUploder
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
 import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
 import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
@@ -59,13 +61,11 @@ object AgendaModule {
     @Singleton
     fun provideAgendaRepository(
         agendaDatabase: AgendaDatabase,
-        agendaApi: AgendaApi,
-        workManager: WorkManager
+        agendaApi: AgendaApi
     ): AgendaRepository {
         return AgendaRepositoryImpl(
             agendaDatabase.dao,
-            agendaApi,
-            workManager
+            agendaApi
         )
     }
 
@@ -142,10 +142,11 @@ object AgendaModule {
     @Provides
     @Singleton // TODO: Update with all the use cases
     fun provideEventUseCases(
-        repository: AgendaRepository
+        repository: AgendaRepository,
+        eventUploder: EventUploder
     ): EventUseCases {
         return EventUseCases(
-            SaveEvent(repository),
+            SaveEvent(repository, eventUploder),
             GetAttendee(repository),
             GetEvent(repository)
         )
@@ -174,5 +175,11 @@ object AgendaModule {
         application: Application
     ): WorkManager {
         return WorkManager.getInstance(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventUploader(workManager: WorkManager): EventUploder {
+        return EventUploaderImpl(workManager)
     }
 }
