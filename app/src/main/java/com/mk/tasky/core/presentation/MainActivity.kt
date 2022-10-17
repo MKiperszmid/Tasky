@@ -18,6 +18,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 import com.mk.tasky.R
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.presentation.detail.event.DetailEventScreen
@@ -29,6 +30,7 @@ import com.mk.tasky.agenda.presentation.home.HomeScreen
 import com.mk.tasky.agenda.presentation.photoviewer.PhotoViewerScreen
 import com.mk.tasky.authentication.presentation.login.LoginScreen
 import com.mk.tasky.authentication.presentation.registration.RegistrationScreen
+import com.mk.tasky.core.navigation.DeepLinks
 import com.mk.tasky.core.presentation.navigation.Route
 import com.mk.tasky.ui.theme.TaskyTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -134,7 +136,8 @@ fun MainScreen(
                     nullable = true
                     defaultValue = null
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink { uriPattern = DeepLinks.REMINDER_DETAIL })
         ) {
             val reminderTitle = it.savedStateHandle.get<String>("reminder_title") ?: ""
             val reminderDescription = it.savedStateHandle.get<String>("reminder_description") ?: ""

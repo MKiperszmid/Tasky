@@ -6,6 +6,7 @@ import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
@@ -21,10 +22,12 @@ import java.time.ZoneId
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao,
-    private val api: AgendaApi
+    private val api: AgendaApi,
+    private val alarmRegister: AlarmRegister
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
+        alarmRegister.setAlarm(reminder)
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
             // TODO: Save id on db to later sync with server
