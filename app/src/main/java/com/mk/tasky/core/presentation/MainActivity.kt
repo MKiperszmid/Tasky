@@ -171,7 +171,8 @@ fun MainScreen(
                     nullable = true
                     defaultValue = null
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink { uriPattern = DeepLinks.TASK_DETAIL })
         ) {
             val taskTitle = it.savedStateHandle.get<String>("task_title") ?: ""
             val taskDescription = it.savedStateHandle.get<String>("task_description") ?: ""
@@ -205,7 +206,8 @@ fun MainScreen(
                     nullable = true
                     defaultValue = null
                 }
-            )
+            ),
+            deepLinks = listOf(navDeepLink { uriPattern = DeepLinks.EVENT_DETAIL })
         ) {
             val eventTitle = it.savedStateHandle.get<String>("event_title") ?: ""
             val eventDescription = it.savedStateHandle.get<String>("event_description") ?: ""

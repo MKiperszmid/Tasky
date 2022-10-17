@@ -58,10 +58,11 @@ class AlarmReceiver : BroadcastReceiver() {
         itemId: String,
         itemType: AgendaItemType
     ): PendingIntent {
+        // TODO: Handle all navigation using SealedClass so parameters aren't written over and over
         val deeplink = when (itemType) {
-            AgendaItemType.EVENT -> DeepLinks.EVENT_DETAIL + itemId
-            AgendaItemType.REMINDER -> DeepLinks.REMINDER_DETAIL + itemId
-            AgendaItemType.TASK -> DeepLinks.TASK_DETAIL + itemId
+            AgendaItemType.EVENT -> DeepLinks.EVENT_DETAIL.replace("{id}", itemId)
+            AgendaItemType.REMINDER -> DeepLinks.REMINDER_DETAIL.replace("{id}", itemId)
+            AgendaItemType.TASK -> DeepLinks.TASK_DETAIL.replace("{id}", itemId)
         }.toUri()
         val intent = Intent(
             Intent.ACTION_VIEW,
@@ -80,7 +81,7 @@ class AlarmReceiver : BroadcastReceiver() {
         context: Context,
         channelId: String
     ) {
-        val channelName = "Reminders for ${itemType.text.asString(context)}"
+        val channelName = "Reminder for ${itemType.text.asString(context)}"
         val channel = NotificationChannel(
             channelId,
             channelName,

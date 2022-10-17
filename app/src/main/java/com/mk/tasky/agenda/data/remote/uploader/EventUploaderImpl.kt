@@ -5,13 +5,15 @@ import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.remote.dto.EventDto
 import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorker
 import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorkerParameters
+import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.uploader.EventUploder
 import com.squareup.moshi.Moshi
 import java.time.Duration
 
 class EventUploaderImpl(
-    private val workManager: WorkManager
+    private val workManager: WorkManager,
+    private val alertRegister: AlarmRegister
 ) : EventUploder {
     override suspend fun uploadEvent(event: AgendaItem.Event, isEdit: Boolean) {
         val moshi = Moshi.Builder().build()

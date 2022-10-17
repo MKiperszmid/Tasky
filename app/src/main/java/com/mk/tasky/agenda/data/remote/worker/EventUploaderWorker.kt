@@ -35,6 +35,7 @@ class EventUploaderWorker @AssistedInject constructor(
         val photoFiles = locationToMultipart(photos.toList())
 
         val result = uploadEvent(eventJson, photoFiles, isEdit)
+
         return if (result.isSuccess) {
             Log.d("EVENT_UPLOADER_WORKER", "Event created successfully!")
             Result.success()
