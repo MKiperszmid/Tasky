@@ -49,6 +49,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentText(description)
             .setSmallIcon(R.drawable.tasky_logo)
             .setContentIntent(getPendingIntent(context, itemId, itemType))
+            .setAutoCancel(true)
             .build()
         notificationManager.notify(1, notification)
     }
