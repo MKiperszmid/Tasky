@@ -238,5 +238,5 @@ class AgendaRepositoryImpl(
         }
     }
 
-    // TODO: Delete and update event + alarmRegister on both
+    // TODO: Delete and update event + alarmRegister on delete
 }
