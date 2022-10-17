@@ -20,22 +20,20 @@ class AlarmRegisterImpl(
         const val ITEM_TYPE = "ITEM_TYPE"
     }
 
-    private lateinit var alarmManager: AlarmManager
-
     override fun updateAlarm(newItem: AgendaItem, previousItem: AgendaItem) {
         cancelAlarm(previousItem)
         setAlarm(newItem)
     }
 
     override fun cancelAlarm(item: AgendaItem) {
-        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val previousPendingIntent = getPendingIntent(item)
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(previousPendingIntent)
     }
 
     override fun setAlarm(item: AgendaItem) {
         if (System.currentTimeMillis() >= item.remindAt.toLong()) return
-        alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.setExactAndAllowWhileIdle(
             AlarmManager.RTC_WAKEUP,
             item.remindAt.toLong(),
