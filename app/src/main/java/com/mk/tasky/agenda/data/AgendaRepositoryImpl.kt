@@ -1,37 +1,27 @@
 package com.mk.tasky.agenda.data
 
-import android.net.Uri
 import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
-import com.mk.tasky.agenda.data.remote.dto.EventDto
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
-import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
 import com.mk.tasky.core.data.util.resultOf
-import com.squareup.moshi.Moshi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import okhttp3.MultipartBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.ZoneId
-import java.util.*
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao,
-    private val api: AgendaApi,
-    private val photoExtensionParser: PhotoExtensionParser,
-    private val photoByteConverter: PhotoByteConverter
+    private val api: AgendaApi
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
@@ -96,7 +86,7 @@ class AgendaRepositoryImpl(
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
                         val events = response.events.map {
-                            launch { insertEventLocally(it.toDomain()) }
+                            launch { insertEvent(it.toDomain()) }
                         }
                         (reminders + tasks + events).forEach { it.join() }
                     }
@@ -200,7 +190,9 @@ class AgendaRepositoryImpl(
         return dao.getEventById(id).toDomain()
     }
 
-    private suspend fun insertEventLocally(event: AgendaItem.Event) {
+    override suspend fun insertEvent(event: AgendaItem.Event) {
+        // Edge Cases:
+        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
         supervisorScope {
             val attendees = event.attendees.map {
                 launch { dao.insertAttendee(it.toEntity()) }
@@ -216,38 +208,5 @@ class AgendaRepositoryImpl(
             attendees.forEach { it.join() }
             dao.insertEvent(event.toEntity())
         }
-    }
-
-    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
-        // Edge Cases:
-        // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
-        insertEventLocally(event)
-        saveEventRemotely(event, isEdit).onFailure {
-            // TODO: Save id on db to later sync with server
-            println(it.message)
-        }
-    }
-
-    private suspend fun saveEventRemotely(event: AgendaItem.Event, isEdit: Boolean) = resultOf {
-        val moshi = Moshi.Builder().build()
-        val jsonAdapter = moshi.adapter(EventDto::class.java)
-        val json: String = jsonAdapter.toJson(event.toDto())
-
-        val photos = event.photos.mapIndexed { index, photo ->
-            val uri = Uri.parse(photo.location)
-            val extension = photoExtensionParser.extensionFromUri(uri)
-            val uriBytes = photoByteConverter.uriToBytes(uri)
-
-            MultipartBody.Part.createFormData(
-                "photo$index",
-                filename = UUID.randomUUID().toString() + "." + extension,
-                uriBytes.toRequestBody()
-            )
-        }
-        // TODO: Add isEdit
-        api.createEvent(
-            body = MultipartBody.Part.createFormData("create_event_request", json),
-            files = photos
-        )
     }
 }
