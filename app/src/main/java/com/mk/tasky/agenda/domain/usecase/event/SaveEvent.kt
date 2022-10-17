@@ -4,6 +4,7 @@ import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.model.AgendaPhoto
 import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.uploader.EventUploder
 import com.mk.tasky.agenda.presentation.detail.components.model.NotificationTypes
 import java.time.LocalDate
 import java.time.LocalDateTime
@@ -11,7 +12,8 @@ import java.time.LocalTime
 import java.util.*
 
 class SaveEvent(
-    private val repository: AgendaRepository
+    private val repository: AgendaRepository,
+    private val eventUploader: EventUploder
 ) {
     suspend operator fun invoke(
         id: String?,
@@ -43,6 +45,7 @@ class SaveEvent(
             isHost = isHost,
             photos = photos
         )
-        repository.insertEvent(agendaEvent, isEdit)
+        repository.insertEvent(agendaEvent)
+        eventUploader.uploadEvent(agendaEvent, isEdit)
     }
 }

@@ -2,12 +2,20 @@ package com.mk.tasky.agenda.di
 
 import android.app.Application
 import androidx.room.Room
+import androidx.work.WorkManager
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.remote.uploader.EventUploaderImpl
+import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
+import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.uploader.EventUploder
+import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
+import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
 import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
 import com.mk.tasky.agenda.domain.usecase.event.GetAttendee
+import com.mk.tasky.agenda.domain.usecase.event.GetEvent
 import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
@@ -20,6 +28,7 @@ import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.CoroutineDispatcher
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
@@ -54,7 +63,10 @@ object AgendaModule {
         agendaDatabase: AgendaDatabase,
         agendaApi: AgendaApi
     ): AgendaRepository {
-        return AgendaRepositoryImpl(agendaDatabase.dao, agendaApi)
+        return AgendaRepositoryImpl(
+            agendaDatabase.dao,
+            agendaApi
+        )
     }
 
     @Provides
@@ -130,11 +142,44 @@ object AgendaModule {
     @Provides
     @Singleton // TODO: Update with all the use cases
     fun provideEventUseCases(
-        repository: AgendaRepository
+        repository: AgendaRepository,
+        eventUploder: EventUploder
     ): EventUseCases {
         return EventUseCases(
-            SaveEvent(repository),
-            GetAttendee(repository)
+            SaveEvent(repository, eventUploder),
+            GetAttendee(repository),
+            GetEvent(repository)
         )
+    }
+
+    @Provides
+    @Singleton
+    fun providePhotoByteConverter(
+        application: Application,
+        dispatcher: CoroutineDispatcher
+    ): PhotoByteConverter {
+        return PhotoByteConverterImpl(application, dispatcher)
+    }
+
+    @Provides
+    @Singleton
+    fun providePhotoExtensionParser(
+        application: Application
+    ): PhotoExtensionParser {
+        return PhotoExtensionParserImpl(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideWorkManager(
+        application: Application
+    ): WorkManager {
+        return WorkManager.getInstance(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventUploader(workManager: WorkManager): EventUploder {
+        return EventUploaderImpl(workManager)
     }
 }

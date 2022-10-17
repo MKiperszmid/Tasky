@@ -85,8 +85,10 @@ class AgendaRepositoryImpl(
                         val tasks = response.tasks.map {
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
-                        // TODO: Update with Events
-                        (reminders + tasks).forEach { it.join() }
+                        val events = response.events.map {
+                            launch { insertEvent(it.toDomain()) }
+                        }
+                        (reminders + tasks + events).forEach { it.join() }
                     }
 
                     val updatedLocalReminders = getRemindersForDate(date)
@@ -183,10 +185,14 @@ class AgendaRepositoryImpl(
         }
     }
 
-    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
+    override suspend fun getEventById(id: String): AgendaItem.Event {
+        // TODO: Get the event remotely so it gets the images
+        return dao.getEventById(id).toDomain()
+    }
+
+    override suspend fun insertEvent(event: AgendaItem.Event) {
         // Edge Cases:
         // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
-
         supervisorScope {
             val attendees = event.attendees.map {
                 launch { dao.insertAttendee(it.toEntity()) }

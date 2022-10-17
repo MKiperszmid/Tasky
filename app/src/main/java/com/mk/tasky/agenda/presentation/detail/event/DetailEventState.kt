@@ -21,10 +21,9 @@ data class DetailEventState(
     val isSelectingNotificationReminder: Boolean = false,
     val shouldExit: Boolean = false,
     val selectedFilterType: DetailEventFilterType = DetailEventFilterType.ALL,
-    val attendees: List<Attendee> = defaultList, // emptyList()
-    val hostId: String = "", // TODO: Update with hostId
-    val isHost: Boolean = true, // TODO: Update so it changes value based on hostId
-
+    val attendees: List<Attendee> = emptyList(),
+    val hostId: String = "",
+    val isHost: Boolean = true,
     val showDialog: Boolean = false,
     val isValidDialog: Boolean = false,
     val isErrorDialog: Boolean = false,
@@ -32,26 +31,3 @@ data class DetailEventState(
     val isLoadingDialog: Boolean = false
 )
 
-private val defaultList = listOf(
-    Attendee(
-        "ms@asd.com",
-        "Michael Scott",
-        "111",
-        true,
-        LocalDateTime.now()
-    ),
-    Attendee(
-        "ds@asd.com",
-        "Dwyght Schrute",
-        "222",
-        true,
-        LocalDateTime.now()
-    ),
-    Attendee(
-        "jh@asd.com",
-        "Jim Halpert",
-        "333",
-        false,
-        LocalDateTime.now()
-    )
-)

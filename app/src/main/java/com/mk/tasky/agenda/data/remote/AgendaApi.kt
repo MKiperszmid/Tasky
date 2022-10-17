@@ -1,9 +1,7 @@
 package com.mk.tasky.agenda.data.remote
 
-import com.mk.tasky.agenda.data.remote.dto.AgendaResponseDto
-import com.mk.tasky.agenda.data.remote.dto.AttendeeExistResponseDto
-import com.mk.tasky.agenda.data.remote.dto.ReminderDto
-import com.mk.tasky.agenda.data.remote.dto.TaskDto
+import com.mk.tasky.agenda.data.remote.dto.*
+import okhttp3.MultipartBody
 import retrofit2.http.*
 import java.util.*
 
@@ -38,4 +36,8 @@ interface AgendaApi {
 
     @GET("/attendee")
     suspend fun getAttendee(@Query("email") email: String): AttendeeExistResponseDto
+
+    @Multipart
+    @POST("/event")
+    suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
 }
