@@ -6,8 +6,10 @@ import android.content.Intent
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.util.goAsync
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmBootReceiver : BroadcastReceiver() {
     @Inject
     lateinit var repository: AgendaRepository
