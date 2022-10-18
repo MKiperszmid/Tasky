@@ -2,8 +2,10 @@ package com.mk.tasky.agenda.data.alarm
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.AgendaItem
@@ -56,7 +58,7 @@ class AlarmRegisterImpl(
             putString(ITEM_TITLE, item.title)
             putString(ITEM_DESCRIPTION, item.description)
             putString(ITEM_ID, item.id)
-            putInt(ITEM_TYPE, AgendaItemType.fromAgendaItem(item).ordinal)
+            putString(ITEM_TYPE, AgendaItemType.fromAgendaItem(item).name)
         }
         return intent.apply {
             putExtras(bundle)

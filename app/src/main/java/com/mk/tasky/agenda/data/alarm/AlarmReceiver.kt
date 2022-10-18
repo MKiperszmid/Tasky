@@ -23,9 +23,8 @@ class AlarmReceiver : BroadcastReceiver() {
         val title = extras.getString(AlarmRegisterImpl.ITEM_TITLE) ?: return
         val description = extras.getString(AlarmRegisterImpl.ITEM_DESCRIPTION) ?: return
         val itemId = extras.getString(AlarmRegisterImpl.ITEM_ID) ?: return
-        val itemTypeOrdinal = extras.getInt(AlarmRegisterImpl.ITEM_TYPE)
-
-        val itemType = AgendaItemType.values()[itemTypeOrdinal]
+        val itemTypeString = extras.getString(AlarmRegisterImpl.ITEM_TYPE) ?: return
+        val itemType = AgendaItemType.valueOf(itemTypeString)
 
         val channelId = "${itemType}_id"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -51,7 +50,7 @@ class AlarmReceiver : BroadcastReceiver() {
             .setContentIntent(getPendingIntent(context, itemId, itemType))
             .setAutoCancel(true)
             .build()
-        notificationManager.notify(1, notification)
+        notificationManager.notify(itemId.hashCode(), notification)
     }
 
     private fun getPendingIntent(

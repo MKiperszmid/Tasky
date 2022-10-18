@@ -238,5 +238,12 @@ class AgendaRepositoryImpl(
         }
     }
 
+    override suspend fun getAllUpcomingItems(): Agenda {
+        val reminders = getRemindersForDate(LocalDate.now())
+        val tasks = getTasksForDate(LocalDate.now())
+        val events = getEventsForDate(LocalDate.now())
+        return Agenda(reminders + tasks + events)
+    }
+
     // TODO: Delete and update event + alarmRegister on delete
 }
