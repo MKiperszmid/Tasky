@@ -13,3 +13,4 @@
 - Fix the options menu after clicking the 3 dots in an agenda item (It only appears on the middle of the screen)
 - Fix the > in the Event Detail Screen - From time
 - Agenda screen items sometimes don't update on change visually, the current fix is to change date and go back to same day
+s
