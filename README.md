@@ -1,7 +1,8 @@
 # Tasky
 
 ## TODO:
-- Notifications whole section [WIP]
+- Set notifications from remote events
+- Fix notifications on boot
 - Update / Delete Event
 - Sync Deleted, Created and Updated
 - Fix Event Detail screen Editing in case the user isn't host and such
