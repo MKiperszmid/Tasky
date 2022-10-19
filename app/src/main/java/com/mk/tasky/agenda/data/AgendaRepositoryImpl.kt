@@ -239,9 +239,10 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun getAllUpcomingItems(): Agenda {
-        val reminders = getRemindersForDate(LocalDate.now())
-        val tasks = getTasksForDate(LocalDate.now())
-        val events = getEventsForDate(LocalDate.now())
+        val date = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val reminders = dao.getAllFutureReminders(date).map { it.toDomain() }
+        val tasks = dao.getAllFutureTasks(date).map { it.toDomain() }
+        val events = dao.getAllFutureEvents(date).map { it.toDomain() }
         return Agenda(reminders + tasks + events)
     }
 
