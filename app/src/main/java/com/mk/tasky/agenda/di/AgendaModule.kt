@@ -12,13 +12,10 @@ import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
 import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.uploader.EventUploder
+import com.mk.tasky.agenda.domain.uploader.EventUploader
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
 import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
-import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
-import com.mk.tasky.agenda.domain.usecase.event.GetAttendee
-import com.mk.tasky.agenda.domain.usecase.event.GetEvent
-import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
+import com.mk.tasky.agenda.domain.usecase.event.*
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
 import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
@@ -124,15 +121,25 @@ object AgendaModule {
 
     @Provides
     @Singleton
+    fun provideDeleteEventUseCase(
+        repository: AgendaRepository
+    ): DeleteEvent {
+        return DeleteEvent(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideHomeUseCases(
         deleteTask: DeleteTask,
         deleteReminder: DeleteReminder,
-        changeStatusTask: ChangeStatusTask
+        changeStatusTask: ChangeStatusTask,
+        deleteEvent: DeleteEvent
     ): HomeUseCases {
         return HomeUseCases(
             deleteReminder = deleteReminder,
             deleteTask = deleteTask,
-            changeStatusTask = changeStatusTask
+            changeStatusTask = changeStatusTask,
+            deleteEvent = deleteEvent
         )
     }
 
@@ -153,12 +160,14 @@ object AgendaModule {
     @Singleton // TODO: Update with all the use cases
     fun provideEventUseCases(
         repository: AgendaRepository,
-        eventUploder: EventUploder
+        eventUploader: EventUploader,
+        deleteEvent: DeleteEvent
     ): EventUseCases {
         return EventUseCases(
-            SaveEvent(repository, eventUploder),
+            SaveEvent(repository, eventUploader),
             GetAttendee(repository),
-            GetEvent(repository)
+            GetEvent(repository),
+            deleteEvent
         )
     }
 
@@ -189,7 +198,7 @@ object AgendaModule {
 
     @Provides
     @Singleton
-    fun provideEventUploader(workManager: WorkManager): EventUploder {
+    fun provideEventUploader(workManager: WorkManager): EventUploader {
         return EventUploaderImpl(workManager)
     }
 }

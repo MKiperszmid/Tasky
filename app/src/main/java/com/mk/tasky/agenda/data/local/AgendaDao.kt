@@ -106,4 +106,10 @@ interface AgendaDao {
         """
     )
     suspend fun getAllFutureEvents(startingDate: Long): List<EventWithAttendees>
+
+    @Query("DELETE FROM EventEntity WHERE eventId = :id")
+    suspend fun deleteEventById(id: String)
+
+    @Query("DELETE FROM EventAttendeesCrossRef WHERE eventId = :id")
+    suspend fun deleteEventCrossRefById(id: String)
 }

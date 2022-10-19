@@ -79,7 +79,7 @@ class HomeViewModel @Inject constructor(
                     when (event.agendaItem) {
                         is AgendaItem.Reminder -> homeUseCases.deleteReminder(event.agendaItem.id)
                         is AgendaItem.Task -> homeUseCases.deleteTask(event.agendaItem.id)
-                        is AgendaItem.Event -> Unit // TODO: Delete Event
+                        is AgendaItem.Event -> homeUseCases.deleteEvent(event.agendaItem.id)
                     }
                     getAgendaForSelectedDate(forceRemote = false)
                 }

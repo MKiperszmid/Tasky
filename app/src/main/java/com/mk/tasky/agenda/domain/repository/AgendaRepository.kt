@@ -21,6 +21,7 @@ interface AgendaRepository {
     suspend fun getAttendee(email: String): Result<Attendee?>
     suspend fun getEventById(id: String): AgendaItem.Event
     suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean)
+    suspend fun deleteEventById(id: String)
 
     suspend fun getAllUpcomingItems(): Agenda
 }

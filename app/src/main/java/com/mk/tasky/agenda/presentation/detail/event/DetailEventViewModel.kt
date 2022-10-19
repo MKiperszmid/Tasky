@@ -12,6 +12,7 @@ import com.mk.tasky.agenda.presentation.home.HomeItemOptions
 import com.mk.tasky.core.domain.preferences.Preferences
 import com.mk.tasky.core.domain.usecase.ValidateEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.NonCancellable
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
@@ -69,7 +70,7 @@ class DetailEventViewModel @Inject constructor(
                     }
                     HomeItemOptions.DELETE -> {
                         viewModelScope.launch {
-                            // TODO: Delete
+                            eventUseCases.deleteEvent(itemId)
                             state = state.copy(
                                 shouldExit = true
                             )
@@ -95,7 +96,9 @@ class DetailEventViewModel @Inject constructor(
             }
             DetailEventEvents.OnEventDelete -> {
                 state.id?.let {
-                    // TODO: Delete Event
+                    viewModelScope.launch(NonCancellable) {
+                        eventUseCases.deleteEvent(it)
+                    }
                 }
                 state = state.copy(
                     shouldExit = true

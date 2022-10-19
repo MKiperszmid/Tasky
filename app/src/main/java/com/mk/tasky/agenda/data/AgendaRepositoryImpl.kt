@@ -11,6 +11,7 @@ import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -238,8 +239,35 @@ class AgendaRepositoryImpl(
         }
     }
 
+    private suspend fun deleteEventLocaly(id: String) {
+        dao.deleteEventById(id)
+        dao.deleteEventCrossRefById(id)
+    }
+
+    override suspend fun deleteEventById(id: String) {
+        val event = dao.getEventById(id).toDomain()
+        alarmRegister.cancelAlarm(event)
+
+        supervisorScope {
+            val localJob = launch { deleteEventLocaly(id) }
+
+            val remoteJob = launch {
+                deleteEventByIdRemotely(id).onFailure {
+                    println(it.message)
+                // TODO: Save id on db to later sync with server
+            } }
+            remoteJob.join()
+            localJob.join()
+        }
+    }
+
+    private suspend fun deleteEventByIdRemotely(id: String) = resultOf {
+        api.deleteEvent(id)
+    }
+
     override suspend fun getAllUpcomingItems(): Agenda {
-        val date = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val date =
+            LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val reminders = dao.getAllFutureReminders(date).map { it.toDomain() }
         val tasks = dao.getAllFutureTasks(date).map { it.toDomain() }
         val events = dao.getAllFutureEvents(date).map { it.toDomain() }
