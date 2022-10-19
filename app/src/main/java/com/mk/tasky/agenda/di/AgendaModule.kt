@@ -4,11 +4,13 @@ import android.app.Application
 import androidx.room.Room
 import androidx.work.WorkManager
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
+import com.mk.tasky.agenda.data.alarm.AlarmRegisterImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.data.remote.uploader.EventUploaderImpl
 import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
 import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
+import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.uploader.EventUploder
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
@@ -59,13 +61,21 @@ object AgendaModule {
 
     @Provides
     @Singleton
+    fun provideAlarmRegister(application: Application): AlarmRegister {
+        return AlarmRegisterImpl(application)
+    }
+
+    @Provides
+    @Singleton
     fun provideAgendaRepository(
         agendaDatabase: AgendaDatabase,
-        agendaApi: AgendaApi
+        agendaApi: AgendaApi,
+        alarmRegister: AlarmRegister
     ): AgendaRepository {
         return AgendaRepositoryImpl(
             agendaDatabase.dao,
-            agendaApi
+            agendaApi,
+            alarmRegister
         )
     }
 

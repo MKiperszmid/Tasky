@@ -6,6 +6,7 @@ import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
@@ -21,10 +22,17 @@ import java.time.ZoneId
 
 class AgendaRepositoryImpl(
     private val dao: AgendaDao,
-    private val api: AgendaApi
+    private val api: AgendaApi,
+    private val alarmRegister: AlarmRegister
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
+        if (isEdit) {
+            val currentReminder = getReminderById(reminder.id)
+            alarmRegister.updateAlarm(newItem = reminder, previousItem = currentReminder)
+        } else {
+            alarmRegister.setAlarm(reminder)
+        }
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
             // TODO: Save id on db to later sync with server
@@ -60,6 +68,8 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun deleteReminderById(id: String) {
+        val reminder = dao.getReminderById(id).toDomain()
+        alarmRegister.cancelAlarm(reminder)
         dao.deleteReminderById(id)
         deleteReminderByIdRemotely(id).onFailure {
             // TODO: Save id on db to later sync with server
@@ -79,6 +89,8 @@ class AgendaRepositoryImpl(
             if (forceRemote) {
                 getAgendaRemotely(date).onSuccess { response ->
                     supervisorScope {
+                        // TODO: If there's an update on the remote side, then the alarmRegister won't be called on any of those
+                        // Add a way to check if the item from remote is new or edit, and set the corresponding alarm
                         val reminders = response.reminders.map {
                             launch { dao.insertReminder(it.toDomain().toEntity()) }
                         }
@@ -86,7 +98,7 @@ class AgendaRepositoryImpl(
                             launch { dao.insertTask(it.toDomain().toEntity()) }
                         }
                         val events = response.events.map {
-                            launch { insertEvent(it.toDomain()) }
+                            launch { insertEvent(it.toDomain(), false) }
                         }
                         (reminders + tasks + events).forEach { it.join() }
                     }
@@ -109,6 +121,12 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean) {
+        if (isEdit) {
+            val currentTask = getTaskById(task.id)
+            alarmRegister.updateAlarm(newItem = task, previousItem = currentTask)
+        } else {
+            alarmRegister.setAlarm(task)
+        }
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
             // TODO: Save id on db to later sync with server
@@ -152,6 +170,8 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun deleteTaskById(id: String) {
+        val currentTask = dao.getTaskById(id).toDomain()
+        alarmRegister.cancelAlarm(currentTask)
         dao.deleteTaskById(id)
         deleteTaskByIdRemotely(id).onFailure {
             // TODO: Save id on db to later sync with server
@@ -190,7 +210,7 @@ class AgendaRepositoryImpl(
         return dao.getEventById(id).toDomain()
     }
 
-    override suspend fun insertEvent(event: AgendaItem.Event) {
+    override suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean) {
         // Edge Cases:
         // - If we get event remotely with different attendees, we should remove all from db and add the new ones, since we could have outdated users
         supervisorScope {
@@ -206,7 +226,25 @@ class AgendaRepositoryImpl(
                 }
             }
             attendees.forEach { it.join() }
+
+            if (isEdit) {
+                val currentEvent = getEventById(event.id)
+                alarmRegister.updateAlarm(newItem = event, previousItem = currentEvent)
+            } else {
+                alarmRegister.setAlarm(event)
+            }
+
             dao.insertEvent(event.toEntity())
         }
     }
+
+    override suspend fun getAllUpcomingItems(): Agenda {
+        val date = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val reminders = dao.getAllFutureReminders(date).map { it.toDomain() }
+        val tasks = dao.getAllFutureTasks(date).map { it.toDomain() }
+        val events = dao.getAllFutureEvents(date).map { it.toDomain() }
+        return Agenda(reminders + tasks + events)
+    }
+
+    // TODO: Delete and update event + alarmRegister on delete
 }

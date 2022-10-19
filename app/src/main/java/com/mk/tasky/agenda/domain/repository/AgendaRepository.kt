@@ -6,6 +6,7 @@ import com.mk.tasky.agenda.domain.model.Attendee
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
+// TODO: Create a repository for each item (ReminderRepository, TaskRepository, EventRepository)
 interface AgendaRepository {
     suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean)
     suspend fun getReminderById(id: String): AgendaItem.Reminder
@@ -19,5 +20,7 @@ interface AgendaRepository {
 
     suspend fun getAttendee(email: String): Result<Attendee?>
     suspend fun getEventById(id: String): AgendaItem.Event
-    suspend fun insertEvent(event: AgendaItem.Event)
+    suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean)
+
+    suspend fun getAllUpcomingItems(): Agenda
 }

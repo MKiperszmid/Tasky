@@ -45,7 +45,7 @@ class SaveEvent(
             isHost = isHost,
             photos = photos
         )
-        repository.insertEvent(agendaEvent)
+        repository.insertEvent(agendaEvent, isEdit)
         eventUploader.uploadEvent(agendaEvent, isEdit)
     }
 }

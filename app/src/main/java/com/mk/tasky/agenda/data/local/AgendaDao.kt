@@ -33,6 +33,14 @@ interface AgendaDao {
     )
     suspend fun getRemindersBetweenTimestamps(dayOne: Long, dayTwo: Long): List<ReminderEntity>
 
+    @Query(
+        """
+            SELECT * FROM ReminderEntity
+            WHERE dateTime >= :startingDate
+        """
+    )
+    suspend fun getAllFutureReminders(startingDate: Long): List<ReminderEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertTask(task: TaskEntity)
 
@@ -55,6 +63,14 @@ interface AgendaDao {
         """
     )
     suspend fun getTasksBetweenTimestamps(dayOne: Long, dayTwo: Long): List<TaskEntity>
+
+    @Query(
+        """
+            SELECT * FROM TaskEntity
+            WHERE dateTime >= :startingDate
+        """
+    )
+    suspend fun getAllFutureTasks(startingDate: Long): List<TaskEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAttendee(attendee: AttendeeEntity)
@@ -82,4 +98,12 @@ interface AgendaDao {
     )
     @Transaction
     suspend fun getEventsBetweenTimestamps(dayOne: Long, dayTwo: Long): List<EventWithAttendees>
+
+    @Query(
+        """
+            SELECT * FROM EventEntity
+            WHERE fromDateTime >= :startingDate
+        """
+    )
+    suspend fun getAllFutureEvents(startingDate: Long): List<EventWithAttendees>
 }
