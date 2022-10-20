@@ -4,8 +4,6 @@ import androidx.room.*
 import com.mk.tasky.agenda.data.local.entity.*
 import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
-import com.mk.tasky.agenda.domain.model.SyncType
-import retrofit2.http.DELETE
 
 @Dao
 interface AgendaDao {

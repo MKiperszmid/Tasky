@@ -15,8 +15,10 @@ import com.mk.tasky.core.data.util.resultOf
 import com.mk.tasky.core.util.AgendaItemType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import java.lang.Exception
 
 
 @HiltWorker
@@ -32,11 +34,15 @@ class SyncWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         val items = repository.getAllSyncableItems()
-        supervisorScope {
-            val jobs = items.map { launch { completeAction(it) } }
-            jobs.forEach { it.join() }
+        return try {
+            coroutineScope {
+                val jobs = items.map { launch { completeAction(it) } }
+                jobs.forEach { it.join() }
+            }
+            Result.success()
+        } catch (e: Exception) {
+            Result.retry()
         }
-        return Result.success()
     }
 
     private suspend fun completeAction(syncItem: SyncItem) {
