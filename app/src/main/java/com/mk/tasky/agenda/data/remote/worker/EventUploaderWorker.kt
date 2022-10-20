@@ -68,7 +68,7 @@ class EventUploaderWorker @AssistedInject constructor(
         isEdit: Boolean
     ) = resultOf {
         if (isEdit) {
-            api.createEvent(
+            api.updateEvent(
                 body = MultipartBody.Part.createFormData("update_event_request", json),
                 files = photos
             )
