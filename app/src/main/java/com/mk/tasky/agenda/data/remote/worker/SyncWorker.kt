@@ -35,7 +35,7 @@ class SyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         val items = repository.getAllSyncableItems()
         return try {
-            coroutineScope {
+            supervisorScope {
                 val jobs = items.map { launch { completeAction(it) } }
                 jobs.forEach { it.join() }
             }
