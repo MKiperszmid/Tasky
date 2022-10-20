@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.WorkManager
+import com.mk.tasky.agenda.data.remote.worker.SyncWorker
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
@@ -19,7 +21,8 @@ class HomeViewModel @Inject constructor(
     private val preferences: Preferences,
     private val formatNameUseCase: FormatNameUseCase,
     private val repository: AgendaRepository,
-    private val homeUseCases: HomeUseCases
+    private val homeUseCases: HomeUseCases,
+    private val workManager: WorkManager
 ) : ViewModel() {
     var state by mutableStateOf(HomeState())
         private set
@@ -30,6 +33,14 @@ class HomeViewModel @Inject constructor(
             profileName = formatNameUseCase(user.fullName)
         )
         getAgendaForSelectedDate(forceRemote = true)
+
+        viewModelScope.launch {
+            homeUseCases.syncAgendaUseCase()
+        }
+
+        if (workManager.getWorkInfosForUniqueWork(SyncWorker.WORKER_ID).isDone) {
+            getAgendaForSelectedDate(forceRemote = true)
+        }
     }
 
     fun onEvent(event: HomeEvent) {

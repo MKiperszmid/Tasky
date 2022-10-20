@@ -1,12 +1,11 @@
 package com.mk.tasky.agenda.data.local
 
 import androidx.room.*
-import com.mk.tasky.agenda.data.local.entity.AttendeeEntity
-import com.mk.tasky.agenda.data.local.entity.EventEntity
-import com.mk.tasky.agenda.data.local.entity.ReminderEntity
-import com.mk.tasky.agenda.data.local.entity.TaskEntity
+import com.mk.tasky.agenda.data.local.entity.*
 import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
+import com.mk.tasky.agenda.domain.model.SyncType
+import retrofit2.http.DELETE
 
 @Dao
 interface AgendaDao {
@@ -112,4 +111,13 @@ interface AgendaDao {
 
     @Query("DELETE FROM EventAttendeesCrossRef WHERE eventId = :id")
     suspend fun deleteEventCrossRefById(id: String)
+
+    @Query("SELECT * FROM SyncEntity")
+    suspend fun getAllSyncItems(): List<SyncEntity>
+
+    @Query("DELETE FROM SyncEntity WHERE id = :id")
+    suspend fun deleteSyncItem(id: String)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertSyncItem(item: SyncEntity)
 }
