@@ -1,8 +1,10 @@
 package com.mk.tasky.agenda.data.remote.uploader
 
 import androidx.work.*
-import com.mk.tasky.agenda.data.mapper.toDto
-import com.mk.tasky.agenda.data.remote.dto.EventDto
+import com.mk.tasky.agenda.data.mapper.toCreateDto
+import com.mk.tasky.agenda.data.mapper.toUpdateDto
+import com.mk.tasky.agenda.data.remote.dto.CreateEventDto
+import com.mk.tasky.agenda.data.remote.dto.UpdateEventDto
 import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorker
 import com.mk.tasky.agenda.data.remote.worker.EventUploaderWorkerParameters
 import com.mk.tasky.agenda.domain.model.AgendaItem
@@ -15,8 +17,13 @@ class EventUploaderImpl(
 ) : EventUploader {
     override suspend fun uploadEvent(event: AgendaItem.Event, isEdit: Boolean) {
         val moshi = Moshi.Builder().build()
-        val jsonAdapter = moshi.adapter(EventDto::class.java)
-        val json: String = jsonAdapter.toJson(event.toDto())
+        val json: String = if (isEdit) {
+            val jsonAdapter = moshi.adapter(UpdateEventDto::class.java)
+            jsonAdapter.toJson(event.toUpdateDto())
+        } else {
+            val jsonAdapter = moshi.adapter(CreateEventDto::class.java)
+            jsonAdapter.toJson(event.toCreateDto())
+        }
 
         val photoLocations = event.photos.map { it.location }
         val uploaderWorker = OneTimeWorkRequestBuilder<EventUploaderWorker>().setConstraints(

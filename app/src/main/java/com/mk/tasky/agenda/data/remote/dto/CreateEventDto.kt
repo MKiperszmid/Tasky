@@ -2,7 +2,7 @@ package com.mk.tasky.agenda.data.remote.dto
 
 import com.squareup.moshi.Json
 
-data class EventDto(
+data class CreateEventDto(
     @field:Json(name = "id")
     val id: String,
     @field:Json(name = "title")
