@@ -67,10 +67,16 @@ class EventUploaderWorker @AssistedInject constructor(
         photos: List<MultipartBody.Part>,
         isEdit: Boolean
     ) = resultOf {
-        // TODO: Add isEdit to call create or update event.
-        api.createEvent(
-            body = MultipartBody.Part.createFormData("create_event_request", json),
-            files = photos
-        )
+        if (isEdit) {
+            api.createEvent(
+                body = MultipartBody.Part.createFormData("update_event_request", json),
+                files = photos
+            )
+        } else {
+            api.createEvent(
+                body = MultipartBody.Part.createFormData("create_event_request", json),
+                files = photos
+            )
+        }
     }
 }
