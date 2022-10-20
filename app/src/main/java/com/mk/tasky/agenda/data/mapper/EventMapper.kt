@@ -62,25 +62,25 @@ fun EventWithAttendees.toDomain(): AgendaItem.Event {
 fun AgendaItem.Event.toDto(isEdit: Boolean): EventDto {
     if (isEdit) {
         return EventDto.UpdateEventDto(
-            eventId = this.eventId,
-            eventTitle = this.eventTitle,
-            eventDescription = this.eventDescription,
-            eventRemindAt = this.eventRemindAt.toLong(),
-            eventFrom = this.eventFromDateTime.toLong(),
-            eventTo = this.eventToDateTime.toLong(),
-            eventAttendeeIds = this.attendees.map { it.userId },
+            id = this.eventId,
+            title = this.eventTitle,
+            description = this.eventDescription,
+            remindAt = this.eventRemindAt.toLong(),
+            from = this.eventFromDateTime.toLong(),
+            to = this.eventToDateTime.toLong(),
+            attendeeIds = this.attendees.map { it.userId },
             deletedPhotoKeys = listOf(), // TODO: Get deleted photo keys,
             isGoing = true // TODO: Get isGoing
         )
     } else {
         return EventDto.CreateEventDto(
-            eventId = this.eventId,
-            eventTitle = this.eventTitle,
-            eventDescription = this.eventDescription,
-            eventRemindAt = this.eventRemindAt.toLong(),
-            eventFrom = this.eventFromDateTime.toLong(),
-            eventTo = this.eventToDateTime.toLong(),
-            eventAttendeeIds = this.attendees.map { it.userId }
+            id = this.eventId,
+            title = this.eventTitle,
+            description = this.eventDescription,
+            remindAt = this.eventRemindAt.toLong(),
+            from = this.eventFromDateTime.toLong(),
+            to = this.eventToDateTime.toLong(),
+            attendeeIds = this.attendees.map { it.userId }
         )
     }
 }

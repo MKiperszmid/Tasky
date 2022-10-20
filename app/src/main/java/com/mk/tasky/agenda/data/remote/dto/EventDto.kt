@@ -4,41 +4,42 @@ import com.squareup.moshi.Json
 
 sealed class EventDto(
     @field:Json(name = "id")
-    val id: String,
+    open val id: String,
     @field:Json(name = "title")
-    val title: String,
+    open val title: String,
     @field:Json(name = "description")
-    val description: String,
+    open val description: String,
     @field:Json(name = "from")
-    val from: Long,
+    open val from: Long,
     @field:Json(name = "to")
-    val to: Long,
+    open val to: Long,
     @field:Json(name = "remindAt")
-    val remindAt: Long,
+    open val remindAt: Long,
     @field:Json(name = "attendeeIds")
-    val attendeeIds: List<String>
+    open val attendeeIds: List<String>
 ) {
     data class CreateEventDto(
-        val eventId: String,
-        val eventTitle: String,
-        val eventDescription: String,
-        val eventFrom: Long,
-        val eventTo: Long,
-        val eventRemindAt: Long,
-        val eventAttendeeIds: List<String>
-    ) : EventDto(eventId, eventTitle, eventDescription, eventFrom, eventTo, eventRemindAt, eventAttendeeIds)
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val from: Long,
+        override val to: Long,
+        override val remindAt: Long,
+        override val attendeeIds: List<String>
+    ) : EventDto(id, title, description, from, to, remindAt, attendeeIds)
+
     data class UpdateEventDto(
-        val eventId: String,
-        val eventTitle: String,
-        val eventDescription: String,
-        val eventFrom: Long,
-        val eventTo: Long,
-        val eventRemindAt: Long,
-        val eventAttendeeIds: List<String>,
+        override val id: String,
+        override val title: String,
+        override val description: String,
+        override val from: Long,
+        override val to: Long,
+        override val remindAt: Long,
+        override val attendeeIds: List<String>,
         @field:Json(name = "deletedPhotoKeys")
         val deletedPhotoKeys: List<String>,
         @field:Json(name = "isGoing")
         val isGoing: Boolean
-    ) : EventDto(eventId, eventTitle, eventDescription, eventFrom, eventTo, eventRemindAt, eventAttendeeIds)
+    ) : EventDto(id, title, description, from, to, remindAt, attendeeIds)
 
 }
