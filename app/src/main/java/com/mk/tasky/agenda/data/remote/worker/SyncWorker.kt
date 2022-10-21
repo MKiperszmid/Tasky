@@ -19,6 +19,7 @@ import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import java.lang.Exception
+import java.util.*
 
 
 @HiltWorker
@@ -28,12 +29,9 @@ class SyncWorker @AssistedInject constructor(
     private val repository: AgendaRepository,
     private val eventUploader: EventUploader
 ) : CoroutineWorker(context, workerParameters) {
-    companion object {
-        const val WORKER_ID = "sync_worker"
-    }
-
     override suspend fun doWork(): Result {
         val items = repository.getAllSyncableItems()
+        println(items.size)
         return try {
             supervisorScope {
                 val jobs = items.map { launch { completeAction(it) } }
