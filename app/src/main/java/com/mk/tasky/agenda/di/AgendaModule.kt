@@ -7,17 +7,20 @@ import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.alarm.AlarmRegisterImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.remote.sync.AgendaSyncImpl
 import com.mk.tasky.agenda.data.remote.uploader.EventUploaderImpl
 import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
 import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.domain.sync.AgendaSync
 import com.mk.tasky.agenda.domain.uploader.EventUploader
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
 import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
 import com.mk.tasky.agenda.domain.usecase.event.*
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
+import com.mk.tasky.agenda.domain.usecase.home.SyncAgendaUseCase
 import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.GetReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.ReminderUseCases
@@ -133,13 +136,15 @@ object AgendaModule {
         deleteTask: DeleteTask,
         deleteReminder: DeleteReminder,
         changeStatusTask: ChangeStatusTask,
-        deleteEvent: DeleteEvent
+        deleteEvent: DeleteEvent,
+        agendaSync: AgendaSync
     ): HomeUseCases {
         return HomeUseCases(
             deleteReminder = deleteReminder,
             deleteTask = deleteTask,
             changeStatusTask = changeStatusTask,
-            deleteEvent = deleteEvent
+            deleteEvent = deleteEvent,
+            syncAgendaUseCase = SyncAgendaUseCase(agendaSync)
         )
     }
 
@@ -194,6 +199,12 @@ object AgendaModule {
         application: Application
     ): WorkManager {
         return WorkManager.getInstance(application)
+    }
+
+    @Provides
+    @Singleton
+    fun provideAgendaSync(workManager: WorkManager): AgendaSync{
+        return AgendaSyncImpl(workManager)
     }
 
     @Provides

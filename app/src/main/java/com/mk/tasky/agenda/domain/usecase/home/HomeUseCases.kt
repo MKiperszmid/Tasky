@@ -9,5 +9,6 @@ data class HomeUseCases(
     val deleteReminder: DeleteReminder,
     val deleteTask: DeleteTask,
     val deleteEvent: DeleteEvent,
-    val changeStatusTask: ChangeStatusTask
+    val changeStatusTask: ChangeStatusTask,
+    val syncAgendaUseCase: SyncAgendaUseCase
 )
