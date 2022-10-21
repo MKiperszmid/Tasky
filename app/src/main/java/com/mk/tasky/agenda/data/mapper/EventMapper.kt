@@ -2,8 +2,9 @@ package com.mk.tasky.agenda.data.mapper
 
 import com.mk.tasky.agenda.data.local.entity.EventEntity
 import com.mk.tasky.agenda.data.local.entity.relations.EventWithAttendees
-import com.mk.tasky.agenda.data.remote.dto.EventDto
+import com.mk.tasky.agenda.data.remote.dto.CreateEventDto
 import com.mk.tasky.agenda.data.remote.dto.EventResponseDto
+import com.mk.tasky.agenda.data.remote.dto.UpdateEventDto
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.model.Attendee
 import com.mk.tasky.agenda.util.toCurrentTime
@@ -59,8 +60,8 @@ fun EventWithAttendees.toDomain(): AgendaItem.Event {
     return event.toDomain(attendees)
 }
 
-fun AgendaItem.Event.toDto(): EventDto {
-    return EventDto(
+fun AgendaItem.Event.toCreateDto(): CreateEventDto {
+    return CreateEventDto(
         id = this.eventId,
         title = this.eventTitle,
         description = this.eventDescription,
@@ -68,5 +69,19 @@ fun AgendaItem.Event.toDto(): EventDto {
         from = this.eventFromDateTime.toLong(),
         to = this.eventToDateTime.toLong(),
         attendeeIds = this.attendees.map { it.userId }
+    )
+}
+
+fun AgendaItem.Event.toUpdateDto(): UpdateEventDto {
+    return UpdateEventDto(
+        id = this.eventId,
+        title = this.eventTitle,
+        description = this.eventDescription,
+        remindAt = this.eventRemindAt.toLong(),
+        from = this.eventFromDateTime.toLong(),
+        to = this.eventToDateTime.toLong(),
+        attendeeIds = this.attendees.map { it.userId },
+        deletedPhotoKeys = listOf(), // TODO: Get deleted photo keys,
+        isGoing = true // TODO: Get isGoing
     )
 }

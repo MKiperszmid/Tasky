@@ -40,4 +40,11 @@ interface AgendaApi {
     @Multipart
     @POST("/event")
     suspend fun createEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
+
+    @Multipart
+    @PUT("/event")
+    suspend fun updateEvent(@Part body: MultipartBody.Part, @Part files: List<MultipartBody.Part>)
+
+    @DELETE("/event")
+    suspend fun deleteEvent(@Query("eventId") id: String)
 }

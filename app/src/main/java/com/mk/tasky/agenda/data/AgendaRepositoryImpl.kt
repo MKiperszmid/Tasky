@@ -5,12 +5,16 @@ import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
 import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
+import com.mk.tasky.agenda.data.mapper.toSyncItem
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
+import com.mk.tasky.agenda.domain.model.SyncItem
+import com.mk.tasky.agenda.domain.model.SyncType
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -35,7 +39,7 @@ class AgendaRepositoryImpl(
         }
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
-            // TODO: Save id on db to later sync with server
+            saveSyncableItem(reminder.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
         }
     }
 
@@ -72,7 +76,7 @@ class AgendaRepositoryImpl(
         alarmRegister.cancelAlarm(reminder)
         dao.deleteReminderById(id)
         deleteReminderByIdRemotely(id).onFailure {
-            // TODO: Save id on db to later sync with server
+            saveSyncableItem(reminder.toSyncItem(SyncType.DELETE))
         }
     }
 
@@ -129,8 +133,7 @@ class AgendaRepositoryImpl(
         }
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
-            // TODO: Save id on db to later sync with server
-            println("")
+            saveSyncableItem(task.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
         }
     }
 
@@ -174,7 +177,7 @@ class AgendaRepositoryImpl(
         alarmRegister.cancelAlarm(currentTask)
         dao.deleteTaskById(id)
         deleteTaskByIdRemotely(id).onFailure {
-            // TODO: Save id on db to later sync with server
+            saveSyncableItem(currentTask.toSyncItem(SyncType.DELETE))
         }
     }
 
@@ -238,13 +241,50 @@ class AgendaRepositoryImpl(
         }
     }
 
+    private suspend fun deleteEventLocaly(id: String) {
+        dao.deleteEventById(id)
+        dao.deleteEventCrossRefById(id)
+    }
+
+    override suspend fun deleteEventById(id: String) {
+        val event = dao.getEventById(id).toDomain()
+        alarmRegister.cancelAlarm(event)
+
+        supervisorScope {
+            val localJob = launch { deleteEventLocaly(id) }
+
+            val remoteJob = launch {
+                deleteEventByIdRemotely(id).onFailure {
+                    saveSyncableItem(event.toSyncItem(SyncType.DELETE))
+                }
+            }
+            remoteJob.join()
+            localJob.join()
+        }
+    }
+
+    private suspend fun deleteEventByIdRemotely(id: String) = resultOf {
+        api.deleteEvent(id)
+    }
+
     override suspend fun getAllUpcomingItems(): Agenda {
-        val date = LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+        val date =
+            LocalDate.now().atStartOfDay().atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
         val reminders = dao.getAllFutureReminders(date).map { it.toDomain() }
         val tasks = dao.getAllFutureTasks(date).map { it.toDomain() }
         val events = dao.getAllFutureEvents(date).map { it.toDomain() }
         return Agenda(reminders + tasks + events)
     }
 
-    // TODO: Delete and update event + alarmRegister on delete
+    override suspend fun getAllSyncableItems(): List<SyncItem> {
+        return dao.getAllSyncItems().map { it.toDomain() }
+    }
+
+    override suspend fun deleteSyncableItem(id: String) {
+        dao.deleteSyncItem(id)
+    }
+
+    override suspend fun saveSyncableItem(item: SyncItem) {
+        dao.insertSyncItem(item.toEntity())
+    }
 }

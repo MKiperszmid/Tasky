@@ -7,20 +7,20 @@ import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.alarm.AlarmRegisterImpl
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
+import com.mk.tasky.agenda.data.remote.sync.AgendaSyncImpl
 import com.mk.tasky.agenda.data.remote.uploader.EventUploaderImpl
 import com.mk.tasky.agenda.data.uri.PhotoByteConverterImpl
 import com.mk.tasky.agenda.data.uri.PhotoExtensionParserImpl
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.uploader.EventUploder
+import com.mk.tasky.agenda.domain.sync.AgendaSync
+import com.mk.tasky.agenda.domain.uploader.EventUploader
 import com.mk.tasky.agenda.domain.uri.PhotoByteConverter
 import com.mk.tasky.agenda.domain.uri.PhotoExtensionParser
-import com.mk.tasky.agenda.domain.usecase.event.EventUseCases
-import com.mk.tasky.agenda.domain.usecase.event.GetAttendee
-import com.mk.tasky.agenda.domain.usecase.event.GetEvent
-import com.mk.tasky.agenda.domain.usecase.event.SaveEvent
+import com.mk.tasky.agenda.domain.usecase.event.*
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
 import com.mk.tasky.agenda.domain.usecase.home.HomeUseCases
+import com.mk.tasky.agenda.domain.usecase.home.SyncAgendaUseCase
 import com.mk.tasky.agenda.domain.usecase.reminder.DeleteReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.GetReminder
 import com.mk.tasky.agenda.domain.usecase.reminder.ReminderUseCases
@@ -124,15 +124,27 @@ object AgendaModule {
 
     @Provides
     @Singleton
+    fun provideDeleteEventUseCase(
+        repository: AgendaRepository
+    ): DeleteEvent {
+        return DeleteEvent(repository)
+    }
+
+    @Provides
+    @Singleton
     fun provideHomeUseCases(
         deleteTask: DeleteTask,
         deleteReminder: DeleteReminder,
-        changeStatusTask: ChangeStatusTask
+        changeStatusTask: ChangeStatusTask,
+        deleteEvent: DeleteEvent,
+        agendaSync: AgendaSync
     ): HomeUseCases {
         return HomeUseCases(
             deleteReminder = deleteReminder,
             deleteTask = deleteTask,
-            changeStatusTask = changeStatusTask
+            changeStatusTask = changeStatusTask,
+            deleteEvent = deleteEvent,
+            syncAgendaUseCase = SyncAgendaUseCase(agendaSync)
         )
     }
 
@@ -153,12 +165,14 @@ object AgendaModule {
     @Singleton // TODO: Update with all the use cases
     fun provideEventUseCases(
         repository: AgendaRepository,
-        eventUploder: EventUploder
+        eventUploader: EventUploader,
+        deleteEvent: DeleteEvent
     ): EventUseCases {
         return EventUseCases(
-            SaveEvent(repository, eventUploder),
+            SaveEvent(repository, eventUploader),
             GetAttendee(repository),
-            GetEvent(repository)
+            GetEvent(repository),
+            deleteEvent
         )
     }
 
@@ -189,7 +203,13 @@ object AgendaModule {
 
     @Provides
     @Singleton
-    fun provideEventUploader(workManager: WorkManager): EventUploder {
+    fun provideAgendaSync(workManager: WorkManager): AgendaSync{
+        return AgendaSyncImpl(workManager)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEventUploader(workManager: WorkManager): EventUploader {
         return EventUploaderImpl(workManager)
     }
 }

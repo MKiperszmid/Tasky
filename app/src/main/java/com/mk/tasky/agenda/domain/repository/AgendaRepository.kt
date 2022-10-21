@@ -3,6 +3,7 @@ package com.mk.tasky.agenda.domain.repository
 import com.mk.tasky.agenda.domain.model.Agenda
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.model.Attendee
+import com.mk.tasky.agenda.domain.model.SyncItem
 import kotlinx.coroutines.flow.Flow
 import java.time.LocalDate
 
@@ -21,6 +22,11 @@ interface AgendaRepository {
     suspend fun getAttendee(email: String): Result<Attendee?>
     suspend fun getEventById(id: String): AgendaItem.Event
     suspend fun insertEvent(event: AgendaItem.Event, isEdit: Boolean)
+    suspend fun deleteEventById(id: String)
 
     suspend fun getAllUpcomingItems(): Agenda
+
+    suspend fun getAllSyncableItems(): List<SyncItem>
+    suspend fun deleteSyncableItem(id: String)
+    suspend fun saveSyncableItem(item: SyncItem)
 }
