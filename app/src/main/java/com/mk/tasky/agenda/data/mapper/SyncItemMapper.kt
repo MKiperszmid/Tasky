@@ -22,26 +22,16 @@ fun SyncItem.toEntity(): SyncEntity {
     )
 }
 
-fun AgendaItem.Reminder.toSyncItem(type: SyncType): SyncItem {
+fun AgendaItem.toSyncItem(type: SyncType): SyncItem {
+    val agendatype = when(this) {
+        is AgendaItem.Event -> AgendaItemType.EVENT
+        is AgendaItem.Reminder -> AgendaItemType.REMINDER
+        is AgendaItem.Task -> AgendaItemType.TASK
+    }
     return SyncItem(
-        id = this.reminderId,
+        id = this.id,
         type = type,
-        agendaItemType = AgendaItemType.REMINDER
+        agendaItemType = agendatype
     )
 }
 
-fun AgendaItem.Event.toSyncItem(type: SyncType): SyncItem {
-    return SyncItem(
-        id = this.eventId,
-        type = type,
-        agendaItemType = AgendaItemType.EVENT
-    )
-}
-
-fun AgendaItem.Task.toSyncItem(type: SyncType): SyncItem {
-    return SyncItem(
-        id = this.taskId,
-        type = type,
-        agendaItemType = AgendaItemType.TASK
-    )
-}
