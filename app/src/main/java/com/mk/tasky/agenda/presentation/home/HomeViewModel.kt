@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.WorkInfo
 import androidx.work.WorkManager
-import com.mk.tasky.agenda.data.remote.worker.SyncWorker
 import com.mk.tasky.agenda.domain.model.AgendaItem
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.agenda.domain.usecase.home.FormatNameUseCase
@@ -31,8 +30,11 @@ class HomeViewModel @Inject constructor(
     var state by mutableStateOf(HomeState())
         private set
 
-    private lateinit var syncObserver: Observer<WorkInfo>
-    private lateinit var syncStateInfo: LiveData<WorkInfo>
+    private lateinit var localSyncObserver: Observer<WorkInfo>
+    private lateinit var localStateInfo: LiveData<WorkInfo>
+
+    private lateinit var remoteSyncObserver: Observer<WorkInfo>
+    private lateinit var remoteStateInfo: LiveData<WorkInfo>
 
     init {
         val user = preferences.loadLoggedUser()!! // Can't be null if we get to the Home Screen
@@ -41,25 +43,36 @@ class HomeViewModel @Inject constructor(
         )
         getAgendaForSelectedDate(forceRemote = false)
 
-        viewModelScope.launch {
-            val id = homeUseCases.syncAgendaUseCase()
-            runSyncObserver(id)
-        }
+        val id = homeUseCases.syncAgendaUseCase.syncRemoteWithLocal()
+        runLocalSyncObserver(id)
+
+        val remoteId = homeUseCases.syncAgendaUseCase.syncLocalWithRemote()
+        runRemoteSyncObserver(remoteId)
     }
 
-    private fun runSyncObserver(id: UUID) {
-        syncObserver = Observer {
+    private fun runLocalSyncObserver(id: UUID) {
+        localSyncObserver = Observer {
             if (it.state == WorkInfo.State.SUCCEEDED) {
                 getAgendaForSelectedDate(forceRemote = true)
             }
         }
-        syncStateInfo = workManager.getWorkInfoByIdLiveData(id)
-        syncStateInfo.observeForever(syncObserver)
+        localStateInfo = workManager.getWorkInfoByIdLiveData(id)
+        localStateInfo.observeForever(localSyncObserver)
+    }
+
+    private fun runRemoteSyncObserver(id: UUID) {
+        remoteSyncObserver = Observer {
+            if (it.state == WorkInfo.State.ENQUEUED) { // Enqueued, since its a periodicworker
+                getAgendaForSelectedDate(forceRemote = false)
+            }
+        }
+        remoteStateInfo = workManager.getWorkInfoByIdLiveData(id)
+        remoteStateInfo.observeForever(remoteSyncObserver)
     }
 
     override fun onCleared() {
         super.onCleared()
-        syncStateInfo.removeObserver(syncObserver)
+        localStateInfo.removeObserver(localSyncObserver)
     }
 
     fun onEvent(event: HomeEvent) {

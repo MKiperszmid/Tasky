@@ -1,10 +1,8 @@
 # Tasky
 
 ## TODO:
-- Set notifications from remote events
 - Fix notifications on boot
 - Update Event (Fix Photo uploading and deleting)
-- Sync Deleted, Created and Updated
 - Fix Event Detail screen Editing in case the user isn't host and such
 - Save photos on DB
 - Fix Event Detail photos when editing/is not host, etc

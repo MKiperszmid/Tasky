@@ -5,6 +5,7 @@ import androidx.room.Room
 import androidx.work.WorkManager
 import com.mk.tasky.agenda.data.AgendaRepositoryImpl
 import com.mk.tasky.agenda.data.alarm.AlarmRegisterImpl
+import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.local.AgendaDatabase
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.data.remote.sync.AgendaSyncImpl
@@ -67,13 +68,19 @@ object AgendaModule {
 
     @Provides
     @Singleton
+    fun provideAgendaDao(agendaDatabase: AgendaDatabase): AgendaDao {
+        return agendaDatabase.dao
+    }
+
+    @Provides
+    @Singleton
     fun provideAgendaRepository(
-        agendaDatabase: AgendaDatabase,
+        agendaDao: AgendaDao,
         agendaApi: AgendaApi,
         alarmRegister: AlarmRegister
     ): AgendaRepository {
         return AgendaRepositoryImpl(
-            agendaDatabase.dao,
+            agendaDao,
             agendaApi,
             alarmRegister
         )

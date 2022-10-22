@@ -244,6 +244,7 @@ class AgendaRepositoryImpl(
     private suspend fun deleteEventLocaly(id: String) {
         dao.deleteEventById(id)
         dao.deleteEventCrossRefById(id)
+        // TODO: Foreach attendee that doesnt have an event crossref, remove
     }
 
     override suspend fun deleteEventById(id: String) {

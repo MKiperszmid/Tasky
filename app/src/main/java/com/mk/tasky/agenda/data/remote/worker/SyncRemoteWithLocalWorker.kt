@@ -23,7 +23,7 @@ import java.util.*
 
 
 @HiltWorker
-class SyncWorker @AssistedInject constructor(
+class SyncRemoteWithLocalWorker @AssistedInject constructor(
     @Assisted val context: Context,
     @Assisted val workerParameters: WorkerParameters,
     private val repository: AgendaRepository,
@@ -31,7 +31,6 @@ class SyncWorker @AssistedInject constructor(
 ) : CoroutineWorker(context, workerParameters) {
     override suspend fun doWork(): Result {
         val items = repository.getAllSyncableItems()
-        println(items.size)
         return try {
             supervisorScope {
                 val jobs = items.map { launch { completeAction(it) } }

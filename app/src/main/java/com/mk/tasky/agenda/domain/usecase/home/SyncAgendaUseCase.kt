@@ -6,7 +6,11 @@ import java.util.*
 class SyncAgendaUseCase(
     private val agendaSync: AgendaSync
 ) {
-    suspend operator fun invoke(): UUID {
-        return agendaSync.syncAgenda()
+    fun syncRemoteWithLocal(): UUID {
+        return agendaSync.syncAgendaRemoteWithLocal()
+    }
+
+    fun syncLocalWithRemote(): UUID {
+        return agendaSync.syncAgendaLocalWithRemote()
     }
 }
