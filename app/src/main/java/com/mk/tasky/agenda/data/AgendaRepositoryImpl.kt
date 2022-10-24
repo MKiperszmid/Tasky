@@ -14,7 +14,6 @@ import com.mk.tasky.agenda.domain.model.SyncItem
 import com.mk.tasky.agenda.domain.model.SyncType
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -241,7 +240,7 @@ class AgendaRepositoryImpl(
         }
     }
 
-    private suspend fun deleteEventLocaly(id: String) {
+    private suspend fun deleteEventLocally(id: String) {
         dao.deleteEventById(id)
         dao.deleteEventCrossRefById(id)
         // TODO: Foreach attendee that doesnt have an event crossref, remove
@@ -252,7 +251,7 @@ class AgendaRepositoryImpl(
         alarmRegister.cancelAlarm(event)
 
         supervisorScope {
-            val localJob = launch { deleteEventLocaly(id) }
+            val localJob = launch { deleteEventLocally(id) }
 
             val remoteJob = launch {
                 deleteEventByIdRemotely(id).onFailure {
