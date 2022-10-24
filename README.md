@@ -1,6 +1,6 @@
 # Tasky - Calendar App
 
-Calendar App intended to portray all the new technologies I learn on a daily basis
+Offline-First Calendar App intended to portray all the new technologies I learn on a daily basis
 
 ## Authentication Screens
 Login             |  Registration
