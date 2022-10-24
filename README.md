@@ -69,3 +69,4 @@ Contributions are always welcome!
 - Agenda screen items sometimes don't update on change visually, the current fix is to change the date and go back to the same day
 - Delete visitor from event
 - Testing!
+- Make the user able to edit/create/delete events, tasks and details when their are offline (On app close and restart, it usually logs them out)
