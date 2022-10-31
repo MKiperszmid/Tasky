@@ -11,58 +11,66 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.net.toUri
 import com.mk.tasky.R
+import com.mk.tasky.agenda.domain.model.AgendaItem
+import com.mk.tasky.agenda.domain.repository.AgendaRepository
+import com.mk.tasky.agenda.util.goAsync
 import com.mk.tasky.core.navigation.DeepLinks
 import com.mk.tasky.core.presentation.MainActivity
 import com.mk.tasky.core.util.AgendaItemType
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class AlarmReceiver : BroadcastReceiver() {
-    override fun onReceive(context: Context?, intent: Intent?) {
-        if (intent?.extras == null || context == null) return
+    @Inject
+    lateinit var repository: AgendaRepository
+    override fun onReceive(context: Context?, intent: Intent?) = goAsync {
+        if (intent?.extras == null || context == null) return@goAsync
         val extras = intent.extras!!
 
-        val title = extras.getString(AlarmRegisterImpl.ITEM_TITLE) ?: return
-        val description = extras.getString(AlarmRegisterImpl.ITEM_DESCRIPTION) ?: return
-        val itemId = extras.getString(AlarmRegisterImpl.ITEM_ID) ?: return
-        val itemTypeString = extras.getString(AlarmRegisterImpl.ITEM_TYPE) ?: return
+        val itemId = extras.getString(AlarmRegisterImpl.ITEM_ID) ?: return@goAsync
+        val itemTypeString = extras.getString(AlarmRegisterImpl.ITEM_TYPE) ?: return@goAsync
         val itemType = AgendaItemType.valueOf(itemTypeString)
+
+        val item = when (itemType) {
+            AgendaItemType.EVENT -> repository.getEventById(itemId)
+            AgendaItemType.REMINDER -> repository.getReminderById(itemId)
+            AgendaItemType.TASK -> repository.getTaskById(itemId)
+        }
 
         val channelId = "${itemType}_id"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             createNotificationChannel(itemType, context, channelId)
         }
-        showNotification(context, title, description, itemId, channelId, itemType)
+        showNotification(context, item, channelId)
     }
 
     private fun showNotification(
         context: Context,
-        title: String,
-        description: String,
-        itemId: String,
-        channelId: String,
-        itemType: AgendaItemType
+        item: AgendaItem,
+        channelId: String
     ) {
         val notificationManager =
             context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         val notification = NotificationCompat.Builder(context, channelId)
-            .setContentTitle(title)
-            .setContentText(description)
+            .setContentTitle(item.title)
+            .setContentText(item.description)
             .setSmallIcon(R.drawable.tasky_logo)
-            .setContentIntent(getPendingIntent(context, itemId, itemType))
+            .setContentIntent(getPendingIntent(context, item))
             .setAutoCancel(true)
             .build()
-        notificationManager.notify(itemId.hashCode(), notification)
+        notificationManager.notify(item.id.hashCode(), notification)
     }
 
     private fun getPendingIntent(
         context: Context,
-        itemId: String,
-        itemType: AgendaItemType
+        item: AgendaItem
     ): PendingIntent {
         // TODO: Handle all navigation using SealedClass so parameters aren't written over and over
-        val deeplink = when (itemType) {
-            AgendaItemType.EVENT -> DeepLinks.EVENT_DETAIL.replace("{id}", itemId)
-            AgendaItemType.REMINDER -> DeepLinks.REMINDER_DETAIL.replace("{id}", itemId)
-            AgendaItemType.TASK -> DeepLinks.TASK_DETAIL.replace("{id}", itemId)
+        val deeplink = when (item) {
+            is AgendaItem.Event -> DeepLinks.EVENT_DETAIL.replace("{id}", item.id)
+            is AgendaItem.Reminder -> DeepLinks.REMINDER_DETAIL.replace("{id}", item.id)
+            is AgendaItem.Task -> DeepLinks.TASK_DETAIL.replace("{id}", item.id)
         }.toUri()
         val intent = Intent(
             Intent.ACTION_VIEW,

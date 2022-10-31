@@ -7,29 +7,17 @@ import androidx.work.WorkerParameters
 import com.mk.tasky.agenda.data.local.AgendaDao
 import com.mk.tasky.agenda.data.local.entity.relations.EventAttendeesCrossRef
 import com.mk.tasky.agenda.data.mapper.toDomain
-import com.mk.tasky.agenda.data.mapper.toDto
 import com.mk.tasky.agenda.data.mapper.toEntity
 import com.mk.tasky.agenda.data.remote.AgendaApi
 import com.mk.tasky.agenda.domain.alarm.AlarmRegister
 import com.mk.tasky.agenda.domain.model.AgendaItem
-import com.mk.tasky.agenda.domain.model.SyncItem
-import com.mk.tasky.agenda.domain.model.SyncType
-import com.mk.tasky.agenda.domain.repository.AgendaRepository
-import com.mk.tasky.agenda.domain.uploader.EventUploader
 import com.mk.tasky.agenda.util.toLong
 import com.mk.tasky.core.data.util.resultOf
-import com.mk.tasky.core.util.AgendaItemType
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
-import java.lang.Exception
 import java.time.LocalDateTime
-import java.time.LocalTime
-import java.time.ZoneId
-import java.util.*
-
 
 @HiltWorker
 class SyncLocalWithRemoteWorker @AssistedInject constructor(
@@ -56,30 +44,14 @@ class SyncLocalWithRemoteWorker @AssistedInject constructor(
     }
 
     private suspend fun saveItem(item: AgendaItem) {
-        var localItem: AgendaItem? = null
-        when(item) {
+        when (item) {
             is AgendaItem.Reminder -> {
-                localItem = try {
-                    dao.getReminderById(item.id).toDomain()
-                } catch (e: Exception) {
-                    null
-                }
                 dao.insertReminder(item.toEntity())
             }
             is AgendaItem.Task -> {
-                localItem = try {
-                    dao.getTaskById(item.id).toDomain()
-                } catch (e: Exception) {
-                    null
-                }
                 dao.insertTask(item.toEntity())
             }
             is AgendaItem.Event -> {
-                localItem = try {
-                    dao.getEventById(item.id).toDomain()
-                } catch (e: Exception) {
-                    null
-                }
                 supervisorScope {
                     val attendees = item.attendees.map {
                         launch { dao.insertAttendee(it.toEntity()) }
@@ -97,12 +69,7 @@ class SyncLocalWithRemoteWorker @AssistedInject constructor(
                 }
             }
         }
-
-        if (localItem == null) {
-            alarmRegister.setAlarm(item)
-        } else {
-            alarmRegister.updateAlarm(newItem = item, previousItem = localItem)
-        }
+        alarmRegister.setAlarm(item)
     }
 
     private suspend fun getAgenda() = resultOf {

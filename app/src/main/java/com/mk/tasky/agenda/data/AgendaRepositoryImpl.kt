@@ -30,12 +30,7 @@ class AgendaRepositoryImpl(
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
-        if (isEdit) {
-            val currentReminder = getReminderById(reminder.id)
-            alarmRegister.updateAlarm(newItem = reminder, previousItem = currentReminder)
-        } else {
-            alarmRegister.setAlarm(reminder)
-        }
+        alarmRegister.setAlarm(reminder)
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
             saveSyncableItem(reminder.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
@@ -124,12 +119,7 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean) {
-        if (isEdit) {
-            val currentTask = getTaskById(task.id)
-            alarmRegister.updateAlarm(newItem = task, previousItem = currentTask)
-        } else {
-            alarmRegister.setAlarm(task)
-        }
+        alarmRegister.setAlarm(task)
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
             saveSyncableItem(task.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
@@ -229,13 +219,7 @@ class AgendaRepositoryImpl(
             }
             attendees.forEach { it.join() }
 
-            if (isEdit) {
-                val currentEvent = getEventById(event.id)
-                alarmRegister.updateAlarm(newItem = event, previousItem = currentEvent)
-            } else {
-                alarmRegister.setAlarm(event)
-            }
-
+            alarmRegister.setAlarm(event)
             dao.insertEvent(event.toEntity())
         }
     }

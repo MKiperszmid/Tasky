@@ -61,8 +61,7 @@ Contributions are always welcome!
 - Fix Event Detail screen Editing in case the user isn't a host and such
 - Save photos on DB
 - Fix Event Detail photos when editing/is not the host, etc
-- Error handling in case there's no connection (Show a snack bar or something)
-- What happens if the api-key stops working or the user stops being authed? Investigate
+- Error handling in case there's no connection, the user stops being authenticated, the api key stops working, server errors, etc (Show a snack bar or something)
 - Black Line (Needle) in the Agenda screen to give the impression of past and future items
 - Fix the options menu after clicking the 3 dots in an agenda item (It only appears in the middle of the screen)
 - Fix the > in the Event Detail Screen - From time
