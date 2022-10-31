@@ -14,7 +14,6 @@ import com.mk.tasky.agenda.domain.model.SyncItem
 import com.mk.tasky.agenda.domain.model.SyncType
 import com.mk.tasky.agenda.domain.repository.AgendaRepository
 import com.mk.tasky.core.data.util.resultOf
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
@@ -31,12 +30,7 @@ class AgendaRepositoryImpl(
 ) : AgendaRepository {
     // TODO: Have the functions receive AgendaItem, and based on the item call the API function, as to avoid duplicated functions
     override suspend fun insertReminder(reminder: AgendaItem.Reminder, isEdit: Boolean) {
-        if (isEdit) {
-            val currentReminder = getReminderById(reminder.id)
-            alarmRegister.updateAlarm(newItem = reminder, previousItem = currentReminder)
-        } else {
-            alarmRegister.setAlarm(reminder)
-        }
+        alarmRegister.setAlarm(reminder)
         dao.insertReminder(reminder.toEntity())
         saveReminderRemotely(reminder, isEdit).onFailure {
             saveSyncableItem(reminder.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
@@ -125,12 +119,7 @@ class AgendaRepositoryImpl(
     }
 
     override suspend fun insertTask(task: AgendaItem.Task, isEdit: Boolean) {
-        if (isEdit) {
-            val currentTask = getTaskById(task.id)
-            alarmRegister.updateAlarm(newItem = task, previousItem = currentTask)
-        } else {
-            alarmRegister.setAlarm(task)
-        }
+        alarmRegister.setAlarm(task)
         dao.insertTask(task.toEntity())
         saveTaskRemotely(task = task, isEdit = isEdit).onFailure {
             saveSyncableItem(task.toSyncItem(if (isEdit) SyncType.UPDATE else SyncType.CREATE))
@@ -230,20 +219,15 @@ class AgendaRepositoryImpl(
             }
             attendees.forEach { it.join() }
 
-            if (isEdit) {
-                val currentEvent = getEventById(event.id)
-                alarmRegister.updateAlarm(newItem = event, previousItem = currentEvent)
-            } else {
-                alarmRegister.setAlarm(event)
-            }
-
+            alarmRegister.setAlarm(event)
             dao.insertEvent(event.toEntity())
         }
     }
 
-    private suspend fun deleteEventLocaly(id: String) {
+    private suspend fun deleteEventLocally(id: String) {
         dao.deleteEventById(id)
         dao.deleteEventCrossRefById(id)
+        // TODO: Foreach attendee that doesnt have an event crossref, remove
     }
 
     override suspend fun deleteEventById(id: String) {
@@ -251,7 +235,7 @@ class AgendaRepositoryImpl(
         alarmRegister.cancelAlarm(event)
 
         supervisorScope {
-            val localJob = launch { deleteEventLocaly(id) }
+            val localJob = launch { deleteEventLocally(id) }
 
             val remoteJob = launch {
                 deleteEventByIdRemotely(id).onFailure {
