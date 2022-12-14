@@ -1,6 +1,7 @@
 # Tasky - Calendar App
 
-Offline-First Calendar App intended to portray all the new technologies I learn on a daily basis
+Offline-First Calendar App intended to portray all the new technologies I learn on a daily basis.
+This project aims to replicate the functionality of Google Calendar, allowing users to create and manage events and schedule appointments.
 
 ## Authentication Screens
 Login             |  Registration
@@ -40,6 +41,7 @@ Login             |  Registration
 - SplashScreen that redirects based whether the user is logged in or not.
 - Home Screen showcasing Events, Reminders and Tasks.
 - Event, Task and Reminder create, update, and delete.
+- Create and edit Events, including details such as title, time, and attendees.
 - Detail Screen for each Agenda Item Type, each with it's own settings.
 - Save on both API and DB.
 - Sync to the API in case of Offline usage.
@@ -51,7 +53,7 @@ Login             |  Registration
 
 ## Contributing
 
-Contributions are always welcome!
+I welcome contributions of all kinds, including bug fixes, new features, and improvements to existing functionality. Thank you for considering contributing to this project!
 
 ## TODO
 - Set notifications from remote events
